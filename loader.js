@@ -11,65 +11,108 @@ function initLoader() {
     const scene = new THREE.Scene();
     scene.background = new THREE.Color(0x000000); // Pitch black background to match image
 
-    // Camera
-    const camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 1000);
-    camera.position.z = 8; // Zoomed out enough to see the whole cube
-    camera.position.y = 2; // Slight angle looking down
+    // Camera with better positioning
+    const camera = new THREE.PerspectiveCamera(50, window.innerWidth / window.innerHeight, 0.1, 1000);
+    camera.position.set(6, 4, 6); // Better angle to see lighting effects
     camera.lookAt(0, 0, 0);
 
-    // Renderer
+    // Renderer with shadows enabled
     const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: false });
     renderer.setSize(window.innerWidth, window.innerHeight);
     renderer.setPixelRatio(window.devicePixelRatio);
+    renderer.shadowMap.enabled = true;
+    renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+    renderer.toneMapping = THREE.ACESFilmicToneMapping;
+    renderer.toneMappingExposure = 1.2;
     container.appendChild(renderer.domElement);
 
-    // Lighting
-    // Key light
-    const spotLight = new THREE.SpotLight(0xffffff, 1.5);
-    spotLight.position.set(10, 20, 10);
-    spotLight.angle = Math.PI / 4;
-    spotLight.penumbra = 0.1;
-    scene.add(spotLight);
+    // Enhanced Lighting Setup
+    // Main directional light (key light) - simulates sunlight
+    const directionalLight = new THREE.DirectionalLight(0xffffff, 2.5);
+    directionalLight.position.set(5, 8, 5);
+    directionalLight.castShadow = true;
+    directionalLight.shadow.mapSize.width = 2048;
+    directionalLight.shadow.mapSize.height = 2048;
+    directionalLight.shadow.camera.near = 0.5;
+    directionalLight.shadow.camera.far = 50;
+    directionalLight.shadow.camera.left = -10;
+    directionalLight.shadow.camera.right = 10;
+    directionalLight.shadow.camera.top = 10;
+    directionalLight.shadow.camera.bottom = -10;
+    scene.add(directionalLight);
 
-    // Rim light / Fill light to catch edges
-    const rimLight = new THREE.PointLight(0x4444ff, 0.5); // Slight bluish tint for cool dark mode feel
-    rimLight.position.set(-10, 0, -10);
+    // Secondary light from opposite side (fill light)
+    const fillLight = new THREE.DirectionalLight(0xffffff, 0.8);
+    fillLight.position.set(-5, 3, -5);
+    scene.add(fillLight);
+
+    // Rim light for edge definition
+    const rimLight = new THREE.PointLight(0x88aaff, 1.2);
+    rimLight.position.set(-8, 0, -8);
     scene.add(rimLight);
 
-    // Ambient light for base visibility
-    const ambientLight = new THREE.AmbientLight(0x222222);
+    // Ambient light for base illumination (reduced for better contrast)
+    const ambientLight = new THREE.AmbientLight(0x404040, 0.4);
     scene.add(ambientLight);
 
+
+    // Add a subtle ground plane for better light reflection
+    const groundGeometry = new THREE.PlaneGeometry(20, 20);
+    const groundMaterial = new THREE.MeshStandardMaterial({
+        color: 0x050505,
+        metalness: 0.1,
+        roughness: 0.8
+    });
+    const ground = new THREE.Mesh(groundGeometry, groundMaterial);
+    ground.rotation.x = -Math.PI / 2;
+    ground.position.y = -3;
+    ground.receiveShadow = true;
+    scene.add(ground);
 
     // Cube / Group
     const rubiksCube = new THREE.Group();
     scene.add(rubiksCube);
 
-    // Materials - aiming for that dark, textured look
-    // 1. Glossy Black Plastic
+    // Enhanced Materials with proper light interaction
+    // 1. Glossy Black Plastic - high reflectivity
     const materialGlossy = new THREE.MeshPhysicalMaterial({
-        color: 0x111111,
-        metalness: 0.1,
-        roughness: 0.1,
+        color: 0x1a1a1a,
+        metalness: 0.2,
+        roughness: 0.05,
         clearcoat: 1.0,
-        clearcoatRoughness: 0.1
+        clearcoatRoughness: 0.05,
+        envMapIntensity: 1.0,
+        reflectivity: 1.0
     });
 
-    // 2. Matte/Textured Black (Simulating the grid/perforated look via high roughness avoiding expensive textures for now)
+    // 2. Semi-glossy - medium reflectivity
+    const materialSemiGlossy = new THREE.MeshPhysicalMaterial({
+        color: 0x151515,
+        metalness: 0.1,
+        roughness: 0.3,
+        clearcoat: 0.8,
+        clearcoatRoughness: 0.2,
+        envMapIntensity: 0.8
+    });
+
+    // 3. Metallic - high metalness for shine
+    const materialMetallic = new THREE.MeshPhysicalMaterial({
+        color: 0x2a2a2a,
+        metalness: 0.9,
+        roughness: 0.15,
+        clearcoat: 0.5,
+        clearcoatRoughness: 0.1,
+        envMapIntensity: 1.2
+    });
+
+    // 4. Matte - for contrast
     const materialMatte = new THREE.MeshStandardMaterial({
-        color: 0x050505,
+        color: 0x0a0a0a,
         metalness: 0.0,
-        roughness: 0.9,
+        roughness: 0.95,
     });
 
-    // 3. Metallic/Noise Black
-    const materialMetallic = new THREE.MeshStandardMaterial({
-        color: 0x222222,
-        metalness: 0.8,
-        roughness: 0.4,
-    });
-
-    const materials = [materialGlossy, materialMatte, materialMetallic];
+    const materials = [materialGlossy, materialSemiGlossy, materialMetallic, materialMatte];
 
     // Geometry - 3x3x3 grid
     const cubeSize = 0.95; // Slightly smaller than 1 to leave gaps
@@ -86,8 +129,8 @@ function initLoader() {
 
                 const cube = new THREE.Mesh(geometry, material);
                 cube.position.set(x * offset, y * offset, z * offset);
-
-                // Add beveled edges effect (optional, keep simple for perf first)
+                cube.castShadow = true;
+                cube.receiveShadow = true;
 
                 rubiksCube.add(cube);
             }
