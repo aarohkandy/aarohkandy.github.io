@@ -84,15 +84,40 @@
         engine.world.gravity.y = 1;
         engine.world.gravity.scale = 0.001;
         
-        // Ground
-        let ground = Bodies.rectangle(
-            window.innerWidth / 2,
-            window.innerHeight - 5,
-            window.innerWidth,
-            10,
-            { isStatic: true, render: { fillStyle: '#2c3e50' } }
-        );
-        World.add(engine.world, ground);
+        // Ground and walls
+        let ground, leftWall, rightWall;
+        
+        function createBoundaries() {
+            // Ground
+            ground = Bodies.rectangle(
+                window.innerWidth / 2,
+                window.innerHeight - 5,
+                window.innerWidth,
+                10,
+                { isStatic: true, render: { fillStyle: '#2c3e50' } }
+            );
+            
+            // Left and right walls to prevent escape
+            leftWall = Bodies.rectangle(
+                5,
+                window.innerHeight / 2,
+                10,
+                window.innerHeight,
+                { isStatic: true, render: { visible: false } }
+            );
+            
+            rightWall = Bodies.rectangle(
+                window.innerWidth - 5,
+                window.innerHeight / 2,
+                10,
+                window.innerHeight,
+                { isStatic: true, render: { visible: false } }
+            );
+            
+            World.add(engine.world, [ground, leftWall, rightWall]);
+        }
+        
+        createBoundaries();
         
         // Stickman body parts
         const parts = {
@@ -562,8 +587,9 @@
                 return;
             }
             
-            // Transition to standing up when conditions met
-            if (distance > 150 && velocity < 0.5 && stateTimer > 60) {
+            // Transition to standing up when conditions met (less strict)
+            // Try to stand up if cursor is away and body is relatively still
+            if (distance > 100 && velocity < 1.0 && stateTimer > 30) {
                 state = 'STANDING_UP';
                 standUpPhase = 0;
                 standUpTimer = 0;
@@ -580,66 +606,86 @@
             }
             
             standUpTimer++;
+            const uprightAngle = -Math.PI / 2;
             
-            // Phase 1: Assess (15 frames)
+            // Phase 1: Assess and roll (10 frames - faster)
             if (standUpPhase === 0) {
-                if (standUpTimer > 15) {
+                const torsoAngle = parts.torso.angle;
+                const angleDiff = Math.abs(torsoAngle - uprightAngle);
+                
+                // Roll to side if needed
+                if (angleDiff > Math.PI / 3) {
+                    // Determine roll direction
+                    const rollDir = Math.sin(torsoAngle) > 0 ? 1 : -1;
+                    Body.setAngularVelocity(parts.torso, rollDir * 0.15);
+                }
+                
+                if (standUpTimer > 10) {
                     standUpPhase = 1;
                     standUpTimer = 0;
                 }
             }
-            // Phase 2: Roll if needed (20 frames)
+            // Phase 2: Push up aggressively (50 frames)
             else if (standUpPhase === 1) {
-                const torsoAngle = parts.torso.angle;
-                const uprightAngle = -Math.PI / 2;
-                const angleDiff = Math.abs(torsoAngle - uprightAngle);
+                // Strong upward force
+                const forceMultiplier = 1 + (standUpTimer / 50) * 2;
+                Body.applyForce(parts.torso, parts.torso.position, {
+                    x: 0,
+                    y: -0.004 * forceMultiplier
+                });
                 
-                if (angleDiff > Math.PI / 2) {
-                    Body.setAngularVelocity(parts.torso, 0.1);
-                }
+                // Position legs under torso more aggressively
+                const targetThighAngle = uprightAngle;
+                applyAngleCorrection(parts.leftThigh, targetThighAngle, 0.2);
+                applyAngleCorrection(parts.rightThigh, targetThighAngle, 0.2);
                 
-                if (standUpTimer > 20) {
+                // Position feet on ground
+                const leftShinTarget = uprightAngle;
+                const rightShinTarget = uprightAngle;
+                applyAngleCorrection(parts.leftShin, leftShinTarget, 0.2);
+                applyAngleCorrection(parts.rightShin, rightShinTarget, 0.2);
+                
+                // Use arms to push up
+                const armPushAngle = uprightAngle - 0.3;
+                applyAngleCorrection(parts.leftUpperArm, armPushAngle, 0.15);
+                applyAngleCorrection(parts.rightUpperArm, armPushAngle, 0.15);
+                
+                if (standUpTimer > 50) {
                     standUpPhase = 2;
                     standUpTimer = 0;
                 }
             }
-            // Phase 3: Push up (40 frames)
+            // Phase 3: Stand & balance (60 frames)
             else if (standUpPhase === 2) {
-                Body.applyForce(parts.torso, parts.torso.position, {
-                    x: 0,
-                    y: -0.002 * (1 + standUpTimer / 40)
-                });
-                
-                // Position legs under torso
-                const targetThighAngle = -Math.PI / 2;
-                applyAngleCorrection(parts.leftThigh, targetThighAngle, 0.1);
-                applyAngleCorrection(parts.rightThigh, targetThighAngle, 0.1);
-                
-                if (standUpTimer > 40) {
-                    standUpPhase = 3;
-                    standUpTimer = 0;
-                }
-            }
-            // Phase 4: Stand & balance (45 frames)
-            else if (standUpPhase === 3) {
-                const targetAngle = -Math.PI / 2;
-                applyAngleCorrection(parts.torso, targetAngle, 0.1);
+                // Strong correction to upright
+                applyAngleCorrection(parts.torso, uprightAngle, 0.2);
                 
                 // Legs to vertical
-                applyAngleCorrection(parts.leftThigh, targetAngle, 0.1);
-                applyAngleCorrection(parts.rightThigh, targetAngle, 0.1);
+                applyAngleCorrection(parts.leftThigh, uprightAngle, 0.2);
+                applyAngleCorrection(parts.rightThigh, uprightAngle, 0.2);
+                applyAngleCorrection(parts.leftShin, uprightAngle, 0.2);
+                applyAngleCorrection(parts.rightShin, uprightAngle, 0.2);
                 
-                // Arms for balance
-                Body.setAngularVelocity(parts.leftUpperArm, -0.02);
-                Body.setAngularVelocity(parts.rightUpperArm, 0.02);
+                // Arms for balance (spread out)
+                const balanceArmAngle = uprightAngle - 0.2;
+                applyAngleCorrection(parts.leftUpperArm, balanceArmAngle, 0.1);
+                applyAngleCorrection(parts.rightUpperArm, balanceArmAngle, 0.1);
                 
-                const angleDiff = Math.abs(parts.torso.angle - targetAngle);
+                // Check if stable
+                const angleDiff = Math.abs(parts.torso.angle - uprightAngle);
                 const velocity = Math.sqrt(
                     parts.torso.velocity.x * parts.torso.velocity.x +
                     parts.torso.velocity.y * parts.torso.velocity.y
                 );
                 
-                if (angleDiff < 0.1 && velocity < 0.3 && standUpTimer > 20) {
+                // Transition to paused when stable
+                if (angleDiff < 0.15 && velocity < 0.5 && standUpTimer > 15) {
+                    state = 'PAUSED';
+                    stateTimer = 0;
+                }
+                
+                // Force transition after max time
+                if (standUpTimer > 60) {
                     state = 'PAUSED';
                     stateTimer = 0;
                 }
@@ -765,21 +811,11 @@
         window.addEventListener('resize', () => {
             resizeCanvas();
             
-            // Reposition ground
-            Body.setPosition(ground, {
-                x: window.innerWidth / 2,
-                y: window.innerHeight - 5
-            });
+            // Remove old boundaries
+            World.remove(engine.world, [ground, leftWall, rightWall]);
             
-            // Update ground vertices
-            const groundWidth = window.innerWidth;
-            const groundHeight = 10;
-            Body.setVertices(ground, [
-                { x: 0, y: window.innerHeight - groundHeight },
-                { x: groundWidth, y: window.innerHeight - groundHeight },
-                { x: groundWidth, y: window.innerHeight },
-                { x: 0, y: window.innerHeight }
-            ]);
+            // Create new boundaries
+            createBoundaries();
             
             // Adjust walk target if off screen
             if (state === 'WALKING' && (walkTarget < 0 || walkTarget > canvas.width)) {
