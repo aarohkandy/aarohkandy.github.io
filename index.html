@@ -7,14 +7,61 @@
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-    <header>
-        <h1>Welcome to Aaroh Kandy's Website</h1>
-    </header>
-    <main>
-        <p>This is a placeholder for my GitHub Pages site. Content coming soon!</p>
-    </main>
-    <footer>
-        <p>&copy; 2024 Aaroh Kandy</p>
-    </footer>
+    <!-- Loading Screen -->
+    <div id="loader" class="loader">
+        <div class="loader-content">
+            <div class="honey-bottle">
+                <div class="bottle-neck"></div>
+                <div class="bottle-body">
+                    <div class="bottle-label">HONEY</div>
+                    <div class="honey-fill" id="honeyFill"></div>
+                </div>
+                <div class="bottle-cap"></div>
+            </div>
+            <p class="loading-text">Loading...</p>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div id="main-content" class="main-content hidden">
+        <header>
+            <nav>
+                <h1>Aaroh Kandy</h1>
+                <ul class="nav-links">
+                    <li><a href="#about">About</a></li>
+                    <li><a href="#work">Work</a></li>
+                    <li><a href="#contact">Contact</a></li>
+                </ul>
+            </nav>
+        </header>
+
+        <main>
+            <section class="hero">
+                <h2>Welcome</h2>
+                <p>This is a placeholder for my GitHub Pages site. Content coming soon!</p>
+            </section>
+
+            <section id="about" class="section">
+                <h2>About</h2>
+                <p>Content about me will go here.</p>
+            </section>
+
+            <section id="work" class="section">
+                <h2>Work</h2>
+                <p>My projects and work will be displayed here.</p>
+            </section>
+
+            <section id="contact" class="section">
+                <h2>Contact</h2>
+                <p>Get in touch with me.</p>
+            </section>
+        </main>
+
+        <footer>
+            <p>&copy; 2024 Aaroh Kandy</p>
+        </footer>
+    </div>
+
+    <script src="script.js"></script>
 </body>
 </html>
