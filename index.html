@@ -587,9 +587,14 @@
                 return;
             }
             
-            // Transition to standing up when conditions met (less strict)
+            // Transition to standing up when conditions met
             // Try to stand up if cursor is away and body is relatively still
-            if (distance > 100 && velocity < 1.0 && stateTimer > 30) {
+            // Also check if torso is low (on or near ground)
+            const torsoY = parts.torso.position.y;
+            const groundY = window.innerHeight - 10;
+            const isNearGround = (groundY - torsoY) < 150; // Within 150px of ground
+            
+            if (distance > 100 && velocity < 1.2 && stateTimer > 20 && isNearGround) {
                 state = 'STANDING_UP';
                 standUpPhase = 0;
                 standUpTimer = 0;
@@ -608,49 +613,125 @@
             standUpTimer++;
             const uprightAngle = -Math.PI / 2;
             
-            // Phase 1: Assess and roll (10 frames - faster)
+            // Phase 1: Assess and roll (15 frames)
             if (standUpPhase === 0) {
                 const torsoAngle = parts.torso.angle;
+                const torsoNormalized = ((torsoAngle % (Math.PI * 2)) + Math.PI * 2) % (Math.PI * 2);
                 const angleDiff = Math.abs(torsoAngle - uprightAngle);
                 
-                // Roll to side if needed
-                if (angleDiff > Math.PI / 3) {
-                    // Determine roll direction
+                // Roll to side if needed (if on back)
+                if (torsoNormalized > Math.PI / 2 && torsoNormalized < Math.PI * 1.5) {
+                    // On back, roll to side
+                    const rollDir = Math.cos(torsoAngle) > 0 ? 1 : -1;
+                    Body.setAngularVelocity(parts.torso, rollDir * 0.2);
+                } else if (angleDiff > Math.PI / 4) {
+                    // Not upright, try to roll
                     const rollDir = Math.sin(torsoAngle) > 0 ? 1 : -1;
                     Body.setAngularVelocity(parts.torso, rollDir * 0.15);
                 }
                 
-                if (standUpTimer > 10) {
+                if (standUpTimer > 15) {
                     standUpPhase = 1;
                     standUpTimer = 0;
                 }
             }
-            // Phase 2: Push up aggressively (50 frames)
+            // Phase 2: Push up aggressively (60 frames)
             else if (standUpPhase === 1) {
-                // Strong upward force
-                const forceMultiplier = 1 + (standUpTimer / 50) * 2;
+                // Determine torso orientation
+                const torsoAngle = parts.torso.angle;
+                const torsoNormalized = ((torsoAngle % (Math.PI * 2)) + Math.PI * 2) % (Math.PI * 2);
+                const isOnBack = torsoNormalized > Math.PI / 2 && torsoNormalized < Math.PI * 1.5;
+                
+                // Calculate ground position relative to torso
+                const groundY = window.innerHeight - 10;
+                const torsoY = parts.torso.position.y;
+                const distanceToGround = groundY - torsoY;
+                
+                // Strong upward force to torso
+                const forceMultiplier = 1 + (standUpTimer / 60) * 1.5;
                 Body.applyForce(parts.torso, parts.torso.position, {
                     x: 0,
-                    y: -0.004 * forceMultiplier
+                    y: -0.005 * forceMultiplier
                 });
                 
-                // Position legs under torso more aggressively
+                // Position legs under torso
                 const targetThighAngle = uprightAngle;
-                applyAngleCorrection(parts.leftThigh, targetThighAngle, 0.2);
-                applyAngleCorrection(parts.rightThigh, targetThighAngle, 0.2);
+                applyAngleCorrection(parts.leftThigh, targetThighAngle, 0.25);
+                applyAngleCorrection(parts.rightThigh, targetThighAngle, 0.25);
                 
                 // Position feet on ground
-                const leftShinTarget = uprightAngle;
-                const rightShinTarget = uprightAngle;
-                applyAngleCorrection(parts.leftShin, leftShinTarget, 0.2);
-                applyAngleCorrection(parts.rightShin, rightShinTarget, 0.2);
+                applyAngleCorrection(parts.leftShin, uprightAngle, 0.25);
+                applyAngleCorrection(parts.rightShin, uprightAngle, 0.25);
                 
-                // Use arms to push up
-                const armPushAngle = uprightAngle - 0.3;
-                applyAngleCorrection(parts.leftUpperArm, armPushAngle, 0.15);
-                applyAngleCorrection(parts.rightUpperArm, armPushAngle, 0.15);
+                // Position arms to reach ground and push up
+                // Get shoulder positions accounting for torso rotation
+                const cosTorso = Math.cos(parts.torso.angle);
+                const sinTorso = Math.sin(parts.torso.angle);
+                const shoulderOffsetX = 7.5;
+                const shoulderOffsetY = -30; // Top of torso
                 
-                if (standUpTimer > 50) {
+                // Left shoulder world position
+                const leftShoulderX = parts.torso.position.x + 
+                    (shoulderOffsetX * cosTorso - shoulderOffsetY * sinTorso);
+                const leftShoulderY = parts.torso.position.y + 
+                    (shoulderOffsetX * sinTorso + shoulderOffsetY * cosTorso);
+                
+                // Right shoulder world position
+                const rightShoulderX = parts.torso.position.x + 
+                    (-shoulderOffsetX * cosTorso - shoulderOffsetY * sinTorso);
+                const rightShoulderY = parts.torso.position.y + 
+                    (-shoulderOffsetX * sinTorso + shoulderOffsetY * cosTorso);
+                
+                // Calculate where hands should be (on ground, to sides)
+                const handOffsetX = 30;
+                const leftHandTargetX = parts.torso.position.x - handOffsetX;
+                const rightHandTargetX = parts.torso.position.x + handOffsetX;
+                const handTargetY = groundY - 3; // Just above ground
+                
+                // Calculate angles for arms to reach ground
+                const leftArmAngle = Math.atan2(
+                    handTargetY - leftShoulderY,
+                    leftHandTargetX - leftShoulderX
+                );
+                
+                const rightArmAngle = Math.atan2(
+                    handTargetY - rightShoulderY,
+                    rightHandTargetX - rightShoulderX
+                );
+                
+                // Position upper arms more aggressively
+                applyAngleCorrection(parts.leftUpperArm, leftArmAngle, 0.3);
+                applyAngleCorrection(parts.rightUpperArm, rightArmAngle, 0.3);
+                
+                // Position forearms to extend downward (straighten elbow to continue arm line)
+                applyAngleCorrection(parts.leftForearm, leftArmAngle, 0.3);
+                applyAngleCorrection(parts.rightForearm, rightArmAngle, 0.3);
+                
+                // Apply upward force at hands (forearms) to push against ground
+                // Calculate hand position (end of forearm)
+                const forearmLength = 15; // half of 30px height
+                const leftHandX = parts.leftForearm.position.x + Math.cos(parts.leftForearm.angle) * forearmLength;
+                const leftHandY = parts.leftForearm.position.y + Math.sin(parts.leftForearm.angle) * forearmLength;
+                const rightHandX = parts.rightForearm.position.x + Math.cos(parts.rightForearm.angle) * forearmLength;
+                const rightHandY = parts.rightForearm.position.y + Math.sin(parts.rightForearm.angle) * forearmLength;
+                
+                // Only push if hands are near ground
+                const handPushForce = 0.004 * forceMultiplier;
+                
+                if (leftHandY > groundY - 20) {
+                    Body.applyForce(parts.leftForearm, parts.leftForearm.position, { 
+                        x: 0, 
+                        y: -handPushForce 
+                    });
+                }
+                if (rightHandY > groundY - 20) {
+                    Body.applyForce(parts.rightForearm, parts.rightForearm.position, { 
+                        x: 0, 
+                        y: -handPushForce 
+                    });
+                }
+                
+                if (standUpTimer > 60) {
                     standUpPhase = 2;
                     standUpTimer = 0;
                 }
@@ -795,8 +876,10 @@
                     break;
             }
             
-            // Enforce angle limits
-            enforceAngleLimits();
+            // Enforce angle limits (skip during push-up phase of standing up)
+            if (!(state === 'STANDING_UP' && standUpPhase === 1)) {
+                enforceAngleLimits();
+            }
             
             // Render
             render();
