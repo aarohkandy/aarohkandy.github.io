@@ -310,6 +310,36 @@
         
         // No angle limits needed for simple stickman (no elbows or knees)
         
+        // Prevent body parts from going below ground
+        function enforceGroundCollision() {
+            const groundY = window.innerHeight - 10;
+            
+            // Check all body parts
+            Object.values(parts).forEach(part => {
+                if (part) {
+                    // Get the bottom of the body part
+                    const partBottom = part.bounds.max.y;
+                    
+                    // If any part of the body goes below ground, push it up
+                    if (partBottom > groundY) {
+                        const overlap = partBottom - groundY;
+                        Body.setPosition(part, {
+                            x: part.position.x,
+                            y: part.position.y - overlap
+                        });
+                        
+                        // Stop downward velocity and apply slight bounce
+                        if (part.velocity.y > 0) {
+                            Body.setVelocity(part, {
+                                x: part.velocity.x * 0.8, // Friction
+                                y: Math.min(0, part.velocity.y * -0.1) // Small bounce, but don't go up too much
+                            });
+                        }
+                    }
+                }
+            });
+        }
+        
         // Pick walk target
         function pickWalkTarget() {
             const currentX = parts.torso.position.x;
@@ -689,21 +719,27 @@
             ctx.stroke();
             
             // Draw arms (lines from shoulders to hands)
+            const armLength = 50;
             const leftShoulderPos = getJointWorldPosition(parts.torso, joints.leftShoulder.pointA);
             const rightShoulderPos = getJointWorldPosition(parts.torso, joints.rightShoulder.pointA);
-            const armLength = 50;
             
-            // Left arm
-            const leftHandX = parts.leftArm.position.x + Math.cos(parts.leftArm.angle) * (armLength / 2);
-            const leftHandY = parts.leftArm.position.y + Math.sin(parts.leftArm.angle) * (armLength / 2);
+            // Get the connection point on the arm (where it connects to shoulder)
+            const leftArmConnection = getJointWorldPosition(parts.leftArm, joints.leftShoulder.pointB);
+            const rightArmConnection = getJointWorldPosition(parts.rightArm, joints.rightShoulder.pointB);
+            
+            // Calculate hand position (opposite end of arm from connection)
+            const leftHandX = leftArmConnection.x + Math.cos(parts.leftArm.angle) * armLength;
+            const leftHandY = leftArmConnection.y + Math.sin(parts.leftArm.angle) * armLength;
+            const rightHandX = rightArmConnection.x + Math.cos(parts.rightArm.angle) * armLength;
+            const rightHandY = rightArmConnection.y + Math.sin(parts.rightArm.angle) * armLength;
+            
+            // Draw left arm
             ctx.beginPath();
             ctx.moveTo(leftShoulderPos.x, leftShoulderPos.y);
             ctx.lineTo(leftHandX, leftHandY);
             ctx.stroke();
             
-            // Right arm
-            const rightHandX = parts.rightArm.position.x + Math.cos(parts.rightArm.angle) * (armLength / 2);
-            const rightHandY = parts.rightArm.position.y + Math.sin(parts.rightArm.angle) * (armLength / 2);
+            // Draw right arm
             ctx.beginPath();
             ctx.moveTo(rightShoulderPos.x, rightShoulderPos.y);
             ctx.lineTo(rightHandX, rightHandY);
@@ -712,17 +748,23 @@
             // Draw legs (lines from hips to feet)
             const legLength = 60;
             
-            // Left leg
-            const leftFootX = parts.leftLeg.position.x + Math.cos(parts.leftLeg.angle) * (legLength / 2);
-            const leftFootY = parts.leftLeg.position.y + Math.sin(parts.leftLeg.angle) * (legLength / 2);
+            // Get the connection point on the leg (where it connects to hip)
+            const leftLegConnection = getJointWorldPosition(parts.leftLeg, joints.leftHip.pointB);
+            const rightLegConnection = getJointWorldPosition(parts.rightLeg, joints.rightHip.pointB);
+            
+            // Calculate foot position (opposite end of leg from connection)
+            const leftFootX = leftLegConnection.x + Math.cos(parts.leftLeg.angle) * legLength;
+            const leftFootY = leftLegConnection.y + Math.sin(parts.leftLeg.angle) * legLength;
+            const rightFootX = rightLegConnection.x + Math.cos(parts.rightLeg.angle) * legLength;
+            const rightFootY = rightLegConnection.y + Math.sin(parts.rightLeg.angle) * legLength;
+            
+            // Draw left leg
             ctx.beginPath();
             ctx.moveTo(leftHipPos.x, leftHipPos.y);
             ctx.lineTo(leftFootX, leftFootY);
             ctx.stroke();
             
-            // Right leg
-            const rightFootX = parts.rightLeg.position.x + Math.cos(parts.rightLeg.angle) * (legLength / 2);
-            const rightFootY = parts.rightLeg.position.y + Math.sin(parts.rightLeg.angle) * (legLength / 2);
+            // Draw right leg
             ctx.beginPath();
             ctx.moveTo(rightHipPos.x, rightHipPos.y);
             ctx.lineTo(rightFootX, rightFootY);
@@ -759,6 +801,9 @@
             }
             
             // No angle limits for simple stickman
+            
+            // Enforce ground collision
+            enforceGroundCollision();
             
             // Render
             render();
