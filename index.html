@@ -119,31 +119,23 @@
         
         createBoundaries();
         
-        // Stickman body parts
+        // Stickman body parts (simple stickman)
         const parts = {
             head: null,
             torso: null,
-            leftUpperArm: null,
-            leftForearm: null,
-            rightUpperArm: null,
-            rightForearm: null,
-            leftThigh: null,
-            leftShin: null,
-            rightThigh: null,
-            rightShin: null
+            leftArm: null,
+            rightArm: null,
+            leftLeg: null,
+            rightLeg: null
         };
         
         // Constraints (joints)
         const joints = {
             neck: null,
             leftShoulder: null,
-            leftElbow: null,
             rightShoulder: null,
-            rightElbow: null,
             leftHip: null,
-            leftKnee: null,
-            rightHip: null,
-            rightKnee: null
+            rightHip: null
         };
         
         // Create stickman
@@ -151,87 +143,55 @@
             const headRadius = 20;
             const torsoWidth = 15;
             const torsoHeight = 60;
-            const upperArmWidth = 10;
-            const upperArmHeight = 35;
-            const forearmWidth = 8;
-            const forearmHeight = 30;
-            const thighWidth = 12;
-            const thighHeight = 40;
-            const shinWidth = 10;
-            const shinHeight = 35;
+            const armLength = 50;
+            const armWidth = 4;
+            const legLength = 60;
+            const legWidth = 4;
             
             // Head
             parts.head = Bodies.circle(x, y - 50, headRadius, {
                 density: 0.002,
-                frictionAir: 0.01,
-                render: { fillStyle: '#fff', strokeStyle: '#2c3e50', lineWidth: 2 }
+                frictionAir: 0.01
             });
             
             // Torso
             parts.torso = Bodies.rectangle(x, y, torsoWidth, torsoHeight, {
                 density: 0.001,
-                frictionAir: 0.01,
-                render: { fillStyle: '#fff', strokeStyle: '#2c3e50', lineWidth: 2 }
+                frictionAir: 0.01
             });
             
-            // Left arm
-            parts.leftUpperArm = Bodies.rectangle(x - 20, y - 10, upperArmWidth, upperArmHeight, {
+            // Left arm (straight)
+            parts.leftArm = Bodies.rectangle(x - 20, y - 10, armWidth, armLength, {
                 density: 0.0008,
-                frictionAir: 0.01,
-                render: { fillStyle: '#fff', strokeStyle: '#2c3e50', lineWidth: 2 }
-            });
-            parts.leftForearm = Bodies.rectangle(x - 35, y + 10, forearmWidth, forearmHeight, {
-                density: 0.0008,
-                frictionAir: 0.01,
-                render: { fillStyle: '#fff', strokeStyle: '#2c3e50', lineWidth: 2 }
+                frictionAir: 0.01
             });
             
-            // Right arm
-            parts.rightUpperArm = Bodies.rectangle(x + 20, y - 10, upperArmWidth, upperArmHeight, {
+            // Right arm (straight)
+            parts.rightArm = Bodies.rectangle(x + 20, y - 10, armWidth, armLength, {
                 density: 0.0008,
-                frictionAir: 0.01,
-                render: { fillStyle: '#fff', strokeStyle: '#2c3e50', lineWidth: 2 }
-            });
-            parts.rightForearm = Bodies.rectangle(x + 35, y + 10, forearmWidth, forearmHeight, {
-                density: 0.0008,
-                frictionAir: 0.01,
-                render: { fillStyle: '#fff', strokeStyle: '#2c3e50', lineWidth: 2 }
+                frictionAir: 0.01
             });
             
-            // Left leg
-            parts.leftThigh = Bodies.rectangle(x - 8, y + 40, thighWidth, thighHeight, {
+            // Left leg (straight)
+            parts.leftLeg = Bodies.rectangle(x - 8, y + 50, legWidth, legLength, {
                 density: 0.001,
-                frictionAir: 0.01,
-                render: { fillStyle: '#fff', strokeStyle: '#2c3e50', lineWidth: 2 }
-            });
-            parts.leftShin = Bodies.rectangle(x - 8, y + 70, shinWidth, shinHeight, {
-                density: 0.001,
-                frictionAir: 0.01,
-                render: { fillStyle: '#fff', strokeStyle: '#2c3e50', lineWidth: 2 }
+                frictionAir: 0.01
             });
             
-            // Right leg
-            parts.rightThigh = Bodies.rectangle(x + 8, y + 40, thighWidth, thighHeight, {
+            // Right leg (straight)
+            parts.rightLeg = Bodies.rectangle(x + 8, y + 50, legWidth, legLength, {
                 density: 0.001,
-                frictionAir: 0.01,
-                render: { fillStyle: '#fff', strokeStyle: '#2c3e50', lineWidth: 2 }
-            });
-            parts.rightShin = Bodies.rectangle(x + 8, y + 70, shinWidth, shinHeight, {
-                density: 0.001,
-                frictionAir: 0.01,
-                render: { fillStyle: '#fff', strokeStyle: '#2c3e50', lineWidth: 2 }
+                frictionAir: 0.01
             });
             
             // Add all parts to world
             World.add(engine.world, [
                 parts.head, parts.torso,
-                parts.leftUpperArm, parts.leftForearm,
-                parts.rightUpperArm, parts.rightForearm,
-                parts.leftThigh, parts.leftShin,
-                parts.rightThigh, parts.rightShin
+                parts.leftArm, parts.rightArm,
+                parts.leftLeg, parts.rightLeg
             ]);
             
-            // Create joints
+            // Create joints (simple stickman - no elbows or knees)
             joints.neck = Constraint.create({
                 bodyA: parts.head,
                 bodyB: parts.torso,
@@ -244,80 +204,40 @@
             
             joints.leftShoulder = Constraint.create({
                 bodyA: parts.torso,
-                bodyB: parts.leftUpperArm,
+                bodyB: parts.leftArm,
                 pointA: { x: -torsoWidth / 2, y: -torsoHeight / 2 + 15 },
-                pointB: { x: 0, y: -upperArmHeight / 2 },
+                pointB: { x: 0, y: -armLength / 2 },
                 stiffness: 0.9,
-                length: 0,
-                render: { visible: false }
-            });
-            
-            joints.leftElbow = Constraint.create({
-                bodyA: parts.leftUpperArm,
-                bodyB: parts.leftForearm,
-                pointA: { x: 0, y: upperArmHeight / 2 },
-                pointB: { x: 0, y: -forearmHeight / 2 },
-                stiffness: 1,
                 length: 0,
                 render: { visible: false }
             });
             
             joints.rightShoulder = Constraint.create({
                 bodyA: parts.torso,
-                bodyB: parts.rightUpperArm,
+                bodyB: parts.rightArm,
                 pointA: { x: torsoWidth / 2, y: -torsoHeight / 2 + 15 },
-                pointB: { x: 0, y: -upperArmHeight / 2 },
+                pointB: { x: 0, y: -armLength / 2 },
                 stiffness: 0.9,
-                length: 0,
-                render: { visible: false }
-            });
-            
-            joints.rightElbow = Constraint.create({
-                bodyA: parts.rightUpperArm,
-                bodyB: parts.rightForearm,
-                pointA: { x: 0, y: upperArmHeight / 2 },
-                pointB: { x: 0, y: -forearmHeight / 2 },
-                stiffness: 1,
                 length: 0,
                 render: { visible: false }
             });
             
             joints.leftHip = Constraint.create({
                 bodyA: parts.torso,
-                bodyB: parts.leftThigh,
+                bodyB: parts.leftLeg,
                 pointA: { x: -torsoWidth / 2 + 4, y: torsoHeight / 2 },
-                pointB: { x: 0, y: -thighHeight / 2 },
+                pointB: { x: 0, y: -legLength / 2 },
                 stiffness: 0.9,
-                length: 0,
-                render: { visible: false }
-            });
-            
-            joints.leftKnee = Constraint.create({
-                bodyA: parts.leftThigh,
-                bodyB: parts.leftShin,
-                pointA: { x: 0, y: thighHeight / 2 },
-                pointB: { x: 0, y: -shinHeight / 2 },
-                stiffness: 1,
                 length: 0,
                 render: { visible: false }
             });
             
             joints.rightHip = Constraint.create({
                 bodyA: parts.torso,
-                bodyB: parts.rightThigh,
+                bodyB: parts.rightLeg,
                 pointA: { x: torsoWidth / 2 - 4, y: torsoHeight / 2 },
-                pointB: { x: 0, y: -thighHeight / 2 },
+                pointB: { x: 0, y: -legLength / 2 },
                 stiffness: 0.9,
-                length: 0,
-                render: { visible: false }
-            });
-            
-            joints.rightKnee = Constraint.create({
-                bodyA: parts.rightThigh,
-                bodyB: parts.rightShin,
-                pointA: { x: 0, y: thighHeight / 2 },
-                pointB: { x: 0, y: -shinHeight / 2 },
-                stiffness: 1,
                 length: 0,
                 render: { visible: false }
             });
@@ -328,14 +248,10 @@
             // Set initial angles for standing position
             const uprightAngle = -Math.PI / 2;
             Body.setAngle(parts.torso, uprightAngle);
-            Body.setAngle(parts.leftThigh, uprightAngle);
-            Body.setAngle(parts.rightThigh, uprightAngle);
-            Body.setAngle(parts.leftShin, uprightAngle);
-            Body.setAngle(parts.rightShin, uprightAngle);
-            Body.setAngle(parts.leftUpperArm, uprightAngle);
-            Body.setAngle(parts.rightUpperArm, uprightAngle);
-            Body.setAngle(parts.leftForearm, uprightAngle);
-            Body.setAngle(parts.rightForearm, uprightAngle);
+            Body.setAngle(parts.leftLeg, uprightAngle);
+            Body.setAngle(parts.rightLeg, uprightAngle);
+            Body.setAngle(parts.leftArm, uprightAngle);
+            Body.setAngle(parts.rightArm, uprightAngle);
             
             // Set initial velocities to zero
             Object.values(parts).forEach(part => {
@@ -392,55 +308,7 @@
             Body.setAngularVelocity(body, diff * strength);
         }
         
-        // Enforce angle limits
-        function enforceAngleLimits() {
-            // Elbows: 0° to 170° (0 to ~2.97 radians)
-            // Calculate relative angle between upper arm and forearm
-            const leftElbowRelAngle = parts.leftForearm.angle - parts.leftUpperArm.angle;
-            let leftElbowNormalized = leftElbowRelAngle;
-            while (leftElbowNormalized > Math.PI) leftElbowNormalized -= Math.PI * 2;
-            while (leftElbowNormalized < -Math.PI) leftElbowNormalized += Math.PI * 2;
-            
-            if (leftElbowNormalized < 0) {
-                Body.setAngularVelocity(parts.leftForearm, 0.15);
-            } else if (leftElbowNormalized > 2.97) {
-                Body.setAngularVelocity(parts.leftForearm, -0.15);
-            }
-            
-            const rightElbowRelAngle = parts.rightForearm.angle - parts.rightUpperArm.angle;
-            let rightElbowNormalized = rightElbowRelAngle;
-            while (rightElbowNormalized > Math.PI) rightElbowNormalized -= Math.PI * 2;
-            while (rightElbowNormalized < -Math.PI) rightElbowNormalized += Math.PI * 2;
-            
-            if (rightElbowNormalized < 0) {
-                Body.setAngularVelocity(parts.rightForearm, 0.15);
-            } else if (rightElbowNormalized > 2.97) {
-                Body.setAngularVelocity(parts.rightForearm, -0.15);
-            }
-            
-            // Knees: 0° to 160° (0 to ~2.79 radians)
-            const leftKneeRelAngle = parts.leftShin.angle - parts.leftThigh.angle;
-            let leftKneeNormalized = leftKneeRelAngle;
-            while (leftKneeNormalized > Math.PI) leftKneeNormalized -= Math.PI * 2;
-            while (leftKneeNormalized < -Math.PI) leftKneeNormalized += Math.PI * 2;
-            
-            if (leftKneeNormalized < 0) {
-                Body.setAngularVelocity(parts.leftShin, 0.15);
-            } else if (leftKneeNormalized > 2.79) {
-                Body.setAngularVelocity(parts.leftShin, -0.15);
-            }
-            
-            const rightKneeRelAngle = parts.rightShin.angle - parts.rightThigh.angle;
-            let rightKneeNormalized = rightKneeRelAngle;
-            while (rightKneeNormalized > Math.PI) rightKneeNormalized -= Math.PI * 2;
-            while (rightKneeNormalized < -Math.PI) rightKneeNormalized += Math.PI * 2;
-            
-            if (rightKneeNormalized < 0) {
-                Body.setAngularVelocity(parts.rightShin, 0.15);
-            } else if (rightKneeNormalized > 2.79) {
-                Body.setAngularVelocity(parts.rightShin, -0.15);
-            }
-        }
+        // No angle limits needed for simple stickman (no elbows or knees)
         
         // Pick walk target
         function pickWalkTarget() {
@@ -511,21 +379,11 @@
             const leftLegSwing = Math.sin(walkCycle) * amplitude;
             const rightLegSwing = Math.sin(walkCycle + Math.PI) * amplitude;
             
-            const leftThighTarget = baseLegAngle + leftLegSwing;
-            const rightThighTarget = baseLegAngle + rightLegSwing;
+            const leftLegTarget = baseLegAngle + leftLegSwing;
+            const rightLegTarget = baseLegAngle + rightLegSwing;
             
-            applyAngleCorrection(parts.leftThigh, leftThighTarget, 0.12);
-            applyAngleCorrection(parts.rightThigh, rightThighTarget, 0.12);
-            
-            // Knee bends when leg forward
-            const leftKneeBend = Math.max(0, Math.sin(walkCycle)) * 0.6;
-            const rightKneeBend = Math.max(0, Math.sin(walkCycle + Math.PI)) * 0.6;
-            
-            const leftKneeTarget = parts.leftThigh.angle + (Math.PI - leftKneeBend);
-            const rightKneeTarget = parts.rightThigh.angle + (Math.PI - rightKneeBend);
-            
-            applyAngleCorrection(parts.leftShin, leftKneeTarget, 0.15);
-            applyAngleCorrection(parts.rightShin, rightKneeTarget, 0.15);
+            applyAngleCorrection(parts.leftLeg, leftLegTarget, 0.12);
+            applyAngleCorrection(parts.rightLeg, rightLegTarget, 0.12);
             
             // Arm swing (opposite to legs)
             const leftArmSwing = -rightLegSwing * 0.3;
@@ -534,8 +392,8 @@
             const leftArmTarget = baseLegAngle + leftArmSwing;
             const rightArmTarget = baseLegAngle + rightArmSwing;
             
-            applyAngleCorrection(parts.leftUpperArm, leftArmTarget, 0.08);
-            applyAngleCorrection(parts.rightUpperArm, rightArmTarget, 0.08);
+            applyAngleCorrection(parts.leftArm, leftArmTarget, 0.08);
+            applyAngleCorrection(parts.rightArm, rightArmTarget, 0.08);
             
             // Torso lean when running
             if (isRunning) {
@@ -556,8 +414,8 @@
         function updatePaused() {
             // Stabilize legs
             const targetLegAngle = -Math.PI / 2;
-            applyAngleCorrection(parts.leftThigh, targetLegAngle, 0.05);
-            applyAngleCorrection(parts.rightThigh, targetLegAngle, 0.05);
+            applyAngleCorrection(parts.leftLeg, targetLegAngle, 0.05);
+            applyAngleCorrection(parts.rightLeg, targetLegAngle, 0.05);
             
             // Breathing animation
             const breath = Math.sin(stateTimer * 0.002) * 0.0001;
@@ -655,13 +513,8 @@
                 });
                 
                 // Position legs under torso
-                const targetThighAngle = uprightAngle;
-                applyAngleCorrection(parts.leftThigh, targetThighAngle, 0.25);
-                applyAngleCorrection(parts.rightThigh, targetThighAngle, 0.25);
-                
-                // Position feet on ground
-                applyAngleCorrection(parts.leftShin, uprightAngle, 0.25);
-                applyAngleCorrection(parts.rightShin, uprightAngle, 0.25);
+                applyAngleCorrection(parts.leftLeg, uprightAngle, 0.25);
+                applyAngleCorrection(parts.rightLeg, uprightAngle, 0.25);
                 
                 // Position arms to reach ground and push up
                 // Get shoulder positions accounting for torso rotation
@@ -699,33 +552,29 @@
                     rightHandTargetX - rightShoulderX
                 );
                 
-                // Position upper arms more aggressively
-                applyAngleCorrection(parts.leftUpperArm, leftArmAngle, 0.3);
-                applyAngleCorrection(parts.rightUpperArm, rightArmAngle, 0.3);
+                // Position arms more aggressively
+                applyAngleCorrection(parts.leftArm, leftArmAngle, 0.3);
+                applyAngleCorrection(parts.rightArm, rightArmAngle, 0.3);
                 
-                // Position forearms to extend downward (straighten elbow to continue arm line)
-                applyAngleCorrection(parts.leftForearm, leftArmAngle, 0.3);
-                applyAngleCorrection(parts.rightForearm, rightArmAngle, 0.3);
-                
-                // Apply upward force at hands (forearms) to push against ground
-                // Calculate hand position (end of forearm)
-                const forearmLength = 15; // half of 30px height
-                const leftHandX = parts.leftForearm.position.x + Math.cos(parts.leftForearm.angle) * forearmLength;
-                const leftHandY = parts.leftForearm.position.y + Math.sin(parts.leftForearm.angle) * forearmLength;
-                const rightHandX = parts.rightForearm.position.x + Math.cos(parts.rightForearm.angle) * forearmLength;
-                const rightHandY = parts.rightForearm.position.y + Math.sin(parts.rightForearm.angle) * forearmLength;
+                // Apply upward force at hands (end of arms) to push against ground
+                // Calculate hand position (end of arm)
+                const armLength = 25; // half of 50px length
+                const leftHandX = parts.leftArm.position.x + Math.cos(parts.leftArm.angle) * armLength;
+                const leftHandY = parts.leftArm.position.y + Math.sin(parts.leftArm.angle) * armLength;
+                const rightHandX = parts.rightArm.position.x + Math.cos(parts.rightArm.angle) * armLength;
+                const rightHandY = parts.rightArm.position.y + Math.sin(parts.rightArm.angle) * armLength;
                 
                 // Only push if hands are near ground
                 const handPushForce = 0.004 * forceMultiplier;
                 
                 if (leftHandY > groundY - 20) {
-                    Body.applyForce(parts.leftForearm, parts.leftForearm.position, { 
+                    Body.applyForce(parts.leftArm, parts.leftArm.position, { 
                         x: 0, 
                         y: -handPushForce 
                     });
                 }
                 if (rightHandY > groundY - 20) {
-                    Body.applyForce(parts.rightForearm, parts.rightForearm.position, { 
+                    Body.applyForce(parts.rightArm, parts.rightArm.position, { 
                         x: 0, 
                         y: -handPushForce 
                     });
@@ -742,15 +591,13 @@
                 applyAngleCorrection(parts.torso, uprightAngle, 0.2);
                 
                 // Legs to vertical
-                applyAngleCorrection(parts.leftThigh, uprightAngle, 0.2);
-                applyAngleCorrection(parts.rightThigh, uprightAngle, 0.2);
-                applyAngleCorrection(parts.leftShin, uprightAngle, 0.2);
-                applyAngleCorrection(parts.rightShin, uprightAngle, 0.2);
+                applyAngleCorrection(parts.leftLeg, uprightAngle, 0.2);
+                applyAngleCorrection(parts.rightLeg, uprightAngle, 0.2);
                 
                 // Arms for balance (spread out)
                 const balanceArmAngle = uprightAngle - 0.2;
-                applyAngleCorrection(parts.leftUpperArm, balanceArmAngle, 0.1);
-                applyAngleCorrection(parts.rightUpperArm, balanceArmAngle, 0.1);
+                applyAngleCorrection(parts.leftArm, balanceArmAngle, 0.1);
+                applyAngleCorrection(parts.rightArm, balanceArmAngle, 0.1);
                 
                 // Check if stable
                 const angleDiff = Math.abs(parts.torso.angle - uprightAngle);
@@ -773,14 +620,24 @@
             }
         }
         
-        // Rendering helper: draw rotated rectangle
-        function drawBodyPart(body, width, height) {
-            ctx.save();
-            ctx.translate(body.position.x, body.position.y);
-            ctx.rotate(body.angle);
-            ctx.fillRect(-width / 2, -height / 2, width, height);
-            ctx.strokeRect(-width / 2, -height / 2, width, height);
-            ctx.restore();
+        // Helper: Get world position of joint point
+        function getJointWorldPosition(body, localPoint) {
+            const cos = Math.cos(body.angle);
+            const sin = Math.sin(body.angle);
+            return {
+                x: body.position.x + (localPoint.x * cos - localPoint.y * sin),
+                y: body.position.y + (localPoint.x * sin + localPoint.y * cos)
+            };
+        }
+        
+        // Helper: Draw line from body center along its angle
+        function drawStickLine(body, length) {
+            const endX = body.position.x + Math.cos(body.angle) * length;
+            const endY = body.position.y + Math.sin(body.angle) * length;
+            ctx.beginPath();
+            ctx.moveTo(body.position.x, body.position.y);
+            ctx.lineTo(endX, endY);
+            ctx.stroke();
         }
         
         function render() {
@@ -791,21 +648,18 @@
             ctx.fillStyle = gradient;
             ctx.fillRect(0, 0, canvas.width, canvas.height);
             
-            // Draw ground with shadow
+            // Draw ground
             ctx.fillStyle = '#1a1a2e';
             ctx.fillRect(0, window.innerHeight - 10, window.innerWidth, 10);
-            ctx.shadowColor = 'rgba(0, 0, 0, 0.3)';
-            ctx.shadowBlur = 10;
-            ctx.shadowOffsetY = -5;
             
-            // Draw stickman
+            // Draw stickman as simple lines
             ctx.strokeStyle = '#2c3e50';
             ctx.fillStyle = '#ffffff';
-            ctx.lineWidth = 3;
+            ctx.lineWidth = 4;
             ctx.lineCap = 'round';
             ctx.lineJoin = 'round';
             
-            // Draw head with face
+            // Draw head (circle)
             ctx.beginPath();
             ctx.arc(parts.head.position.x, parts.head.position.y, 20, 0, Math.PI * 2);
             ctx.fill();
@@ -822,29 +676,57 @@
             ctx.stroke();
             ctx.fillStyle = '#ffffff';
             
-            // Draw torso
-            drawBodyPart(parts.torso, 15, 60);
+            // Draw torso (line from neck to hips)
+            const neckPos = getJointWorldPosition(parts.torso, joints.neck.pointB);
+            const leftHipPos = getJointWorldPosition(parts.torso, joints.leftHip.pointA);
+            const rightHipPos = getJointWorldPosition(parts.torso, joints.rightHip.pointA);
+            const hipCenterX = (leftHipPos.x + rightHipPos.x) / 2;
+            const hipCenterY = (leftHipPos.y + rightHipPos.y) / 2;
             
-            // Draw left arm
-            drawBodyPart(parts.leftUpperArm, 10, 35);
-            drawBodyPart(parts.leftForearm, 8, 30);
+            ctx.beginPath();
+            ctx.moveTo(neckPos.x, neckPos.y);
+            ctx.lineTo(hipCenterX, hipCenterY);
+            ctx.stroke();
             
-            // Draw right arm
-            drawBodyPart(parts.rightUpperArm, 10, 35);
-            drawBodyPart(parts.rightForearm, 8, 30);
+            // Draw arms (lines from shoulders to hands)
+            const leftShoulderPos = getJointWorldPosition(parts.torso, joints.leftShoulder.pointA);
+            const rightShoulderPos = getJointWorldPosition(parts.torso, joints.rightShoulder.pointA);
+            const armLength = 50;
             
-            // Draw left leg
-            drawBodyPart(parts.leftThigh, 12, 40);
-            drawBodyPart(parts.leftShin, 10, 35);
+            // Left arm
+            const leftHandX = parts.leftArm.position.x + Math.cos(parts.leftArm.angle) * (armLength / 2);
+            const leftHandY = parts.leftArm.position.y + Math.sin(parts.leftArm.angle) * (armLength / 2);
+            ctx.beginPath();
+            ctx.moveTo(leftShoulderPos.x, leftShoulderPos.y);
+            ctx.lineTo(leftHandX, leftHandY);
+            ctx.stroke();
             
-            // Draw right leg
-            drawBodyPart(parts.rightThigh, 12, 40);
-            drawBodyPart(parts.rightShin, 10, 35);
+            // Right arm
+            const rightHandX = parts.rightArm.position.x + Math.cos(parts.rightArm.angle) * (armLength / 2);
+            const rightHandY = parts.rightArm.position.y + Math.sin(parts.rightArm.angle) * (armLength / 2);
+            ctx.beginPath();
+            ctx.moveTo(rightShoulderPos.x, rightShoulderPos.y);
+            ctx.lineTo(rightHandX, rightHandY);
+            ctx.stroke();
             
-            // Reset shadow
-            ctx.shadowColor = 'transparent';
-            ctx.shadowBlur = 0;
-            ctx.shadowOffsetY = 0;
+            // Draw legs (lines from hips to feet)
+            const legLength = 60;
+            
+            // Left leg
+            const leftFootX = parts.leftLeg.position.x + Math.cos(parts.leftLeg.angle) * (legLength / 2);
+            const leftFootY = parts.leftLeg.position.y + Math.sin(parts.leftLeg.angle) * (legLength / 2);
+            ctx.beginPath();
+            ctx.moveTo(leftHipPos.x, leftHipPos.y);
+            ctx.lineTo(leftFootX, leftFootY);
+            ctx.stroke();
+            
+            // Right leg
+            const rightFootX = parts.rightLeg.position.x + Math.cos(parts.rightLeg.angle) * (legLength / 2);
+            const rightFootY = parts.rightLeg.position.y + Math.sin(parts.rightLeg.angle) * (legLength / 2);
+            ctx.beginPath();
+            ctx.moveTo(rightHipPos.x, rightHipPos.y);
+            ctx.lineTo(rightFootX, rightFootY);
+            ctx.stroke();
         }
         
         // Main loop
@@ -876,10 +758,7 @@
                     break;
             }
             
-            // Enforce angle limits (skip during push-up phase of standing up)
-            if (!(state === 'STANDING_UP' && standUpPhase === 1)) {
-                enforceAngleLimits();
-            }
+            // No angle limits for simple stickman
             
             // Render
             render();
