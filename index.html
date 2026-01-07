@@ -1,23 +1,800 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Aaroh Kandy</title>
-    <link rel="stylesheet" href="styles.css">
+    <title>Interactive Stickman - Matter.js</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            overflow: hidden;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+        }
+        
+        canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            display: block;
+            cursor: crosshair;
+        }
+        
+        #info {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            color: white;
+            background: rgba(0, 0, 0, 0.5);
+            padding: 15px 20px;
+            border-radius: 10px;
+            font-size: 14px;
+            backdrop-filter: blur(10px);
+            z-index: 1000;
+            pointer-events: none;
+        }
+        
+        #info h3 {
+            margin-bottom: 8px;
+            font-size: 16px;
+        }
+        
+        #info p {
+            margin: 4px 0;
+            opacity: 0.9;
+        }
+    </style>
 </head>
-
 <body>
-    <header>
-        <h1>Welcome to Aaroh Kandy's Website</h1>
-    </header>
-    <main>
-        <p>This is a placeholder for my GitHub Pages site. Content coming soon!</p>
-    </main>
-    <footer>
-        <p>&copy; 2024 Aaroh Kandy</p>
-    </footer>
+    <canvas id="canvas"></canvas>
+    <div id="info">
+        <h3>Interactive Stickman</h3>
+        <p>Move your cursor near the stickman to interact</p>
+        <p id="state-display">State: PAUSED</p>
+    </div>
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/matter-js/0.19.0/matter.min.js"></script>
+    <script>
+        // Matter.js aliases
+        const Engine = Matter.Engine;
+        const World = Matter.World;
+        const Bodies = Matter.Bodies;
+        const Body = Matter.Body;
+        const Constraint = Matter.Constraint;
+        const Composite = Matter.Composite;
+        
+        // Canvas setup
+        const canvas = document.getElementById('canvas');
+        const ctx = canvas.getContext('2d');
+        const stateDisplay = document.getElementById('state-display');
+        
+        function resizeCanvas() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        }
+        resizeCanvas();
+        
+        // Matter.js engine
+        const engine = Engine.create();
+        engine.world.gravity.y = 1;
+        engine.world.gravity.scale = 0.001;
+        
+        // Ground
+        let ground = Bodies.rectangle(
+            window.innerWidth / 2,
+            window.innerHeight - 5,
+            window.innerWidth,
+            10,
+            { isStatic: true, render: { fillStyle: '#2c3e50' } }
+        );
+        World.add(engine.world, ground);
+        
+        // Stickman body parts
+        const parts = {
+            head: null,
+            torso: null,
+            leftUpperArm: null,
+            leftForearm: null,
+            rightUpperArm: null,
+            rightForearm: null,
+            leftThigh: null,
+            leftShin: null,
+            rightThigh: null,
+            rightShin: null
+        };
+        
+        // Constraints (joints)
+        const joints = {
+            neck: null,
+            leftShoulder: null,
+            leftElbow: null,
+            rightShoulder: null,
+            rightElbow: null,
+            leftHip: null,
+            leftKnee: null,
+            rightHip: null,
+            rightKnee: null
+        };
+        
+        // Create stickman
+        function createStickman(x, y) {
+            const headRadius = 20;
+            const torsoWidth = 15;
+            const torsoHeight = 60;
+            const upperArmWidth = 10;
+            const upperArmHeight = 35;
+            const forearmWidth = 8;
+            const forearmHeight = 30;
+            const thighWidth = 12;
+            const thighHeight = 40;
+            const shinWidth = 10;
+            const shinHeight = 35;
+            
+            // Head
+            parts.head = Bodies.circle(x, y - 50, headRadius, {
+                density: 0.002,
+                frictionAir: 0.01,
+                render: { fillStyle: '#fff', strokeStyle: '#2c3e50', lineWidth: 2 }
+            });
+            
+            // Torso
+            parts.torso = Bodies.rectangle(x, y, torsoWidth, torsoHeight, {
+                density: 0.001,
+                frictionAir: 0.01,
+                render: { fillStyle: '#fff', strokeStyle: '#2c3e50', lineWidth: 2 }
+            });
+            
+            // Left arm
+            parts.leftUpperArm = Bodies.rectangle(x - 20, y - 10, upperArmWidth, upperArmHeight, {
+                density: 0.0008,
+                frictionAir: 0.01,
+                render: { fillStyle: '#fff', strokeStyle: '#2c3e50', lineWidth: 2 }
+            });
+            parts.leftForearm = Bodies.rectangle(x - 35, y + 10, forearmWidth, forearmHeight, {
+                density: 0.0008,
+                frictionAir: 0.01,
+                render: { fillStyle: '#fff', strokeStyle: '#2c3e50', lineWidth: 2 }
+            });
+            
+            // Right arm
+            parts.rightUpperArm = Bodies.rectangle(x + 20, y - 10, upperArmWidth, upperArmHeight, {
+                density: 0.0008,
+                frictionAir: 0.01,
+                render: { fillStyle: '#fff', strokeStyle: '#2c3e50', lineWidth: 2 }
+            });
+            parts.rightForearm = Bodies.rectangle(x + 35, y + 10, forearmWidth, forearmHeight, {
+                density: 0.0008,
+                frictionAir: 0.01,
+                render: { fillStyle: '#fff', strokeStyle: '#2c3e50', lineWidth: 2 }
+            });
+            
+            // Left leg
+            parts.leftThigh = Bodies.rectangle(x - 8, y + 40, thighWidth, thighHeight, {
+                density: 0.001,
+                frictionAir: 0.01,
+                render: { fillStyle: '#fff', strokeStyle: '#2c3e50', lineWidth: 2 }
+            });
+            parts.leftShin = Bodies.rectangle(x - 8, y + 70, shinWidth, shinHeight, {
+                density: 0.001,
+                frictionAir: 0.01,
+                render: { fillStyle: '#fff', strokeStyle: '#2c3e50', lineWidth: 2 }
+            });
+            
+            // Right leg
+            parts.rightThigh = Bodies.rectangle(x + 8, y + 40, thighWidth, thighHeight, {
+                density: 0.001,
+                frictionAir: 0.01,
+                render: { fillStyle: '#fff', strokeStyle: '#2c3e50', lineWidth: 2 }
+            });
+            parts.rightShin = Bodies.rectangle(x + 8, y + 70, shinWidth, shinHeight, {
+                density: 0.001,
+                frictionAir: 0.01,
+                render: { fillStyle: '#fff', strokeStyle: '#2c3e50', lineWidth: 2 }
+            });
+            
+            // Add all parts to world
+            World.add(engine.world, [
+                parts.head, parts.torso,
+                parts.leftUpperArm, parts.leftForearm,
+                parts.rightUpperArm, parts.rightForearm,
+                parts.leftThigh, parts.leftShin,
+                parts.rightThigh, parts.rightShin
+            ]);
+            
+            // Create joints
+            joints.neck = Constraint.create({
+                bodyA: parts.head,
+                bodyB: parts.torso,
+                pointA: { x: 0, y: headRadius },
+                pointB: { x: 0, y: -torsoHeight / 2 },
+                stiffness: 0.9,
+                length: 0,
+                render: { visible: false }
+            });
+            
+            joints.leftShoulder = Constraint.create({
+                bodyA: parts.torso,
+                bodyB: parts.leftUpperArm,
+                pointA: { x: -torsoWidth / 2, y: -torsoHeight / 2 + 15 },
+                pointB: { x: 0, y: -upperArmHeight / 2 },
+                stiffness: 0.9,
+                length: 0,
+                render: { visible: false }
+            });
+            
+            joints.leftElbow = Constraint.create({
+                bodyA: parts.leftUpperArm,
+                bodyB: parts.leftForearm,
+                pointA: { x: 0, y: upperArmHeight / 2 },
+                pointB: { x: 0, y: -forearmHeight / 2 },
+                stiffness: 1,
+                length: 0,
+                render: { visible: false }
+            });
+            
+            joints.rightShoulder = Constraint.create({
+                bodyA: parts.torso,
+                bodyB: parts.rightUpperArm,
+                pointA: { x: torsoWidth / 2, y: -torsoHeight / 2 + 15 },
+                pointB: { x: 0, y: -upperArmHeight / 2 },
+                stiffness: 0.9,
+                length: 0,
+                render: { visible: false }
+            });
+            
+            joints.rightElbow = Constraint.create({
+                bodyA: parts.rightUpperArm,
+                bodyB: parts.rightForearm,
+                pointA: { x: 0, y: upperArmHeight / 2 },
+                pointB: { x: 0, y: -forearmHeight / 2 },
+                stiffness: 1,
+                length: 0,
+                render: { visible: false }
+            });
+            
+            joints.leftHip = Constraint.create({
+                bodyA: parts.torso,
+                bodyB: parts.leftThigh,
+                pointA: { x: -torsoWidth / 2 + 4, y: torsoHeight / 2 },
+                pointB: { x: 0, y: -thighHeight / 2 },
+                stiffness: 0.9,
+                length: 0,
+                render: { visible: false }
+            });
+            
+            joints.leftKnee = Constraint.create({
+                bodyA: parts.leftThigh,
+                bodyB: parts.leftShin,
+                pointA: { x: 0, y: thighHeight / 2 },
+                pointB: { x: 0, y: -shinHeight / 2 },
+                stiffness: 1,
+                length: 0,
+                render: { visible: false }
+            });
+            
+            joints.rightHip = Constraint.create({
+                bodyA: parts.torso,
+                bodyB: parts.rightThigh,
+                pointA: { x: torsoWidth / 2 - 4, y: torsoHeight / 2 },
+                pointB: { x: 0, y: -thighHeight / 2 },
+                stiffness: 0.9,
+                length: 0,
+                render: { visible: false }
+            });
+            
+            joints.rightKnee = Constraint.create({
+                bodyA: parts.rightThigh,
+                bodyB: parts.rightShin,
+                pointA: { x: 0, y: thighHeight / 2 },
+                pointB: { x: 0, y: -shinHeight / 2 },
+                stiffness: 1,
+                length: 0,
+                render: { visible: false }
+            });
+            
+            // Add all constraints
+            World.add(engine.world, Object.values(joints));
+            
+            // Set initial angles for standing position
+            const uprightAngle = -Math.PI / 2;
+            Body.setAngle(parts.torso, uprightAngle);
+            Body.setAngle(parts.leftThigh, uprightAngle);
+            Body.setAngle(parts.rightThigh, uprightAngle);
+            Body.setAngle(parts.leftShin, uprightAngle);
+            Body.setAngle(parts.rightShin, uprightAngle);
+            Body.setAngle(parts.leftUpperArm, uprightAngle);
+            Body.setAngle(parts.rightUpperArm, uprightAngle);
+            Body.setAngle(parts.leftForearm, uprightAngle);
+            Body.setAngle(parts.rightForearm, uprightAngle);
+            
+            // Set initial velocities to zero
+            Object.values(parts).forEach(part => {
+                Body.setVelocity(part, { x: 0, y: 0 });
+                Body.setAngularVelocity(part, 0);
+            });
+        }
+        
+        // Initialize stickman at center bottom
+        const startX = window.innerWidth / 2;
+        const startY = window.innerHeight - 100;
+        createStickman(startX, startY);
+        
+        // State machine
+        let state = 'PAUSED';
+        let stateTimer = 0;
+        let walkTarget = 0;
+        let isRunning = false;
+        let standUpPhase = 0;
+        let standUpTimer = 0;
+        
+        // Cursor tracking
+        let cursorX = 0;
+        let cursorY = 0;
+        
+        canvas.addEventListener('mousemove', (e) => {
+            cursorX = e.clientX;
+            cursorY = e.clientY;
+        });
+        
+        // Helper: Get distance from cursor to torso
+        function getCursorDistance() {
+            const dx = cursorX - parts.torso.position.x;
+            const dy = cursorY - parts.torso.position.y;
+            return Math.sqrt(dx * dx + dy * dy);
+        }
+        
+        // Helper: Get angle between two bodies
+        function getAngleBetween(bodyA, bodyB) {
+            const angleA = bodyA.angle;
+            const angleB = bodyB.angle;
+            let diff = angleB - angleA;
+            if (diff > Math.PI) diff -= Math.PI * 2;
+            if (diff < -Math.PI) diff += Math.PI * 2;
+            return diff;
+        }
+        
+        // Helper: Apply angle correction
+        function applyAngleCorrection(body, targetAngle, strength = 0.1) {
+            const currentAngle = body.angle;
+            let diff = targetAngle - currentAngle;
+            if (diff > Math.PI) diff -= Math.PI * 2;
+            if (diff < -Math.PI) diff += Math.PI * 2;
+            Body.setAngularVelocity(body, diff * strength);
+        }
+        
+        // Enforce angle limits
+        function enforceAngleLimits() {
+            // Elbows: 0° to 170° (0 to ~2.97 radians)
+            // Calculate relative angle between upper arm and forearm
+            const leftElbowRelAngle = parts.leftForearm.angle - parts.leftUpperArm.angle;
+            let leftElbowNormalized = leftElbowRelAngle;
+            while (leftElbowNormalized > Math.PI) leftElbowNormalized -= Math.PI * 2;
+            while (leftElbowNormalized < -Math.PI) leftElbowNormalized += Math.PI * 2;
+            
+            if (leftElbowNormalized < 0) {
+                Body.setAngularVelocity(parts.leftForearm, 0.15);
+            } else if (leftElbowNormalized > 2.97) {
+                Body.setAngularVelocity(parts.leftForearm, -0.15);
+            }
+            
+            const rightElbowRelAngle = parts.rightForearm.angle - parts.rightUpperArm.angle;
+            let rightElbowNormalized = rightElbowRelAngle;
+            while (rightElbowNormalized > Math.PI) rightElbowNormalized -= Math.PI * 2;
+            while (rightElbowNormalized < -Math.PI) rightElbowNormalized += Math.PI * 2;
+            
+            if (rightElbowNormalized < 0) {
+                Body.setAngularVelocity(parts.rightForearm, 0.15);
+            } else if (rightElbowNormalized > 2.97) {
+                Body.setAngularVelocity(parts.rightForearm, -0.15);
+            }
+            
+            // Knees: 0° to 160° (0 to ~2.79 radians)
+            const leftKneeRelAngle = parts.leftShin.angle - parts.leftThigh.angle;
+            let leftKneeNormalized = leftKneeRelAngle;
+            while (leftKneeNormalized > Math.PI) leftKneeNormalized -= Math.PI * 2;
+            while (leftKneeNormalized < -Math.PI) leftKneeNormalized += Math.PI * 2;
+            
+            if (leftKneeNormalized < 0) {
+                Body.setAngularVelocity(parts.leftShin, 0.15);
+            } else if (leftKneeNormalized > 2.79) {
+                Body.setAngularVelocity(parts.leftShin, -0.15);
+            }
+            
+            const rightKneeRelAngle = parts.rightShin.angle - parts.rightThigh.angle;
+            let rightKneeNormalized = rightKneeRelAngle;
+            while (rightKneeNormalized > Math.PI) rightKneeNormalized -= Math.PI * 2;
+            while (rightKneeNormalized < -Math.PI) rightKneeNormalized += Math.PI * 2;
+            
+            if (rightKneeNormalized < 0) {
+                Body.setAngularVelocity(parts.rightShin, 0.15);
+            } else if (rightKneeNormalized > 2.79) {
+                Body.setAngularVelocity(parts.rightShin, -0.15);
+            }
+        }
+        
+        // Pick walk target
+        function pickWalkTarget() {
+            const currentX = parts.torso.position.x;
+            const rand = Math.random();
+            
+            if (rand < 0.3) {
+                // Short walk
+                walkTarget = currentX + (Math.random() - 0.5) * 200;
+            } else if (rand < 0.8) {
+                // Medium walk
+                walkTarget = currentX + (Math.random() - 0.5) * 550;
+            } else {
+                // Long walk toward edge
+                walkTarget = Math.random() < 0.5 ? 100 : window.innerWidth - 100;
+            }
+            
+            // Clamp to screen bounds
+            walkTarget = Math.max(50, Math.min(window.innerWidth - 50, walkTarget));
+            
+            // 20% chance of running
+            isRunning = Math.random() < 0.2;
+        }
+        
+        // Check cursor collision
+        function checkCursorCollision() {
+            if (state === 'KNOCKED_DOWN' || state === 'STANDING_UP') return;
+            
+            const distance = getCursorDistance();
+            if (distance < 50) {
+                // Knock down
+                const dx = cursorX - parts.torso.position.x;
+                const dy = cursorY - parts.torso.position.y;
+                const dist = Math.sqrt(dx * dx + dy * dy);
+                const pushX = (dx / dist) * 0.05;
+                const pushY = (dy / dist) * 0.05;
+                
+                Body.applyForce(parts.torso, parts.torso.position, { x: pushX, y: pushY });
+                Body.setAngularVelocity(parts.torso, (Math.random() - 0.5) * 0.3);
+                
+                state = 'KNOCKED_DOWN';
+                stateTimer = 0;
+            }
+        }
+        
+        // State: WALKING
+        function updateWalking() {
+            const currentX = parts.torso.position.x;
+            const direction = walkTarget > currentX ? 1 : -1;
+            const distance = Math.abs(walkTarget - currentX);
+            
+            // Apply horizontal force
+            const force = isRunning ? 0.002 : 0.0008;
+            Body.applyForce(parts.torso, parts.torso.position, {
+                x: force * direction,
+                y: 0
+            });
+            
+            // Walking animation
+            const animSpeed = isRunning ? 0.3 : 0.15;
+            const walkCycle = (stateTimer * animSpeed) % (Math.PI * 2);
+            const amplitude = isRunning ? 0.8 : 0.5;
+            
+            // Base leg angle (vertical when standing)
+            const baseLegAngle = -Math.PI / 2;
+            
+            // Leg swing
+            const leftLegSwing = Math.sin(walkCycle) * amplitude;
+            const rightLegSwing = Math.sin(walkCycle + Math.PI) * amplitude;
+            
+            const leftThighTarget = baseLegAngle + leftLegSwing;
+            const rightThighTarget = baseLegAngle + rightLegSwing;
+            
+            applyAngleCorrection(parts.leftThigh, leftThighTarget, 0.12);
+            applyAngleCorrection(parts.rightThigh, rightThighTarget, 0.12);
+            
+            // Knee bends when leg forward
+            const leftKneeBend = Math.max(0, Math.sin(walkCycle)) * 0.6;
+            const rightKneeBend = Math.max(0, Math.sin(walkCycle + Math.PI)) * 0.6;
+            
+            const leftKneeTarget = parts.leftThigh.angle + (Math.PI - leftKneeBend);
+            const rightKneeTarget = parts.rightThigh.angle + (Math.PI - rightKneeBend);
+            
+            applyAngleCorrection(parts.leftShin, leftKneeTarget, 0.15);
+            applyAngleCorrection(parts.rightShin, rightKneeTarget, 0.15);
+            
+            // Arm swing (opposite to legs)
+            const leftArmSwing = -rightLegSwing * 0.3;
+            const rightArmSwing = -leftLegSwing * 0.3;
+            
+            const leftArmTarget = baseLegAngle + leftArmSwing;
+            const rightArmTarget = baseLegAngle + rightArmSwing;
+            
+            applyAngleCorrection(parts.leftUpperArm, leftArmTarget, 0.08);
+            applyAngleCorrection(parts.rightUpperArm, rightArmTarget, 0.08);
+            
+            // Torso lean when running
+            if (isRunning) {
+                const leanAmount = -0.1 * direction;
+                applyAngleCorrection(parts.torso, baseLegAngle + leanAmount, 0.05);
+            } else {
+                applyAngleCorrection(parts.torso, baseLegAngle, 0.03);
+            }
+            
+            // Check if reached target
+            if (distance < 10) {
+                state = 'PAUSED';
+                stateTimer = 0;
+            }
+        }
+        
+        // State: PAUSED
+        function updatePaused() {
+            // Stabilize legs
+            const targetLegAngle = -Math.PI / 2;
+            applyAngleCorrection(parts.leftThigh, targetLegAngle, 0.05);
+            applyAngleCorrection(parts.rightThigh, targetLegAngle, 0.05);
+            
+            // Breathing animation
+            const breath = Math.sin(stateTimer * 0.002) * 0.0001;
+            Body.applyForce(parts.torso, parts.torso.position, { x: 0, y: breath });
+            
+            // Random duration: 30-180 frames
+            if (stateTimer > 30 && Math.random() < 0.02) {
+                if (stateTimer > 180 || Math.random() < 0.1) {
+                    state = 'WALKING';
+                    stateTimer = 0;
+                    pickWalkTarget();
+                }
+            }
+        }
+        
+        // State: KNOCKED_DOWN
+        function updateKnockedDown() {
+            const distance = getCursorDistance();
+            const velocity = Math.sqrt(
+                parts.torso.velocity.x * parts.torso.velocity.x +
+                parts.torso.velocity.y * parts.torso.velocity.y
+            );
+            
+            // Check if cursor comes close again
+            if (distance < 50) {
+                stateTimer = 0; // Reset timer
+                return;
+            }
+            
+            // Transition to standing up when conditions met
+            if (distance > 150 && velocity < 0.5 && stateTimer > 60) {
+                state = 'STANDING_UP';
+                standUpPhase = 0;
+                standUpTimer = 0;
+            }
+        }
+        
+        // State: STANDING_UP
+        function updateStandingUp() {
+            // Check if cursor comes close
+            if (getCursorDistance() < 50) {
+                state = 'KNOCKED_DOWN';
+                stateTimer = 0;
+                return;
+            }
+            
+            standUpTimer++;
+            
+            // Phase 1: Assess (15 frames)
+            if (standUpPhase === 0) {
+                if (standUpTimer > 15) {
+                    standUpPhase = 1;
+                    standUpTimer = 0;
+                }
+            }
+            // Phase 2: Roll if needed (20 frames)
+            else if (standUpPhase === 1) {
+                const torsoAngle = parts.torso.angle;
+                const uprightAngle = -Math.PI / 2;
+                const angleDiff = Math.abs(torsoAngle - uprightAngle);
+                
+                if (angleDiff > Math.PI / 2) {
+                    Body.setAngularVelocity(parts.torso, 0.1);
+                }
+                
+                if (standUpTimer > 20) {
+                    standUpPhase = 2;
+                    standUpTimer = 0;
+                }
+            }
+            // Phase 3: Push up (40 frames)
+            else if (standUpPhase === 2) {
+                Body.applyForce(parts.torso, parts.torso.position, {
+                    x: 0,
+                    y: -0.002 * (1 + standUpTimer / 40)
+                });
+                
+                // Position legs under torso
+                const targetThighAngle = -Math.PI / 2;
+                applyAngleCorrection(parts.leftThigh, targetThighAngle, 0.1);
+                applyAngleCorrection(parts.rightThigh, targetThighAngle, 0.1);
+                
+                if (standUpTimer > 40) {
+                    standUpPhase = 3;
+                    standUpTimer = 0;
+                }
+            }
+            // Phase 4: Stand & balance (45 frames)
+            else if (standUpPhase === 3) {
+                const targetAngle = -Math.PI / 2;
+                applyAngleCorrection(parts.torso, targetAngle, 0.1);
+                
+                // Legs to vertical
+                applyAngleCorrection(parts.leftThigh, targetAngle, 0.1);
+                applyAngleCorrection(parts.rightThigh, targetAngle, 0.1);
+                
+                // Arms for balance
+                Body.setAngularVelocity(parts.leftUpperArm, -0.02);
+                Body.setAngularVelocity(parts.rightUpperArm, 0.02);
+                
+                const angleDiff = Math.abs(parts.torso.angle - targetAngle);
+                const velocity = Math.sqrt(
+                    parts.torso.velocity.x * parts.torso.velocity.x +
+                    parts.torso.velocity.y * parts.torso.velocity.y
+                );
+                
+                if (angleDiff < 0.1 && velocity < 0.3 && standUpTimer > 20) {
+                    state = 'PAUSED';
+                    stateTimer = 0;
+                }
+            }
+        }
+        
+        // Rendering helper: draw rotated rectangle
+        function drawBodyPart(body, width, height) {
+            ctx.save();
+            ctx.translate(body.position.x, body.position.y);
+            ctx.rotate(body.angle);
+            ctx.fillRect(-width / 2, -height / 2, width, height);
+            ctx.strokeRect(-width / 2, -height / 2, width, height);
+            ctx.restore();
+        }
+        
+        function render() {
+            // Clear canvas with gradient background
+            const gradient = ctx.createLinearGradient(0, 0, 0, canvas.height);
+            gradient.addColorStop(0, '#667eea');
+            gradient.addColorStop(1, '#764ba2');
+            ctx.fillStyle = gradient;
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            
+            // Draw ground with shadow
+            ctx.fillStyle = '#1a1a2e';
+            ctx.fillRect(0, window.innerHeight - 10, window.innerWidth, 10);
+            ctx.shadowColor = 'rgba(0, 0, 0, 0.3)';
+            ctx.shadowBlur = 10;
+            ctx.shadowOffsetY = -5;
+            
+            // Draw stickman
+            ctx.strokeStyle = '#2c3e50';
+            ctx.fillStyle = '#ffffff';
+            ctx.lineWidth = 3;
+            ctx.lineCap = 'round';
+            ctx.lineJoin = 'round';
+            
+            // Draw head with face
+            ctx.beginPath();
+            ctx.arc(parts.head.position.x, parts.head.position.y, 20, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.stroke();
+            
+            // Simple face
+            ctx.fillStyle = '#2c3e50';
+            ctx.beginPath();
+            ctx.arc(parts.head.position.x - 6, parts.head.position.y - 3, 2, 0, Math.PI * 2);
+            ctx.arc(parts.head.position.x + 6, parts.head.position.y - 3, 2, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.beginPath();
+            ctx.arc(parts.head.position.x, parts.head.position.y + 3, 4, 0, Math.PI);
+            ctx.stroke();
+            ctx.fillStyle = '#ffffff';
+            
+            // Draw torso
+            drawBodyPart(parts.torso, 15, 60);
+            
+            // Draw left arm
+            drawBodyPart(parts.leftUpperArm, 10, 35);
+            drawBodyPart(parts.leftForearm, 8, 30);
+            
+            // Draw right arm
+            drawBodyPart(parts.rightUpperArm, 10, 35);
+            drawBodyPart(parts.rightForearm, 8, 30);
+            
+            // Draw left leg
+            drawBodyPart(parts.leftThigh, 12, 40);
+            drawBodyPart(parts.leftShin, 10, 35);
+            
+            // Draw right leg
+            drawBodyPart(parts.rightThigh, 12, 40);
+            drawBodyPart(parts.rightShin, 10, 35);
+            
+            // Reset shadow
+            ctx.shadowColor = 'transparent';
+            ctx.shadowBlur = 0;
+            ctx.shadowOffsetY = 0;
+        }
+        
+        // Main loop
+        let time = 0;
+        
+        function loop() {
+            time++;
+            stateTimer++;
+            
+            // Update physics
+            Engine.update(engine, 1000 / 60);
+            
+            // Check cursor interaction
+            checkCursorCollision();
+            
+            // Update state machine
+            switch (state) {
+                case 'WALKING':
+                    updateWalking();
+                    break;
+                case 'PAUSED':
+                    updatePaused();
+                    break;
+                case 'KNOCKED_DOWN':
+                    updateKnockedDown();
+                    break;
+                case 'STANDING_UP':
+                    updateStandingUp();
+                    break;
+            }
+            
+            // Enforce angle limits
+            enforceAngleLimits();
+            
+            // Render
+            render();
+            
+            // Update state display
+            stateDisplay.textContent = `State: ${state}`;
+            
+            requestAnimationFrame(loop);
+        }
+        
+        // Handle window resize
+        window.addEventListener('resize', () => {
+            resizeCanvas();
+            
+            // Reposition ground
+            Body.setPosition(ground, {
+                x: window.innerWidth / 2,
+                y: window.innerHeight - 5
+            });
+            
+            // Update ground vertices
+            const groundWidth = window.innerWidth;
+            const groundHeight = 10;
+            Body.setVertices(ground, [
+                { x: 0, y: window.innerHeight - groundHeight },
+                { x: groundWidth, y: window.innerHeight - groundHeight },
+                { x: groundWidth, y: window.innerHeight },
+                { x: 0, y: window.innerHeight }
+            ]);
+            
+            // Adjust walk target if off screen
+            if (state === 'WALKING' && (walkTarget < 0 || walkTarget > canvas.width)) {
+                pickWalkTarget();
+            }
+        });
+        
+        // Start simulation after brief pause
+        setTimeout(() => {
+            state = 'WALKING';
+            pickWalkTarget();
+        }, 1000);
+        
+        // Start loop
+        loop();
+    </script>
 </body>
-
 </html>
