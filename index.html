@@ -114,9 +114,20 @@
             width: 100%;
             height: 100%;
             z-index: 0;
-            display: flex;
-            align-items: center;
-            justify-content: center;
+            pointer-events: all;
+        }
+
+        .liquid-glass {
+            pointer-events: none;
+        }
+
+        .liquid-glass * {
+            pointer-events: auto;
+        }
+
+        .default-animation {
+            width: 100% !important;
+            height: 100% !important;
         }
 
     </style>
@@ -324,7 +335,8 @@
             '--cube-face-border': borderStyle,
             '--cube-face-bg': faceColor,
             '--cube-face-shadow': shadow === true ? '0 0 6px rgba(0,0,0,.5)' : shadow || 'none',
-            ...(cubeSize ? { width: `${gridSize * cubeSize}px`, height: `${gridSize * cubeSize}px` } : {})
+            width: '100%',
+            height: '100%'
           };
 
           return React.createElement('div', { className: 'default-animation', style: wrapperStyle },
@@ -338,7 +350,13 @@
 
         const root = ReactDOM.createRoot(document.getElementById('cubes-root'));
         root.render(React.createElement('div', { style: { height: '100vh', width: '100vw', position: 'relative' } },
-          React.createElement(Cubes, { borderStyle: '3px solid #fff', gridSize: 6, maxAngle: 180, radius: 2 })
+          React.createElement(Cubes, { 
+            borderStyle: '3px solid rgba(90, 74, 58, 0.5)', 
+            gridSize: 6, 
+            maxAngle: 180, 
+            radius: 2,
+            faceColor: 'rgba(196, 178, 153, 0.4)'
+          })
         ));
     </script>
 </body>
