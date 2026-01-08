@@ -356,10 +356,11 @@
         root.render(React.createElement('div', { style: { height: '100vh', width: '100vw', position: 'relative' } },
           React.createElement(Cubes, { 
             borderStyle: '3px solid rgba(90, 74, 58, 0.5)', 
-            gridSize: 30, 
+            gridSize: 15, 
             maxAngle: 180, 
             radius: 2,
-            faceColor: 'rgba(196, 178, 153, 0.4)'
+            faceColor: 'rgba(196, 178, 153, 0.4)',
+            cellGap: { col: '1%', row: '1%' }
           })
         ));
     </script>
