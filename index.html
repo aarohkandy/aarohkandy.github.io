@@ -58,16 +58,14 @@
         }
 
         .liquid-glass {
-            background: linear-gradient(135deg, 
-                rgba(255, 255, 255, 0.25) 0%, 
-                rgba(255, 255, 255, 0.15) 100%);
-            backdrop-filter: blur(20px) saturate(180%);
-            -webkit-backdrop-filter: blur(20px) saturate(180%);
-            border: 1px solid rgba(255, 255, 255, 0.4);
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(40px) saturate(200%);
+            -webkit-backdrop-filter: blur(40px) saturate(200%);
+            border: 1px solid rgba(255, 255, 255, 0.5);
             box-shadow: 
-                0 8px 32px 0 rgba(0, 0, 0, 0.12),
-                inset 0 1px 0 rgba(255, 255, 255, 0.5),
-                inset 0 -1px 0 rgba(255, 255, 255, 0.2);
+                0 8px 32px 0 rgba(31, 38, 135, 0.15),
+                inset 0 1px 1px rgba(255, 255, 255, 0.6),
+                inset 0 -1px 1px rgba(255, 255, 255, 0.3);
             animation: fadeIn 0.5s ease-out forwards;
             opacity: 0;
             position: relative;
@@ -121,8 +119,8 @@
             --col-gap: 5%;
             --row-gap: 5%;
             --cube-perspective: 99999999px;
-            --cube-face-border: 1px solid rgba(255, 255, 255, 0.3);
-            --cube-face-bg: rgba(90, 74, 58, 0.2);
+            --cube-face-border: 3px solid #fff;
+            --cube-face-bg: rgba(90, 74, 58, 0.15);
         }
 
         .cubes-wrapper {
@@ -167,7 +165,6 @@
             justify-content: center;
             background: var(--cube-face-bg);
             border: var(--cube-face-border);
-            opacity: 0.6;
         }
 
         .cube-face--top {

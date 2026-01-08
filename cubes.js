@@ -1,15 +1,15 @@
 // Cubes Background Effect - Converted from React to Vanilla JS
 (function() {
-    const gridSize = 15;
+    const gridSize = 6;
     const cubeSize = null; // Use 1fr for responsive
-    const maxAngle = 30;
-    const radius = 4;
+    const maxAngle = 180;
+    const radius = 2;
     const easing = 'power3.out';
     const duration = { enter: 0.3, leave: 0.6 };
     const cellGap = { col: '2%', row: '2%' };
-    const borderStyle = '1px solid rgba(255, 255, 255, 0.2)';
+    const borderStyle = '3px solid #fff';
     const faceColor = 'rgba(90, 74, 58, 0.15)';
-    const autoAnimate = true;
+    const autoAnimate = false;
     const rippleOnClick = true;
     const rippleColor = 'rgba(163, 92, 56, 0.4)';
     const rippleSpeed = 2;
