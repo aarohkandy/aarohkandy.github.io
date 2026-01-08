@@ -11,6 +11,7 @@
         href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500&amp;family=Playfair+Display:ital,wght@0,400;0,500;0,600;1,400&amp;display=swap"
         rel="stylesheet" />
     <script src="https://cdn.tailwindcss.com?plugins=forms,typography,container-queries"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
     <script>
         tailwind.config = {
             darkMode: "class",
@@ -103,11 +104,100 @@
                 inset 0 1px 0 rgba(255, 255, 255, 0.1),
                 inset 0 -1px 0 rgba(255, 255, 255, 0.05);
         }
+
+        /* Cubes Background */
+        .cubes-background {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+            pointer-events: none;
+            overflow: hidden;
+        }
+
+        :root {
+            --col-gap: 5%;
+            --row-gap: 5%;
+            --cube-perspective: 99999999px;
+            --cube-face-border: 1px solid rgba(255, 255, 255, 0.3);
+            --cube-face-bg: rgba(90, 74, 58, 0.2);
+        }
+
+        .cubes-wrapper {
+            position: relative;
+            width: 100%;
+            height: 100%;
+        }
+
+        .cubes-scene {
+            display: grid;
+            width: 100%;
+            height: 100%;
+            column-gap: var(--col-gap);
+            row-gap: var(--row-gap);
+            perspective: var(--cube-perspective);
+            grid-auto-rows: 1fr;
+        }
+
+        .cube {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            aspect-ratio: 1 / 1;
+            transform-style: preserve-3d;
+        }
+
+        .cube::before {
+            content: '';
+            position: absolute;
+            top: -36px;
+            right: -36px;
+            bottom: -36px;
+            left: -36px;
+        }
+
+        .cube-face {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: var(--cube-face-bg);
+            border: var(--cube-face-border);
+            opacity: 0.6;
+        }
+
+        .cube-face--top {
+            transform: translateY(-50%) rotateX(90deg);
+        }
+
+        .cube-face--bottom {
+            transform: translateY(50%) rotateX(-90deg);
+        }
+
+        .cube-face--left {
+            transform: translateX(-50%) rotateY(-90deg);
+        }
+
+        .cube-face--right {
+            transform: translateX(50%) rotateY(90deg);
+        }
+
+        .cube-face--back,
+        .cube-face--front {
+            transform: rotateY(-90deg) translateX(50%) rotateY(90deg);
+        }
     </style>
 </head>
 
 <body
     class="bg-[#E1D9D1] dark:bg-background-dark text-gray-800 dark:text-gray-200 transition-colors duration-300 min-h-screen relative overflow-x-hidden flex flex-col items-center pt-16 md:pt-24 pb-16">
+    <!-- Cubes Background -->
+    <div class="cubes-background" id="cubesBackground"></div>
+    
     <div class="relative z-10 max-w-2xl w-full mx-auto px-6 flex flex-col gap-10">
         <header class="text-center animate-fadeIn" style="animation-duration: 0.3s;">
             <h1
@@ -149,6 +239,8 @@
             </div>
         </div>
     </div>
+
+    <script src="cubes.js"></script>
 </body>
 
 </html>
