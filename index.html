@@ -141,14 +141,14 @@
     class="bg-[#E1D9D1] dark:bg-background-dark text-gray-800 dark:text-gray-200 transition-colors duration-300 min-h-screen relative overflow-x-hidden flex flex-col items-center pt-16 md:pt-24 pb-16">
     <div class="cubes-background" id="cubes-root"></div>
     
-    <div class="relative z-10 max-w-2xl w-full mx-auto px-6 flex flex-col gap-10">
-        <header class="text-center animate-fadeIn" style="animation-duration: 0.3s;">
+    <div class="relative z-10 max-w-2xl w-full mx-auto px-6 flex flex-col gap-10" style="pointer-events: none;">
+        <header class="text-center animate-fadeIn" style="animation-duration: 0.3s; pointer-events: auto;">
             <h1
                 class="font-display text-5xl md:text-6xl font-medium tracking-tight text-gray-900 dark:text-white italic">
                 Aaroh Kandhare
             </h1>
         </header>
-        <div class="flex flex-col gap-6">
+        <div class="flex flex-col gap-6" style="pointer-events: auto;">
             <div class="liquid-glass rounded-3xl p-6 md:p-8 transition duration-500 ease-out hover:shadow-xl hover:-translate-y-1"
                 style="animation-delay: 0.2s;">
                 <p class="text-lg text-gray-800 dark:text-gray-100"><span
