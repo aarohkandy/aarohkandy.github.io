@@ -118,11 +118,15 @@
         }
 
         .liquid-glass {
-            pointer-events: none;
+            pointer-events: none !important;
         }
 
         .liquid-glass * {
-            pointer-events: auto;
+            pointer-events: auto !important;
+        }
+
+        .liquid-glass a {
+            pointer-events: auto !important;
         }
 
         .default-animation {
@@ -352,7 +356,7 @@
         root.render(React.createElement('div', { style: { height: '100vh', width: '100vw', position: 'relative' } },
           React.createElement(Cubes, { 
             borderStyle: '3px solid rgba(90, 74, 58, 0.5)', 
-            gridSize: 6, 
+            gridSize: 20, 
             maxAngle: 180, 
             radius: 2,
             faceColor: 'rgba(196, 178, 153, 0.4)'
