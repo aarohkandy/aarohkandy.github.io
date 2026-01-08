@@ -11,11 +11,6 @@
         href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500&amp;family=Playfair+Display:ital,wght@0,400;0,500;0,600;1,400&amp;display=swap"
         rel="stylesheet" />
     <script src="https://cdn.tailwindcss.com?plugins=forms,typography,container-queries"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
-    <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
-    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
-    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
-    <link rel="stylesheet" href="Cubes.css">
     <script>
         tailwind.config = {
             darkMode: "class",
@@ -107,27 +102,11 @@
                 inset 0 -1px 0 rgba(255, 255, 255, 0.05);
         }
 
-        .cubes-background {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            z-index: 0;
-            pointer-events: all;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
     </style>
 </head>
 
 <body
     class="bg-[#E1D9D1] dark:bg-background-dark text-gray-800 dark:text-gray-200 transition-colors duration-300 min-h-screen relative overflow-x-hidden flex flex-col items-center pt-16 md:pt-24 pb-16">
-    <!-- Cubes Background -->
-    <div class="cubes-background" id="cubes-root"></div>
-    
     <div class="relative z-10 max-w-2xl w-full mx-auto px-6 flex flex-col gap-10">
         <header class="text-center animate-fadeIn" style="animation-duration: 0.3s;">
             <h1
@@ -169,101 +148,6 @@
             </div>
         </div>
     </div>
-
-    <script type="text/babel" src="Cubes.js"></script>
-    <script type="text/babel">
-        const { useState, useEffect, useRef, useCallback } = React;
-        
-        // Import Cubes component inline since we can't use ES6 imports with Babel standalone
-        const Cubes = ({ gridSize = 10, cubeSize, maxAngle = 45, radius = 3, easing = 'power3.out', duration = { enter: 0.3, leave: 0.6 }, cellGap, borderStyle = '1px solid #fff', faceColor = '#060010', shadow = false, autoAnimate = true, rippleOnClick = true, rippleColor = '#fff', rippleSpeed = 2 }) => {
-          const sceneRef = useRef(null);
-          const rafRef = useRef(null);
-          const idleTimerRef = useRef(null);
-          const userActiveRef = useRef(false);
-          const simPosRef = useRef({ x: 0, y: 0 });
-          const simTargetRef = useRef({ x: 0, y: 0 });
-          const simRAFRef = useRef(null);
-
-          const colGap = typeof cellGap === 'number' ? `${cellGap}px` : cellGap?.col !== undefined ? `${cellGap.col}px` : '5%';
-          const rowGap = typeof cellGap === 'number' ? `${cellGap}px` : cellGap?.row !== undefined ? `${cellGap.row}px` : '5%';
-          const enterDur = duration.enter;
-          const leaveDur = duration.leave;
-
-          const tiltAt = useCallback((rowCenter, colCenter) => {
-            if (!sceneRef.current) return;
-            sceneRef.current.querySelectorAll('.cube').forEach(cube => {
-              const r = +cube.dataset.row;
-              const c = +cube.dataset.col;
-              const dist = Math.hypot(r - rowCenter, c - colCenter);
-              if (dist <= radius) {
-                const pct = 1 - dist / radius;
-                const angle = pct * maxAngle;
-                gsap.to(cube, { duration: enterDur, ease: easing, overwrite: true, rotateX: -angle, rotateY: angle });
-              } else {
-                gsap.to(cube, { duration: leaveDur, ease: 'power3.out', overwrite: true, rotateX: 0, rotateY: 0 });
-              }
-            });
-          }, [radius, maxAngle, enterDur, leaveDur, easing]);
-
-          const onPointerMove = useCallback(e => {
-            userActiveRef.current = true;
-            if (idleTimerRef.current) clearTimeout(idleTimerRef.current);
-            const rect = sceneRef.current.getBoundingClientRect();
-            const cellW = rect.width / gridSize;
-            const cellH = rect.height / gridSize;
-            const colCenter = (e.clientX - rect.left) / cellW;
-            const rowCenter = (e.clientY - rect.top) / cellH;
-            if (rafRef.current) cancelAnimationFrame(rafRef.current);
-            rafRef.current = requestAnimationFrame(() => tiltAt(rowCenter, colCenter));
-            idleTimerRef.current = setTimeout(() => { userActiveRef.current = false; }, 3000);
-          }, [gridSize, tiltAt]);
-
-          const resetAll = useCallback(() => {
-            if (!sceneRef.current) return;
-            sceneRef.current.querySelectorAll('.cube').forEach(cube => gsap.to(cube, { duration: leaveDur, rotateX: 0, rotateY: 0, ease: 'power3.out' }));
-          }, [leaveDur]);
-
-          useEffect(() => {
-            const el = sceneRef.current;
-            if (!el) return;
-            el.addEventListener('pointermove', onPointerMove);
-            el.addEventListener('pointerleave', resetAll);
-            return () => {
-              el.removeEventListener('pointermove', onPointerMove);
-              el.removeEventListener('pointerleave', resetAll);
-              if (rafRef.current) cancelAnimationFrame(rafRef.current);
-              if (idleTimerRef.current) clearTimeout(idleTimerRef.current);
-            };
-          }, [onPointerMove, resetAll]);
-
-          const cells = Array.from({ length: gridSize });
-          const sceneStyle = {
-            gridTemplateColumns: cubeSize ? `repeat(${gridSize}, ${cubeSize}px)` : `repeat(${gridSize}, 1fr)`,
-            gridTemplateRows: cubeSize ? `repeat(${gridSize}, ${cubeSize}px)` : `repeat(${gridSize}, 1fr)`,
-            columnGap: colGap,
-            rowGap: rowGap
-          };
-          const wrapperStyle = {
-            '--cube-face-border': borderStyle,
-            '--cube-face-bg': faceColor,
-            '--cube-face-shadow': shadow === true ? '0 0 6px rgba(0,0,0,.5)' : shadow || 'none',
-            ...(cubeSize ? { width: `${gridSize * cubeSize}px`, height: `${gridSize * cubeSize}px` } : {})
-          };
-
-          return React.createElement('div', { className: 'default-animation', style: wrapperStyle },
-            React.createElement('div', { ref: sceneRef, className: 'default-animation--scene', style: sceneStyle },
-              cells.map((_, r) => cells.map((__, c) => React.createElement('div', { key: `${r}-${c}`, className: 'cube', 'data-row': r, 'data-col': c },
-                ['top', 'bottom', 'left', 'right', 'front', 'back'].map(face => React.createElement('div', { key: face, className: `cube-face cube-face--${face}` }))
-              )))
-            )
-          );
-        };
-
-        const root = ReactDOM.createRoot(document.getElementById('cubes-root'));
-        root.render(React.createElement('div', { style: { height: '100vh', width: '100vw', position: 'relative' } },
-          React.createElement(Cubes, { borderStyle: '3px solid #fff', gridSize: 6, maxAngle: 180, radius: 2 })
-        ));
-    </script>
 </body>
 
 </html>
