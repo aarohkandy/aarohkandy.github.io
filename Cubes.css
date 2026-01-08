@@ -72,9 +72,4 @@
   transform: rotateY(-90deg) translateX(50%) rotateY(90deg);
 }
 
-@media (max-width: 768px) {
-  .default-animation {
-    width: 90%;
-  }
-}
 
