@@ -1,12 +1,154 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Aaroh Kandy</title>
-    <link rel="stylesheet" href="styles.css">
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>Aaroh Kandhare</title>
+    <link href="https://fonts.googleapis.com" rel="preconnect" />
+    <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect" />
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500&amp;family=Playfair+Display:ital,wght@0,400;0,500;0,600;1,400&amp;display=swap"
+        rel="stylesheet" />
+    <script src="https://cdn.tailwindcss.com?plugins=forms,typography,container-queries"></script>
+    <script>
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        primary: "#a35c38",
+                        "background-light": "#fdfcf8",
+                        "background-dark": "#1a1917",
+                        beige: {
+                            50: '#fcfbf7',
+                            100: '#f7f4ed',
+                            200: '#efebd8',
+                            300: '#e5dec0',
+                            900: '#3e3830',
+                        }
+                    },
+                    fontFamily: {
+                        display: ["Playfair Display", "serif"],
+                        body: ["Inter", "sans-serif"],
+                    },
+                    borderRadius: {
+                        DEFAULT: "0.5rem",
+                        'xl': '1rem',
+                        '2xl': '1.5rem',
+                        '3xl': '2rem',
+                    },
+                    animation: {
+                        fadeIn: 'fadeIn 0.5s ease-in-out forwards',
+                    },
+                    keyframes: {
+                        fadeIn: {
+                            '0%': { opacity: '0' },
+                            '100%': { opacity: '1' },
+                        }
+                    }
+                },
+            },
+        };
+    </script>
+    <style>
+        body {
+            font-family: "Inter", sans-serif;
+        }
+
+        .liquid-glass {
+            background: linear-gradient(135deg, 
+                rgba(255, 255, 255, 0.25) 0%, 
+                rgba(255, 255, 255, 0.15) 100%);
+            backdrop-filter: blur(20px) saturate(180%);
+            -webkit-backdrop-filter: blur(20px) saturate(180%);
+            border: 1px solid rgba(255, 255, 255, 0.4);
+            box-shadow: 
+                0 8px 32px 0 rgba(0, 0, 0, 0.12),
+                inset 0 1px 0 rgba(255, 255, 255, 0.5),
+                inset 0 -1px 0 rgba(255, 255, 255, 0.2);
+            animation: fadeIn 0.5s ease-out forwards;
+            opacity: 0;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .liquid-glass::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, 
+                transparent, 
+                rgba(255, 255, 255, 0.3), 
+                transparent);
+            transition: left 0.5s;
+        }
+
+        .liquid-glass:hover::before {
+            left: 100%;
+        }
+
+        .dark .liquid-glass {
+            background: linear-gradient(135deg, 
+                rgba(30, 30, 30, 0.5) 0%, 
+                rgba(20, 20, 20, 0.3) 100%);
+            backdrop-filter: blur(20px) saturate(180%);
+            -webkit-backdrop-filter: blur(20px) saturate(180%);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            box-shadow: 
+                0 10px 40px rgba(0, 0, 0, 0.3),
+                inset 0 1px 0 rgba(255, 255, 255, 0.1),
+                inset 0 -1px 0 rgba(255, 255, 255, 0.05);
+        }
+    </style>
 </head>
-<body>
-    <h1 class="name">Aaroh Kandhare</h1>
+
+<body
+    class="bg-[#E1D9D1] dark:bg-background-dark text-gray-800 dark:text-gray-200 transition-colors duration-300 min-h-screen relative overflow-x-hidden flex flex-col items-center pt-16 md:pt-24 pb-16">
+    <div class="relative z-10 max-w-2xl w-full mx-auto px-6 flex flex-col gap-10">
+        <header class="text-center animate-fadeIn" style="animation-duration: 0.3s;">
+            <h1
+                class="font-display text-5xl md:text-6xl font-medium tracking-tight text-gray-900 dark:text-white italic">
+                Aaroh Kandhare
+            </h1>
+        </header>
+        <div class="flex flex-col gap-6">
+            <div class="liquid-glass rounded-3xl p-6 md:p-8 transition duration-500 ease-out hover:shadow-xl hover:-translate-y-1"
+                style="animation-delay: 0.2s;">
+                <p class="text-lg text-gray-800 dark:text-gray-100"><span
+                        class="font-display italic text-xl pr-2">Software Engineering:</span> Building scalable and
+                    efficient full-stack applications.</p>
+            </div>
+            <div class="liquid-glass rounded-3xl p-6 md:p-8 transition duration-500 ease-out hover:shadow-xl hover:-translate-y-1"
+                style="animation-delay: 0.3s;">
+                <p class="text-lg text-gray-800 dark:text-gray-100"><span
+                        class="font-display italic text-xl pr-2">Product Management:</span> Bridging technical and
+                    business worlds to create impactful products.</p>
+            </div>
+            <div class="liquid-glass rounded-3xl p-6 md:p-8 transition duration-500 ease-out hover:shadow-xl hover:-translate-y-1"
+                style="animation-delay: 0.4s;">
+                <p class="text-lg text-gray-800 dark:text-gray-100"><span
+                        class="font-display italic text-xl pr-2">Machine Learning:</span> Exploring data to build
+                    predictive models and intelligent systems.</p>
+            </div>
+            <div class="liquid-glass rounded-3xl p-6 md:p-8 transition duration-500 ease-out hover:shadow-xl hover:-translate-y-1"
+                style="animation-delay: 0.5s;">
+                <p class="text-lg text-gray-800 dark:text-gray-100"><span
+                        class="font-display italic text-xl pr-2">Creative Ventures:</span> Pursuing photography and
+                    music to explore artistic expression.</p>
+            </div>
+            <div class="liquid-glass rounded-3xl p-6 md:p-8 transition duration-500 ease-out hover:shadow-xl hover:-translate-y-1 flex justify-center"
+                style="animation-delay: 0.6s;">
+                <a class="font-display italic text-2xl md:text-3xl text-gray-800 dark:text-gray-100 hover:text-primary transition-colors duration-300 border-b border-transparent hover:border-primary/30 pb-1"
+                    href="mailto:aarohkandy@gmail.com">
+                    aarohkandy@gmail.com
+                </a>
+            </div>
+        </div>
+    </div>
 </body>
+
 </html>
