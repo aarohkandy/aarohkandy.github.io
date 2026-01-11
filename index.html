@@ -1,369 +1,727 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-    <meta charset="utf-8" />
-    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Aaroh Kandhare</title>
-    <link href="https://fonts.googleapis.com" rel="preconnect" />
-    <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect" />
-    <link
-        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500&amp;family=Playfair+Display:ital,wght@0,400;0,500;0,600;1,400&amp;display=swap"
-        rel="stylesheet" />
-    <script src="https://cdn.tailwindcss.com?plugins=forms,typography,container-queries"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
-    <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
-    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
-    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
-    <link rel="stylesheet" href="Cubes.css">
-    <script>
-        tailwind.config = {
-            darkMode: "class",
-            theme: {
-                extend: {
-                    colors: {
-                        primary: "#a35c38",
-                        "background-light": "#fdfcf8",
-                        "background-dark": "#1a1917",
-                        beige: {
-                            50: '#fcfbf7',
-                            100: '#f7f4ed',
-                            200: '#efebd8',
-                            300: '#e5dec0',
-                            900: '#3e3830',
-                        }
-                    },
-                    fontFamily: {
-                        display: ["Playfair Display", "serif"],
-                        body: ["Inter", "sans-serif"],
-                    },
-                    borderRadius: {
-                        DEFAULT: "0.5rem",
-                        'xl': '1rem',
-                        '2xl': '1.5rem',
-                        '3xl': '2rem',
-                    },
-                    animation: {
-                        fadeIn: 'fadeIn 0.5s ease-in-out forwards',
-                    },
-                    keyframes: {
-                        fadeIn: {
-                            '0%': { opacity: '0' },
-                            '100%': { opacity: '1' },
-                        }
-                    }
-                },
-            },
-        };
-    </script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
     <style>
-        body {
-            font-family: "Inter", sans-serif;
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
         }
 
-        .liquid-glass {
-            background: rgba(255, 255, 255, 0.05);
-            backdrop-filter: blur(20px) saturate(180%);
-            -webkit-backdrop-filter: blur(20px) saturate(180%);
-            border: 1px solid rgba(255, 255, 255, 0.3);
-            box-shadow: 
-                0 8px 32px 0 rgba(31, 38, 135, 0.1),
-                inset 0 1px 1px rgba(255, 255, 255, 0.4),
-                inset 0 -1px 1px rgba(255, 255, 255, 0.2);
-            animation: fadeIn 0.5s ease-out forwards;
-            opacity: 0;
+        html, body {
+            height: 100%;
+            width: 100%;
+            overflow: hidden; /* No scrolling at all */
+        }
+
+        body {
+            background-color: #f5f5dc; /* beige */
+            color: #000000; /* black */
+            font-family: 'Poppins', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
             position: relative;
+        }
+
+        /* Slide system wrapper */
+        .slide-wrapper {
+            width: 100%;
+            height: 100vh;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .slide-container {
+            display: flex;
+            width: 300vw; /* 3 views side by side */
+            height: 100vh;
+            transition: transform 0.3s ease;
+            transform: translateX(-100vw); /* Start at main (middle view) */
+        }
+
+        .slide-container.slide-right {
+            transform: translateX(0); /* Slide right to show contact (at 0vw) */
+        }
+
+        .slide-container.slide-left {
+            transform: translateX(-200vw); /* Slide left to show library (at 200vw) */
+        }
+
+        .view {
+            width: 100vw;
+            height: 100vh;
+            flex-shrink: 0;
+            position: relative;
+        }
+
+        /* Main view */
+        .main-view {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-start;
+            padding-top: 30px;
+        }
+
+        .name-wrapper {
+            position: absolute;
+            top: 50vh;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 100%;
+            transition: all 0.3s ease;
+            z-index: 10;
+        }
+
+        .name-wrapper.animate-to-top {
+            position: fixed;
+            top: 30px;
+            left: 50%;
+            transform: translate(-50%, 0);
+            z-index: 10;
+            background-color: #f5f5dc;
+            padding: 0 20px;
+        }
+
+        .name {
+            font-family: 'Playfair Display', serif;
+            font-size: 6rem;
+            font-weight: 500;
+            text-align: center;
+            letter-spacing: 1px;
+            line-height: 1.2;
+            transition: font-size 0.3s ease;
+        }
+
+        .name-wrapper.animate-to-top .name {
+            font-size: 2.5rem;
+        }
+
+        @media (max-width: 768px) {
+            .name {
+                font-size: 4rem;
+            }
+            .name-wrapper.animate-to-top .name {
+                font-size: 2rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .name {
+                font-size: 3rem;
+            }
+            .name-wrapper.animate-to-top .name {
+                font-size: 1.5rem;
+            }
+        }
+
+        /* Timeline */
+        .timeline-container {
+            width: 100%;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 120px 20px 20px;
+            opacity: 0;
+            transition: opacity 0.5s ease, overflow 0.3s ease;
+            max-height: calc(100vh - 100px);
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start;
+        }
+
+        .timeline-container.visible {
+            opacity: 1;
+        }
+
+        .timeline-container.has-expanded {
+            overflow-y: auto;
+        }
+
+        .timeline-container.has-expanded::-webkit-scrollbar {
+            display: none;
+        }
+
+        .timeline-container.has-expanded {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+
+        .timeline-box {
+            background-color: #e8e8d8;
+            border-radius: 10px;
+            padding: 10px 15px;
+            margin-bottom: 10px;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+            opacity: 0;
+            transform: translateY(20px);
+            flex-shrink: 0;
+        }
+
+        .timeline-box.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .timeline-box:hover {
+            background-color: #d8d8c8;
+            transform: translateY(-2px);
+        }
+
+        .timeline-box.expanded {
+            background-color: #d8d8c8;
+        }
+
+        .timeline-box.ongoing {
+            border-left: 4px solid #4caf50;
+        }
+
+        .timeline-box.completed {
+            border-left: 4px solid #f44336;
+        }
+
+        .timeline-title-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin: 0;
+            gap: 15px;
+        }
+
+        .timeline-title {
+            font-size: 1.2rem;
+            font-weight: 500;
+            margin: 0;
+            flex: 1;
+        }
+
+        .timeline-company {
+            font-size: 0.75rem;
+            color: #888;
+            background-color: #e0e0e0;
+            padding: 4px 8px;
+            border-radius: 4px;
+            white-space: nowrap;
+        }
+
+        .timeline-date {
+            font-size: 0.85rem;
+            color: #666;
+            white-space: nowrap;
+        }
+
+        .timeline-box.ongoing .timeline-date {
+            color: #4caf50;
+            font-weight: 500;
+        }
+
+        .timeline-box.completed .timeline-date {
+            color: #f44336;
+        }
+
+        .timeline-details {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.4s ease, opacity 0.3s ease, margin-top 0.3s ease;
+            opacity: 0;
+            margin-top: 0;
+            font-size: 0.95rem;
+            line-height: 1.6;
+        }
+
+        .timeline-box.expanded .timeline-details {
+            max-height: 500px;
+            opacity: 1;
+            margin-top: 12px;
+        }
+
+        /* Floating buttons */
+        .floating-button {
+            position: fixed;
+            padding: 15px 30px;
+            background-color: #e8e8d8;
+            color: #000000;
+            border: none;
+            border-radius: 25px;
+            font-family: 'Poppins', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            font-size: 1.1rem;
+            font-weight: 500;
+            letter-spacing: 0.5px;
+            cursor: pointer;
+            z-index: 999;
+            pointer-events: auto;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            transition: background-color 0.3s ease, opacity 0.3s ease;
+            opacity: 1;
+        }
+
+        .floating-button.hidden {
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        .floating-button:hover {
+            background-color: #d8d8c8;
+        }
+
+        .floating-button-left {
+            left: 50px;
+        }
+
+        .floating-button-right {
+            right: 50px;
+        }
+
+        @media (max-width: 768px) {
+            .floating-button {
+                font-size: 1.4rem;
+                padding: 12px 24px;
+            }
+            .floating-button-left {
+                left: 20px;
+            }
+            .floating-button-right {
+                right: 20px;
+            }
+        }
+
+        /* Contact page */
+        .contact-view {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+        }
+
+        .back-button {
+            position: absolute;
+            top: 30px;
+            left: 50px;
+            padding: 10px 20px;
+            background-color: #e8e8d8;
+            border: none;
+            border-radius: 15px;
+            font-family: 'Poppins', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            font-size: 1rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .back-button:hover {
+            background-color: #d8d8c8;
+        }
+
+        .contact-content {
+            display: flex;
+            flex-direction: column;
+            gap: 40px;
+            align-items: center;
+        }
+
+        .contact-item {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            font-size: 1.8rem;
+        }
+
+        .contact-item a {
+            color: #000000;
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+
+        .contact-item a:hover {
+            color: #666;
+        }
+
+        .contact-icon {
+            font-size: 2.5rem;
+        }
+
+        /* Library page */
+        .library-view {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 80px 20px 20px;
+            height: 100vh;
             overflow: hidden;
         }
 
-        .liquid-glass::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: -100%;
+        .book-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            gap: 20px;
             width: 100%;
-            height: 100%;
-            background: linear-gradient(90deg, 
-                transparent, 
-                rgba(255, 255, 255, 0.3), 
-                transparent);
-            transition: left 0.5s;
+            max-width: 1000px;
+            margin-top: 20px;
+            max-height: calc(100vh - 150px);
+            overflow: hidden;
         }
 
-        .liquid-glass:hover::before {
-            left: 100%;
+        .book-card {
+            background-color: #e8e8d8;
+            border-radius: 15px;
+            padding: 20px;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+            cursor: pointer;
         }
 
-        .dark .liquid-glass {
-            background: linear-gradient(135deg, 
-                rgba(30, 30, 30, 0.15) 0%, 
-                rgba(20, 20, 20, 0.1) 100%);
-            backdrop-filter: blur(20px) saturate(180%);
-            -webkit-backdrop-filter: blur(20px) saturate(180%);
-            border: 1px solid rgba(255, 255, 255, 0.15);
-            box-shadow: 
-                0 10px 40px rgba(0, 0, 0, 0.2),
-                inset 0 1px 0 rgba(255, 255, 255, 0.08),
-                inset 0 -1px 0 rgba(255, 255, 255, 0.03);
+        .book-card:hover {
+            background-color: #d8d8c8;
+            transform: translateY(-5px);
         }
 
-        .cubes-background {
-            position: fixed;
-            top: 0;
-            left: 0;
+        .book-cover {
             width: 100%;
-            height: 100%;
-            z-index: 0;
-            pointer-events: all;
+            height: 250px;
+            background-color: #d8d8c8;
+            border-radius: 10px;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3rem;
         }
 
-        .liquid-glass {
-            pointer-events: none !important;
+        .book-title {
+            font-size: 1.3rem;
+            margin-bottom: 8px;
+            font-weight: 500;
         }
 
-        .liquid-glass * {
-            pointer-events: auto !important;
+        .book-author {
+            font-size: 1rem;
+            color: #666;
         }
-
-        .liquid-glass a {
-            pointer-events: auto !important;
-        }
-
-        .default-animation {
-            width: 100% !important;
-            height: 100% !important;
-        }
-
     </style>
 </head>
+<body>
+    <div class="slide-wrapper">
+        <div class="slide-container" id="slideContainer">
+            <!-- Contact View (right) -->
+            <div class="view contact-view">
+                <button class="back-button" id="contactBackButton">← Back</button>
+                <div class="contact-content">
+                    <div class="contact-item">
+                        <span class="contact-icon">📧</span>
+                        <a href="mailto:aarohkandy@gmail.com">aarohkandy@gmail.com</a>
+                    </div>
+                    <div class="contact-item">
+                        <span class="contact-icon">📞</span>
+                        <a href="tel:4256230392">425-623-0392</a>
+                    </div>
+                </div>
+            </div>
 
-<body
-    class="bg-[#E1D9D1] dark:bg-background-dark text-gray-800 dark:text-gray-200 transition-colors duration-300 min-h-screen relative overflow-x-hidden flex flex-col items-center pt-16 md:pt-24 pb-16">
-    <div class="cubes-background" id="cubes-root"></div>
-    
-    <div class="relative z-10 max-w-2xl w-full mx-auto px-6 flex flex-col gap-10" style="pointer-events: none;">
-        <header class="text-center animate-fadeIn" style="animation-duration: 0.3s; pointer-events: auto;">
-            <h1
-                class="font-display text-5xl md:text-6xl font-medium tracking-tight text-gray-900 dark:text-white italic">
-                Aaroh Kandhare
-            </h1>
-        </header>
-        <div class="flex flex-col gap-6" style="pointer-events: auto;">
-            <div class="liquid-glass rounded-3xl p-6 md:p-8 transition duration-500 ease-out hover:shadow-xl hover:-translate-y-1"
-                style="animation-delay: 0.2s;">
-                <p class="text-lg text-gray-800 dark:text-gray-100"><span
-                        class="font-display italic text-xl pr-2">Software Engineering:</span> Building scalable and
-                    efficient full-stack applications.</p>
+            <!-- Main View (center) -->
+            <div class="view main-view">
+                <div class="name-wrapper" id="nameWrapper">
+                    <div class="name">aaroh kandhare</div>
+                </div>
+                <div class="timeline-container" id="timelineContainer">
+                    <!-- Timeline boxes will be inserted here -->
+                </div>
             </div>
-            <div class="liquid-glass rounded-3xl p-6 md:p-8 transition duration-500 ease-out hover:shadow-xl hover:-translate-y-1"
-                style="animation-delay: 0.3s;">
-                <p class="text-lg text-gray-800 dark:text-gray-100"><span
-                        class="font-display italic text-xl pr-2">Product Management:</span> Bridging technical and
-                    business worlds to create impactful products.</p>
-            </div>
-            <div class="liquid-glass rounded-3xl p-6 md:p-8 transition duration-500 ease-out hover:shadow-xl hover:-translate-y-1"
-                style="animation-delay: 0.4s;">
-                <p class="text-lg text-gray-800 dark:text-gray-100"><span
-                        class="font-display italic text-xl pr-2">Machine Learning:</span> Exploring data to build
-                    predictive models and intelligent systems.</p>
-            </div>
-            <div class="liquid-glass rounded-3xl p-6 md:p-8 transition duration-500 ease-out hover:shadow-xl hover:-translate-y-1"
-                style="animation-delay: 0.5s;">
-                <p class="text-lg text-gray-800 dark:text-gray-100"><span
-                        class="font-display italic text-xl pr-2">Creative Ventures:</span> Pursuing photography and
-                    music to explore artistic expression.</p>
-            </div>
-            <div class="liquid-glass rounded-3xl p-6 md:p-8 transition duration-500 ease-out hover:shadow-xl hover:-translate-y-1 flex justify-center"
-                style="animation-delay: 0.6s;">
-                <a class="font-display italic text-2xl md:text-3xl text-gray-800 dark:text-gray-100 hover:text-primary transition-colors duration-300 border-b border-transparent hover:border-primary/30 pb-1"
-                    href="mailto:aarohkandy@gmail.com">
-                    aarohkandy@gmail.com
-                </a>
+
+            <!-- Library View (left) -->
+            <div class="view library-view">
+                <button class="back-button" id="libraryBackButton">← Back</button>
+                <div class="book-grid" id="bookGrid">
+                    <!-- Book cards will be inserted here -->
+                </div>
             </div>
         </div>
     </div>
 
-    <script type="text/babel" src="Cubes.js"></script>
-    <script type="text/babel">
-        const { useCallback, useEffect, useRef } = React;
-        
-        const Cubes = ({ gridSize = 10, cubeSize, maxAngle = 45, radius = 3, easing = 'power3.out', duration = { enter: 0.3, leave: 0.6 }, cellGap, borderStyle = '1px solid #fff', faceColor = '#060010', shadow = false, autoAnimate = true, rippleOnClick = true, rippleColor = '#fff', rippleSpeed = 2 }) => {
-          const sceneRef = useRef(null);
-          const rafRef = useRef(null);
-          const idleTimerRef = useRef(null);
-          const userActiveRef = useRef(false);
-          const simPosRef = useRef({ x: 0, y: 0 });
-          const simTargetRef = useRef({ x: 0, y: 0 });
-          const simRAFRef = useRef(null);
+    <button class="floating-button floating-button-left" id="leftButton">contact</button>
+    <button class="floating-button floating-button-right" id="rightButton">library</button>
 
-          const colGap = typeof cellGap === 'number' ? `${cellGap}px` : cellGap?.col !== undefined ? `${cellGap.col}px` : '5%';
-          const rowGap = typeof cellGap === 'number' ? `${cellGap}px` : cellGap?.row !== undefined ? `${cellGap.row}px` : '5%';
-          const enterDur = duration.enter;
-          const leaveDur = duration.leave;
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const slideContainer = document.getElementById('slideContainer');
+            const nameWrapper = document.getElementById('nameWrapper');
+            const timelineContainer = document.getElementById('timelineContainer');
+            const leftButton = document.getElementById('leftButton');
+            const rightButton = document.getElementById('rightButton');
+            const contactBackButton = document.getElementById('contactBackButton');
+            const libraryBackButton = document.getElementById('libraryBackButton');
+            const bookGrid = document.getElementById('bookGrid');
+            
+            let currentView = 'main'; // Track current view: 'main', 'contact', 'library'
 
-          const tiltAt = useCallback((rowCenter, colCenter) => {
-            if (!sceneRef.current) return;
-            sceneRef.current.querySelectorAll('.cube').forEach(cube => {
-              const r = +cube.dataset.row;
-              const c = +cube.dataset.col;
-              const dist = Math.hypot(r - rowCenter, c - colCenter);
-              if (dist <= radius) {
-                const pct = 1 - dist / radius;
-                const angle = pct * maxAngle;
-                gsap.to(cube, { duration: enterDur, ease: easing, overwrite: true, rotateX: -angle, rotateY: angle });
-              } else {
-                gsap.to(cube, { duration: leaveDur, ease: 'power3.out', overwrite: true, rotateX: 0, rotateY: 0 });
-              }
-            });
-          }, [radius, maxAngle, enterDur, leaveDur, easing]);
-
-          const onPointerMove = useCallback(e => {
-            userActiveRef.current = true;
-            if (idleTimerRef.current) clearTimeout(idleTimerRef.current);
-            const rect = sceneRef.current.getBoundingClientRect();
-            const cellW = window.innerWidth / gridSize;
-            const cellH = window.innerHeight / gridSize;
-            const colCenter = e.clientX / cellW;
-            const rowCenter = e.clientY / cellH;
-            if (rafRef.current) cancelAnimationFrame(rafRef.current);
-            rafRef.current = requestAnimationFrame(() => tiltAt(rowCenter, colCenter));
-            idleTimerRef.current = setTimeout(() => { userActiveRef.current = false; }, 3000);
-          }, [gridSize, tiltAt]);
-
-          const resetAll = useCallback(() => {
-            if (!sceneRef.current) return;
-            sceneRef.current.querySelectorAll('.cube').forEach(cube => gsap.to(cube, { duration: leaveDur, rotateX: 0, rotateY: 0, ease: 'power3.out' }));
-          }, [leaveDur]);
-
-          const onTouchMove = useCallback(e => {
-            e.preventDefault();
-            userActiveRef.current = true;
-            if (idleTimerRef.current) clearTimeout(idleTimerRef.current);
-            const rect = sceneRef.current.getBoundingClientRect();
-            const cellW = rect.width / gridSize;
-            const cellH = rect.height / gridSize;
-            const touch = e.touches[0];
-            const colCenter = (touch.clientX - rect.left) / cellW;
-            const rowCenter = (touch.clientY - rect.top) / cellH;
-            if (rafRef.current) cancelAnimationFrame(rafRef.current);
-            rafRef.current = requestAnimationFrame(() => tiltAt(rowCenter, colCenter));
-            idleTimerRef.current = setTimeout(() => { userActiveRef.current = false; }, 3000);
-          }, [gridSize, tiltAt]);
-
-          const onTouchStart = useCallback(() => { userActiveRef.current = true; }, []);
-          const onTouchEnd = useCallback(() => { if (!sceneRef.current) return; resetAll(); }, [resetAll]);
-
-          const onClick = useCallback(e => {
-            if (!rippleOnClick || !sceneRef.current) return;
-            const rect = sceneRef.current.getBoundingClientRect();
-            const cellW = rect.width / gridSize;
-            const cellH = rect.height / gridSize;
-            const clientX = e.clientX || (e.touches && e.touches[0].clientX);
-            const clientY = e.clientY || (e.touches && e.touches[0].clientY);
-            const colHit = Math.floor((clientX - rect.left) / cellW);
-            const rowHit = Math.floor((clientY - rect.top) / cellH);
-            const baseRingDelay = 0.15;
-            const baseAnimDur = 0.3;
-            const baseHold = 0.6;
-            const spreadDelay = baseRingDelay / rippleSpeed;
-            const animDuration = baseAnimDur / rippleSpeed;
-            const holdTime = baseHold / rippleSpeed;
-            const rings = {};
-            sceneRef.current.querySelectorAll('.cube').forEach(cube => {
-              const r = +cube.dataset.row;
-              const c = +cube.dataset.col;
-              const dist = Math.hypot(r - rowHit, c - colHit);
-              const ring = Math.round(dist);
-              if (!rings[ring]) rings[ring] = [];
-              rings[ring].push(cube);
-            });
-            Object.keys(rings).map(Number).sort((a, b) => a - b).forEach(ring => {
-              const delay = ring * spreadDelay;
-              const faces = rings[ring].flatMap(cube => Array.from(cube.querySelectorAll('.cube-face')));
-              gsap.to(faces, { backgroundColor: rippleColor, duration: animDuration, delay, ease: 'power3.out' });
-              gsap.to(faces, { backgroundColor: faceColor, duration: animDuration, delay: delay + animDuration + holdTime, ease: 'power3.out' });
-            });
-          }, [rippleOnClick, gridSize, faceColor, rippleColor, rippleSpeed]);
-
-          useEffect(() => {
-            if (!autoAnimate || !sceneRef.current) return;
-            simPosRef.current = { x: Math.random() * gridSize, y: Math.random() * gridSize };
-            simTargetRef.current = { x: Math.random() * gridSize, y: Math.random() * gridSize };
-            const speed = 0.02;
-            const loop = () => {
-              if (!userActiveRef.current) {
-                const pos = simPosRef.current;
-                const tgt = simTargetRef.current;
-                pos.x += (tgt.x - pos.x) * speed;
-                pos.y += (tgt.y - pos.y) * speed;
-                tiltAt(pos.y, pos.x);
-                if (Math.hypot(pos.x - tgt.x, pos.y - tgt.y) < 0.1) {
-                  simTargetRef.current = { x: Math.random() * gridSize, y: Math.random() * gridSize };
+            // Timeline data - ordered by start date (oldest first)
+            const accomplishments = [
+                {
+                    title: "VEX Team Lead",
+                    preview: "Co-lead for 5 years and main lead for 2 more, driving team to state competitions and global invitationals",
+                    date: "Apr 2018 - Present",
+                    details: "Co-lead for 5 years, main lead for 2 more. Led team to state competitions and global invitationals. Skills: CAD, Software Development, Robotics, Python, C++, Java"
+                },
+                {
+                    title: "Teaching Assistant",
+                    preview: "Provided oversight on teams building their own VEX robots and furthered their knowledge through feedback",
+                    date: "Jun 2023 - Sep 2023",
+                    details: "Oversaw teams building VEX robots and provided feedback to further their knowledge. Skills: CAD, Teaching, Teamwork"
+                },
+                {
+                    title: "Interlake Rocketry Club Team Lead",
+                    preview: "Led team of 10 members designing in CAD and building rockets, created simulation for actively controlled rockets",
+                    date: "Sep 2023 - Present",
+                    details: "Led team of 10 designing rockets in CAD. Created simulation for actively controlled rockets. Skills: Rocket Technology, Aerodynamics, Manufacturing"
+                },
+                {
+                    title: "1899 Saints Robotics",
+                    preview: "Leading sub-team working on t-shirt cannon bot, tackling complex design requirements and budget management",
+                    date: "Sep 2023 - Present",
+                    details: "Leading sub-team building t-shirt cannon bot, managing complex design requirements and budget. Skills: CAD, Leadership, Electrical Engineering"
+                },
+                {
+                    title: "Teaching Team Lead",
+                    preview: "Taught elementary schoolers robotics, basics of code and CAD, and leadership skills",
+                    date: "May 2024 - Aug 2024",
+                    details: "Taught elementary students robotics, coding basics, CAD, and leadership skills. Skills: CAD, Leadership, Python"
+                },
+                {
+                    title: "Club President - Interlake Builders Club",
+                    preview: "Guided team direction, boosted membership by 275%, mentored members and improved skills",
+                    date: "Sep 2024 - Present",
+                    details: "Guided team direction, boosted membership by 275%, mentored members. Skills: Manufacturing, Leadership"
+                },
+                {
+                    title: "Founder and Captain - Mantis Combat Robotics",
+                    preview: "Founded and lead combat robotics team, developing leadership and technical skills",
+                    date: "Sep 2024 - Present",
+                    details: "Founded and lead combat robotics team, developing leadership and technical skills. Skills: Robotics, Leadership, Engineering"
+                },
+                {
+                    title: "DECA Competitive Events SCDC Qualifier",
+                    preview: "Worked in Team Decision Making to qualify for SCDC, ranked as top 5 team in regional tournament",
+                    date: "Sep 2024 - Mar 2025",
+                    details: "Qualified for SCDC in Team Decision Making, ranked top 5 in regional tournament. Skills: Teamwork, Business Management, Strategic Planning"
+                },
+                {
+                    title: "Volunteer Staff - American Red Cross",
+                    preview: "Volunteering with American Red Cross to support community initiatives",
+                    date: "Mar 2025 - Present",
+                    details: "Volunteering as staff member supporting various community initiatives and programs."
+                },
+                {
+                    title: "Marketing Lead - CoachT",
+                    preview: "Chief Marketing Officer for CoachT and RunwayAI, managed 50+ B2B relationships, created outreach automations",
+                    date: "May 2025 - Present",
+                    company: "company 1",
+                    details: "CMO for CoachT and RunwayAI. Managed 50+ B2B relationships, created outreach automations. Sold to large company at 16. Skills: Leadership, Market Research, Marketing Strategy"
+                },
+                {
+                    title: "Chief Operating Officer - Vaidra Education",
+                    preview: "Created website and technology, product used by 200+ schools and 30000+ students in India",
+                    date: "Jun 2025 - Present",
+                    company: "company 2",
+                    details: "Created website and technology. Product used by 200+ schools and 30000+ students in India. Implemented AI translation with multiple voices. Skills: AI, Back-End Web Development"
                 }
-              }
-              simRAFRef.current = requestAnimationFrame(loop);
-            };
-            simRAFRef.current = requestAnimationFrame(loop);
-            return () => { if (simRAFRef.current != null) cancelAnimationFrame(simRAFRef.current); };
-          }, [autoAnimate, gridSize, tiltAt]);
+            ];
 
-          useEffect(() => {
-            const el = sceneRef.current;
-            if (!el) return;
-            el.addEventListener('pointermove', onPointerMove);
-            el.addEventListener('pointerleave', resetAll);
-            el.addEventListener('click', onClick);
-            el.addEventListener('touchmove', onTouchMove, { passive: false });
-            el.addEventListener('touchstart', onTouchStart, { passive: true });
-            el.addEventListener('touchend', onTouchEnd, { passive: true });
-            return () => {
-              el.removeEventListener('pointermove', onPointerMove);
-              el.removeEventListener('pointerleave', resetAll);
-              el.removeEventListener('click', onClick);
-              el.removeEventListener('touchmove', onTouchMove);
-              el.removeEventListener('touchstart', onTouchStart);
-              el.removeEventListener('touchend', onTouchEnd);
-              if (rafRef.current != null) cancelAnimationFrame(rafRef.current);
-              if (idleTimerRef.current) clearTimeout(idleTimerRef.current);
-            };
-          }, [onPointerMove, resetAll, onClick, onTouchMove, onTouchStart, onTouchEnd]);
+            // Book data (placeholder)
+            const books = [
+                { title: "Book Title 1", author: "Author Name 1" },
+                { title: "Book Title 2", author: "Author Name 2" },
+                { title: "Book Title 3", author: "Author Name 3" },
+                { title: "Book Title 4", author: "Author Name 4" }
+            ];
 
-          const cells = Array.from({ length: gridSize });
-          const sceneStyle = {
-            gridTemplateColumns: cubeSize ? `repeat(${gridSize}, ${cubeSize}px)` : `repeat(${gridSize}, 1fr)`,
-            gridTemplateRows: cubeSize ? `repeat(${gridSize}, ${cubeSize}px)` : `repeat(${gridSize}, 1fr)`,
-            columnGap: colGap,
-            rowGap: rowGap
-          };
-          const wrapperStyle = {
-            '--cube-face-border': borderStyle,
-            '--cube-face-bg': faceColor,
-            '--cube-face-shadow': shadow === true ? '0 0 6px rgba(0,0,0,.5)' : shadow || 'none',
-            width: '100%',
-            height: '100%'
-          };
+            // Spring physics for smooth, flowy animation
+            class SpringFollower {
+                constructor(element) {
+                    this.element = element;
+                    this.currentY = window.innerHeight / 2;
+                    this.targetY = window.innerHeight / 2;
+                    this.velocity = 0;
+                    this.spring = 0.1;
+                    this.damping = 0.8;
+                    this.animate();
+                }
 
-          return React.createElement('div', { className: 'default-animation', style: wrapperStyle },
-            React.createElement('div', { ref: sceneRef, className: 'default-animation--scene', style: sceneStyle },
-              cells.map((_, r) => cells.map((__, c) => React.createElement('div', { key: `${r}-${c}`, className: 'cube', 'data-row': r, 'data-col': c },
-                ['top', 'bottom', 'left', 'right', 'front', 'back'].map(face => React.createElement('div', { key: face, className: `cube-face cube-face--${face}` }))
-              )))
-            )
-          );
-        };
+                setTarget(y) {
+                    this.targetY = y;
+                }
 
-        const root = ReactDOM.createRoot(document.getElementById('cubes-root'));
-        root.render(React.createElement('div', { style: { height: '100vh', width: '100vw', position: 'relative' } },
-          React.createElement(Cubes, { 
-            borderStyle: '3px solid rgba(90, 74, 58, 0.5)', 
-            gridSize: 15, 
-            maxAngle: 180, 
-            radius: 2,
-            faceColor: 'rgba(196, 178, 153, 0.4)',
-            cellGap: { col: '1%', row: '1%' }
-          })
-        ));
+                animate() {
+                    const force = (this.targetY - this.currentY) * this.spring;
+                    this.velocity += force;
+                    this.velocity *= this.damping;
+                    this.currentY += this.velocity;
+
+                    this.element.style.top = this.currentY + 'px';
+                    this.element.style.transform = 'translateY(-50%)';
+
+                    requestAnimationFrame(() => this.animate());
+                }
+            }
+
+            // Initialize spring followers
+            const leftFollower = new SpringFollower(leftButton);
+            const rightFollower = new SpringFollower(rightButton);
+
+            // Track mouse position
+            let mouseY = window.innerHeight / 2;
+            document.addEventListener('mousemove', (e) => {
+                mouseY = e.clientY;
+                leftFollower.setTarget(mouseY);
+                rightFollower.setTarget(mouseY);
+            });
+
+            // Auto-animate name to top after 0.25s
+            setTimeout(() => {
+                nameWrapper.classList.add('animate-to-top');
+                
+                // Show timeline after name animation completes
+                setTimeout(() => {
+                    timelineContainer.classList.add('visible');
+                    
+                    // Stagger timeline boxes
+                    const boxes = timelineContainer.querySelectorAll('.timeline-box');
+                    boxes.forEach((box, index) => {
+                        setTimeout(() => {
+                            box.classList.add('visible');
+                        }, index * 100);
+                    });
+                }, 300);
+            }, 250);
+
+            // Helper function to parse date and determine if ongoing
+            function parseDate(dateString) {
+                const isOngoing = dateString.includes('Present');
+                // Extract start date (first part before " - ")
+                const startDate = dateString.split(' - ')[0];
+                return { startDate, isOngoing };
+            }
+
+            // Function to check if any box is expanded and update container
+            function updateContainerScroll() {
+                const hasExpanded = Array.from(timelineContainer.querySelectorAll('.timeline-box')).some(
+                    box => box.classList.contains('expanded')
+                );
+                if (hasExpanded) {
+                    timelineContainer.classList.add('has-expanded');
+                } else {
+                    timelineContainer.classList.remove('has-expanded');
+                }
+            }
+
+            // Create timeline boxes (reverse order so newest is first)
+            accomplishments.slice().reverse().forEach((item, index) => {
+                const { startDate, isOngoing } = parseDate(item.date);
+                const box = document.createElement('div');
+                box.className = `timeline-box ${isOngoing ? 'ongoing' : 'completed'}`;
+                
+                const companyLabel = item.company ? `<div class="timeline-company">${item.company}</div>` : '';
+                
+                box.innerHTML = `
+                    <div class="timeline-title-row">
+                        <div class="timeline-title">${item.title}</div>
+                        <div style="display: flex; align-items: center; gap: 10px;">
+                            ${companyLabel}
+                            <div class="timeline-date">${startDate}</div>
+                        </div>
+                    </div>
+                    <div class="timeline-details">${item.details}</div>
+                `;
+                
+                box.addEventListener('click', function() {
+                    // Close all other boxes
+                    const allBoxes = timelineContainer.querySelectorAll('.timeline-box');
+                    allBoxes.forEach(otherBox => {
+                        if (otherBox !== box) {
+                            otherBox.classList.remove('expanded');
+                        }
+                    });
+                    
+                    // Toggle the clicked box
+                    const wasExpanded = box.classList.contains('expanded');
+                    box.classList.toggle('expanded');
+                    updateContainerScroll();
+                    
+                    // Scroll to box if it's being expanded
+                    if (!wasExpanded && box.classList.contains('expanded')) {
+                        setTimeout(() => {
+                            box.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                        }, 100);
+                    }
+                });
+                
+                timelineContainer.appendChild(box);
+            });
+
+            // Create book cards
+            books.forEach(book => {
+                const card = document.createElement('div');
+                card.className = 'book-card';
+                card.innerHTML = `
+                    <div class="book-cover">📚</div>
+                    <div class="book-title">${book.title}</div>
+                    <div class="book-author">${book.author}</div>
+                `;
+                bookGrid.appendChild(card);
+            });
+
+            // Slide functions
+            function slideToMain() {
+                slideContainer.classList.remove('slide-right', 'slide-left');
+                currentView = 'main';
+                updateButtonLabels();
+            }
+
+            function slideToContact() {
+                slideContainer.classList.remove('slide-left');
+                slideContainer.classList.add('slide-right');
+                currentView = 'contact';
+                updateButtonLabels();
+            }
+
+            function slideToLibrary() {
+                slideContainer.classList.remove('slide-right');
+                slideContainer.classList.add('slide-left');
+                currentView = 'library';
+                updateButtonLabels();
+            }
+
+            // Update button labels, handlers, and visibility based on current view
+            function updateButtonLabels() {
+                if (currentView === 'main') {
+                    leftButton.textContent = 'contact';
+                    rightButton.textContent = 'library';
+                    leftButton.onclick = slideToContact;
+                    rightButton.onclick = slideToLibrary;
+                    leftButton.classList.remove('hidden');
+                    rightButton.classList.remove('hidden');
+                } else if (currentView === 'contact') {
+                    rightButton.textContent = 'main';
+                    rightButton.onclick = slideToMain;
+                    leftButton.classList.add('hidden');
+                    rightButton.classList.remove('hidden');
+                } else if (currentView === 'library') {
+                    leftButton.textContent = 'main';
+                    leftButton.onclick = slideToMain;
+                    leftButton.classList.remove('hidden');
+                    rightButton.classList.add('hidden');
+                }
+            }
+
+            // Button handlers
+            updateButtonLabels();
+            contactBackButton.addEventListener('click', slideToMain);
+            libraryBackButton.addEventListener('click', slideToMain);
+        });
     </script>
 </body>
-
 </html>
