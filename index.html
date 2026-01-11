@@ -119,15 +119,32 @@
             }
         }
 
-        /* Timeline */
-        .timeline-container {
+        /* Intro text */
+        .intro-text {
             width: 100%;
             max-width: 800px;
             margin: 0 auto;
             padding: 120px 20px 20px;
             opacity: 0;
+            transition: opacity 0.5s ease;
+            font-size: 1.1rem;
+            line-height: 1.8;
+            color: #000000;
+        }
+
+        .intro-text.visible {
+            opacity: 1;
+        }
+
+        /* Timeline */
+        .timeline-container {
+            width: 100%;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px 20px 20px;
+            opacity: 0;
             transition: opacity 0.5s ease, overflow 0.3s ease;
-            max-height: calc(100vh - 100px);
+            max-height: calc(100vh - 200px);
             overflow: hidden;
             display: flex;
             flex-direction: column;
@@ -191,6 +208,7 @@
             align-items: center;
             margin: 0;
             gap: 15px;
+            flex-wrap: wrap;
         }
 
         .timeline-title {
@@ -231,7 +249,27 @@
             opacity: 0;
             margin-top: 0;
             font-size: 0.95rem;
-            line-height: 1.6;
+            line-height: 1.8;
+            word-wrap: break-word;
+        }
+        
+        .timeline-details br {
+            display: block;
+            content: "";
+            margin: 0;
+        }
+        
+        @media (max-width: 768px) {
+            .timeline-details {
+                font-size: 0.85rem;
+                line-height: 1.5;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .timeline-details {
+                font-size: 0.8rem;
+            }
         }
 
         .timeline-box.expanded .timeline-details {
@@ -276,17 +314,176 @@
         .floating-button-right {
             right: 50px;
         }
+        
+        /* Mobile/Tablet: Buttons stay next to name */
+        @media (max-width: 1024px) {
+            .floating-button {
+                position: fixed !important;
+                transition: top 0.3s ease, transform 0.3s ease !important;
+            }
+            
+            .floating-button-left {
+                left: 20px !important;
+                right: auto !important;
+            }
+            
+            .floating-button-right {
+                right: 20px;
+            }
+        }
+        
+        /* Touch devices: Ensure buttons don't move */
+        @media (hover: none) and (pointer: coarse) {
+            .floating-button {
+                position: fixed !important;
+                transition: top 0.3s ease, transform 0.3s ease !important;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .floating-button-left {
+                left: 15px !important;
+            }
+            
+            .floating-button-right {
+                right: 15px;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .floating-button {
+                font-size: 0.85rem;
+                padding: 8px 15px;
+            }
+            
+            .floating-button-left {
+                left: 10px !important;
+            }
+            
+            .floating-button-right {
+                right: 10px;
+            }
+        }
 
         @media (max-width: 768px) {
             .floating-button {
-                font-size: 1.4rem;
-                padding: 12px 24px;
+                font-size: 0.9rem;
+                padding: 10px 18px;
             }
             .floating-button-left {
-                left: 20px;
+                left: 15px;
             }
             .floating-button-right {
-                right: 20px;
+                right: 15px;
+            }
+            
+            .intro-text {
+                padding: 100px 15px 15px;
+                font-size: 1rem;
+            }
+            
+            .timeline-container {
+                padding: 15px 15px 15px;
+                max-height: calc(100vh - 200px);
+            }
+            
+            .timeline-title-row {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 6px;
+            }
+            
+            .timeline-title {
+                font-size: 1rem;
+                white-space: nowrap;
+                overflow: hidden;
+                text-overflow: ellipsis;
+                width: 100%;
+            }
+            
+            .timeline-date {
+                font-size: 0.75rem;
+                margin-top: 2px;
+            }
+            
+            .timeline-company {
+                font-size: 0.7rem;
+                padding: 3px 6px;
+            }
+            
+            /* Move date/company container below title on mobile */
+            .timeline-title-row > div:last-child {
+                display: flex;
+                align-items: center;
+                gap: 8px;
+                margin-top: 4px;
+            }
+            
+            .name-wrapper.animate-to-top {
+                top: 20px;
+                padding: 0 15px;
+            }
+            
+            .name-wrapper.animate-to-top .name {
+                font-size: 1.8rem;
+            }
+            
+            .back-button {
+                top: 20px;
+                left: 15px;
+                padding: 8px 15px;
+                font-size: 0.9rem;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .floating-button {
+                font-size: 0.85rem;
+                padding: 8px 15px;
+            }
+            .floating-button-left {
+                left: 10px;
+            }
+            .floating-button-right {
+                right: 10px;
+            }
+            
+            .intro-text {
+                padding: 90px 10px 10px;
+                font-size: 0.95rem;
+            }
+            
+            .timeline-container {
+                padding: 10px 10px 10px;
+            }
+            
+            .timeline-box {
+                padding: 8px 12px;
+                margin-bottom: 8px;
+            }
+            
+            .timeline-title {
+                font-size: 0.9rem;
+                white-space: nowrap;
+                overflow: hidden;
+                text-overflow: ellipsis;
+            }
+            
+            .timeline-date {
+                font-size: 0.7rem;
+            }
+            
+            .name-wrapper.animate-to-top .name {
+                font-size: 1.5rem;
+            }
+            
+            .contact-item {
+                font-size: 1.4rem;
+                gap: 15px;
+            }
+            
+            .contact-icon {
+                font-size: 2rem;
             }
         }
 
@@ -428,6 +625,9 @@
                 <div class="name-wrapper" id="nameWrapper">
                     <div class="name">aaroh kandhare</div>
                 </div>
+                <div class="intro-text" id="introText">
+                    hi. I am aaroh. i like making solutions for people, physical and technological.<br><br>boring people are awful.
+                </div>
                 <div class="timeline-container" id="timelineContainer">
                     <!-- Timeline boxes will be inserted here -->
                 </div>
@@ -450,6 +650,7 @@
         document.addEventListener('DOMContentLoaded', function() {
             const slideContainer = document.getElementById('slideContainer');
             const nameWrapper = document.getElementById('nameWrapper');
+            const introText = document.getElementById('introText');
             const timelineContainer = document.getElementById('timelineContainer');
             const leftButton = document.getElementById('leftButton');
             const rightButton = document.getElementById('rightButton');
@@ -465,78 +666,76 @@
                     title: "VEX Team Lead",
                     preview: "Co-lead for 5 years and main lead for 2 more, driving team to state competitions and global invitationals",
                     date: "Apr 2018 - Present",
-                    details: "Co-lead for 5 years, main lead for 2 more. Led team to state competitions and global invitationals. Skills: CAD, Software Development, Robotics, Python, C++, Java"
+                    details: "• Led team to state competitions<br>• Led team to global invitationals<br>• Skills: CAD, Software Development, Robotics, Python, C++, Java"
                 },
                 {
                     title: "Teaching Assistant",
                     preview: "Provided oversight on teams building their own VEX robots and furthered their knowledge through feedback",
                     date: "Jun 2023 - Sep 2023",
-                    details: "Oversaw teams building VEX robots and provided feedback to further their knowledge. Skills: CAD, Teaching, Teamwork"
+                    details: "• Oversaw teams building VEX robots<br>• Provided feedback to students<br>• Skills: CAD, Teaching, Teamwork"
                 },
                 {
                     title: "Interlake Rocketry Club Team Lead",
                     preview: "Led team of 10 members designing in CAD and building rockets, created simulation for actively controlled rockets",
                     date: "Sep 2023 - Present",
-                    details: "Led team of 10 designing rockets in CAD. Created simulation for actively controlled rockets. Skills: Rocket Technology, Aerodynamics, Manufacturing"
+                    details: "• Led team of 10 designing rockets in CAD<br>• Created simulation for actively controlled rockets<br>• Skills: Rocket Technology, Aerodynamics, Manufacturing"
                 },
                 {
                     title: "1899 Saints Robotics",
                     preview: "Leading sub-team working on t-shirt cannon bot, tackling complex design requirements and budget management",
                     date: "Sep 2023 - Present",
-                    details: "Leading sub-team building t-shirt cannon bot, managing complex design requirements and budget. Skills: CAD, Leadership, Electrical Engineering"
+                    details: "• Leading sub-team building t-shirt cannon bot<br>• Managing complex design requirements and budget<br>• Skills: CAD, Leadership, Electrical Engineering"
                 },
                 {
                     title: "Teaching Team Lead",
                     preview: "Taught elementary schoolers robotics, basics of code and CAD, and leadership skills",
                     date: "May 2024 - Aug 2024",
-                    details: "Taught elementary students robotics, coding basics, CAD, and leadership skills. Skills: CAD, Leadership, Python"
+                    details: "• Taught elementary students robotics<br>• Taught coding basics and CAD<br>• Taught leadership skills<br>• Skills: CAD, Leadership, Python"
                 },
                 {
-                    title: "Club President - Interlake Builders Club",
+                    title: "Club President of Interlake Builders Club",
                     preview: "Guided team direction, boosted membership by 275%, mentored members and improved skills",
                     date: "Sep 2024 - Present",
-                    details: "Guided team direction, boosted membership by 275%, mentored members. Skills: Manufacturing, Leadership"
+                    details: "• Guided team direction<br>• Boosted membership by 275%<br>• Mentored members<br>• Skills: Manufacturing, Leadership"
                 },
                 {
-                    title: "Founder and Captain - Mantis Combat Robotics",
+                    title: "Founder and Captain of Mantis Combat Robotics",
                     preview: "Founded and lead combat robotics team, developing leadership and technical skills",
                     date: "Sep 2024 - Present",
-                    details: "Founded and lead combat robotics team, developing leadership and technical skills. Skills: Robotics, Leadership, Engineering"
+                    details: "• Founded combat robotics team<br>• Led combat robotics team<br>• Skills: Robotics, Leadership, Engineering"
                 },
                 {
                     title: "DECA Competitive Events SCDC Qualifier",
                     preview: "Worked in Team Decision Making to qualify for SCDC, ranked as top 5 team in regional tournament",
                     date: "Sep 2024 - Mar 2025",
-                    details: "Qualified for SCDC in Team Decision Making, ranked top 5 in regional tournament. Skills: Teamwork, Business Management, Strategic Planning"
+                    details: "• Qualified for SCDC in Team Decision Making<br>• Ranked top 5 in regional tournament<br>• Skills: Teamwork, Business Management, Strategic Planning"
                 },
                 {
-                    title: "Volunteer Staff - American Red Cross",
+                    title: "Volunteer Staff at American Red Cross",
                     preview: "Volunteering with American Red Cross to support community initiatives",
                     date: "Mar 2025 - Present",
-                    details: "Volunteering as staff member supporting various community initiatives and programs."
+                    details: "• Supporting community initiatives and programs"
                 },
                 {
-                    title: "Marketing Lead - CoachT",
+                    title: "CMO of CoachT",
                     preview: "Chief Marketing Officer for CoachT and RunwayAI, managed 50+ B2B relationships, created outreach automations",
                     date: "May 2025 - Present",
                     company: "company 1",
-                    details: "CMO for CoachT and RunwayAI. Managed 50+ B2B relationships, created outreach automations. Sold to large company at 16. Skills: Leadership, Market Research, Marketing Strategy"
+                    details: "• Managed 50+ B2B relationships<br>• Created outreach automations<br>• Sold to large company at 16<br>• Skills: Leadership, Market Research, Marketing Strategy"
                 },
                 {
-                    title: "Chief Operating Officer - Vaidra Education",
+                    title: "COO of Vaidra Education",
                     preview: "Created website and technology, product used by 200+ schools and 30000+ students in India",
                     date: "Jun 2025 - Present",
                     company: "company 2",
-                    details: "Created website and technology. Product used by 200+ schools and 30000+ students in India. Implemented AI translation with multiple voices. Skills: AI, Back-End Web Development"
+                    details: "• Created website and technology<br>• Built product used by 200+ schools and 30000+ students in India<br>• Implemented AI translation with multiple voices<br>• Skills: AI, Back-End Web Development"
                 }
             ];
 
-            // Book data (placeholder)
+            // Book data
             const books = [
-                { title: "Book Title 1", author: "Author Name 1" },
-                { title: "Book Title 2", author: "Author Name 2" },
-                { title: "Book Title 3", author: "Author Name 3" },
-                { title: "Book Title 4", author: "Author Name 4" }
+                { title: "Zero to One", author: "Peter Thiel with Blake Masters" },
+                { title: "Elon Musk", author: "Ashlee Vance" }
             ];
 
             // Spring physics for smooth, flowy animation
@@ -568,24 +767,79 @@
                 }
             }
 
-            // Initialize spring followers
-            const leftFollower = new SpringFollower(leftButton);
-            const rightFollower = new SpringFollower(rightButton);
+            // Check if large screen (desktop/laptop) - use both width and touch detection
+            const isLargeScreen = window.innerWidth > 1024 && !('ontouchstart' in window);
+            
+            let leftFollower, rightFollower;
+            
+            // Only enable spring animation on large screens
+            if (isLargeScreen) {
+                // Initialize spring followers
+                leftFollower = new SpringFollower(leftButton);
+                rightFollower = new SpringFollower(rightButton);
 
-            // Track mouse position
-            let mouseY = window.innerHeight / 2;
-            document.addEventListener('mousemove', (e) => {
-                mouseY = e.clientY;
-                leftFollower.setTarget(mouseY);
-                rightFollower.setTarget(mouseY);
-            });
+                // Track mouse position
+                let mouseY = window.innerHeight / 2;
+                document.addEventListener('mousemove', (e) => {
+                    mouseY = e.clientY;
+                    leftFollower.setTarget(mouseY);
+                    rightFollower.setTarget(mouseY);
+                });
+            } else {
+                // On mobile/tablet, disable any animation and fix buttons next to name
+                leftButton.style.position = 'fixed';
+                rightButton.style.position = 'fixed';
+                leftButton.style.willChange = 'auto';
+                rightButton.style.willChange = 'auto';
+                
+                // Ensure buttons don't move with any animation
+                function positionButtonsNextToName() {
+                    if (nameWrapper.classList.contains('animate-to-top')) {
+                        const nameRect = nameWrapper.getBoundingClientRect();
+                        const nameCenterY = nameRect.top + (nameRect.height / 2);
+                        
+                        // Use requestAnimationFrame to ensure position is set
+                        requestAnimationFrame(() => {
+                            leftButton.style.top = nameCenterY + 'px';
+                            rightButton.style.top = nameCenterY + 'px';
+                            leftButton.style.transform = 'translateY(-50%)';
+                            rightButton.style.transform = 'translateY(-50%)';
+                        });
+                    } else {
+                        requestAnimationFrame(() => {
+                            leftButton.style.top = '50%';
+                            rightButton.style.top = '50%';
+                            leftButton.style.transform = 'translateY(-50%)';
+                            rightButton.style.transform = 'translateY(-50%)';
+                        });
+                    }
+                }
+                
+                // Position buttons initially
+                positionButtonsNextToName();
+                
+                // Position buttons when name animates to top
+                setTimeout(() => {
+                    positionButtonsNextToName();
+                }, 600); // After name animation completes
+                
+                // Update on resize and when name animates
+                window.addEventListener('resize', positionButtonsNextToName);
+                
+                // Watch for name animation
+                const observer = new MutationObserver(() => {
+                    positionButtonsNextToName();
+                });
+                observer.observe(nameWrapper, { attributes: true, attributeFilter: ['class'] });
+            }
 
             // Auto-animate name to top after 0.25s
             setTimeout(() => {
                 nameWrapper.classList.add('animate-to-top');
                 
-                // Show timeline after name animation completes
+                // Show intro text and timeline after name animation completes
                 setTimeout(() => {
+                    introText.classList.add('visible');
                     timelineContainer.classList.add('visible');
                     
                     // Stagger timeline boxes
