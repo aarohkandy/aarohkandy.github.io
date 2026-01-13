@@ -1,12 +1,15 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Aaroh Kandhare</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Poppins:wght@300;400;500;600&display=swap"
+        rel="stylesheet">
     <style>
         * {
             margin: 0;
@@ -14,15 +17,19 @@
             box-sizing: border-box;
         }
 
-        html, body {
+        html,
+        body {
             height: 100%;
             width: 100%;
-            overflow: hidden; /* No scrolling at all */
+            overflow: hidden;
+            /* No scrolling at all */
         }
 
         body {
-            background-color: #f5f5dc; /* beige */
-            color: #000000; /* black */
+            background-color: #f5f5dc;
+            /* beige */
+            color: #000000;
+            /* black */
             font-family: 'Poppins', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
             position: relative;
         }
@@ -37,18 +44,22 @@
 
         .slide-container {
             display: flex;
-            width: 300vw; /* 3 views side by side */
+            width: 300vw;
+            /* 3 views side by side */
             height: 100vh;
             transition: transform 0.3s ease;
-            transform: translateX(-100vw); /* Start at main (middle view) */
+            transform: translateX(-100vw);
+            /* Start at main (middle view) */
         }
 
         .slide-container.slide-right {
-            transform: translateX(0); /* Slide right to show contact (at 0vw) */
+            transform: translateX(0);
+            /* Slide right to show contact (at 0vw) */
         }
 
         .slide-container.slide-left {
-            transform: translateX(-200vw); /* Slide left to show library (at 200vw) */
+            transform: translateX(-200vw);
+            /* Slide left to show library (at 200vw) */
         }
 
         .view {
@@ -105,6 +116,7 @@
             .name {
                 font-size: 4rem;
             }
+
             .name-wrapper.animate-to-top .name {
                 font-size: 2rem;
             }
@@ -114,6 +126,7 @@
             .name {
                 font-size: 3rem;
             }
+
             .name-wrapper.animate-to-top .name {
                 font-size: 1.5rem;
             }
@@ -252,20 +265,20 @@
             line-height: 1.8;
             word-wrap: break-word;
         }
-        
+
         .timeline-details br {
             display: block;
             content: "";
             margin: 0;
         }
-        
+
         @media (max-width: 768px) {
             .timeline-details {
                 font-size: 0.85rem;
                 line-height: 1.5;
             }
         }
-        
+
         @media (max-width: 480px) {
             .timeline-details {
                 font-size: 0.8rem;
@@ -314,24 +327,24 @@
         .floating-button-right {
             right: 50px;
         }
-        
+
         /* Mobile/Tablet: Buttons stay next to name */
         @media (max-width: 1024px) {
             .floating-button {
                 position: fixed !important;
                 transition: top 0.3s ease, transform 0.3s ease !important;
             }
-            
+
             .floating-button-left {
                 left: 20px !important;
                 right: auto !important;
             }
-            
+
             .floating-button-right {
                 right: 20px;
             }
         }
-        
+
         /* Touch devices: Ensure buttons don't move */
         @media (hover: none) and (pointer: coarse) {
             .floating-button {
@@ -339,27 +352,27 @@
                 transition: top 0.3s ease, transform 0.3s ease !important;
             }
         }
-        
+
         @media (max-width: 768px) {
             .floating-button-left {
                 left: 15px !important;
             }
-            
+
             .floating-button-right {
                 right: 15px;
             }
         }
-        
+
         @media (max-width: 480px) {
             .floating-button {
                 font-size: 0.85rem;
                 padding: 8px 15px;
             }
-            
+
             .floating-button-left {
                 left: 10px !important;
             }
-            
+
             .floating-button-right {
                 right: 10px;
             }
@@ -370,29 +383,31 @@
                 font-size: 0.9rem;
                 padding: 10px 18px;
             }
+
             .floating-button-left {
                 left: 15px;
             }
+
             .floating-button-right {
                 right: 15px;
             }
-            
+
             .intro-text {
                 padding: 100px 15px 15px;
                 font-size: 1rem;
             }
-            
+
             .timeline-container {
                 padding: 15px 15px 15px;
                 max-height: calc(100vh - 200px);
             }
-            
+
             .timeline-title-row {
                 flex-direction: column;
                 align-items: flex-start;
                 gap: 6px;
             }
-            
+
             .timeline-title {
                 font-size: 1rem;
                 white-space: nowrap;
@@ -400,34 +415,34 @@
                 text-overflow: ellipsis;
                 width: 100%;
             }
-            
+
             .timeline-date {
                 font-size: 0.75rem;
                 margin-top: 2px;
             }
-            
+
             .timeline-company {
                 font-size: 0.7rem;
                 padding: 3px 6px;
             }
-            
+
             /* Move date/company container below title on mobile */
-            .timeline-title-row > div:last-child {
+            .timeline-title-row>div:last-child {
                 display: flex;
                 align-items: center;
                 gap: 8px;
                 margin-top: 4px;
             }
-            
+
             .name-wrapper.animate-to-top {
                 top: 20px;
                 padding: 0 15px;
             }
-            
+
             .name-wrapper.animate-to-top .name {
                 font-size: 1.8rem;
             }
-            
+
             .back-button {
                 top: 20px;
                 left: 15px;
@@ -435,53 +450,55 @@
                 font-size: 0.9rem;
             }
         }
-        
+
         @media (max-width: 480px) {
             .floating-button {
                 font-size: 0.85rem;
                 padding: 8px 15px;
             }
+
             .floating-button-left {
                 left: 10px;
             }
+
             .floating-button-right {
                 right: 10px;
             }
-            
+
             .intro-text {
                 padding: 90px 10px 10px;
                 font-size: 0.95rem;
             }
-            
+
             .timeline-container {
                 padding: 10px 10px 10px;
             }
-            
+
             .timeline-box {
                 padding: 8px 12px;
                 margin-bottom: 8px;
             }
-            
+
             .timeline-title {
                 font-size: 0.9rem;
                 white-space: nowrap;
                 overflow: hidden;
                 text-overflow: ellipsis;
             }
-            
+
             .timeline-date {
                 font-size: 0.7rem;
             }
-            
+
             .name-wrapper.animate-to-top .name {
                 font-size: 1.5rem;
             }
-            
+
             .contact-item {
                 font-size: 1.4rem;
                 gap: 15px;
             }
-            
+
             .contact-icon {
                 font-size: 2rem;
             }
@@ -634,6 +651,7 @@
         }
     </style>
 </head>
+
 <body>
     <div class="slide-wrapper">
         <div class="slide-container" id="slideContainer">
@@ -658,7 +676,8 @@
                     <div class="name">aaroh kandhare</div>
                 </div>
                 <div class="intro-text" id="introText">
-                    hi. I am aaroh. i like making solutions for people, physical and technological.<br><br>boring people are awful.
+                    hi. I am aaroh. i like making solutions for people, physical and technological.<br><br>boring people
+                    are awful.
                 </div>
                 <div class="timeline-container" id="timelineContainer">
                     <!-- Timeline boxes will be inserted here -->
@@ -681,7 +700,7 @@
     <button class="floating-button floating-button-right" id="rightButton">library</button>
 
     <script>
-        document.addEventListener('DOMContentLoaded', function() {
+        document.addEventListener('DOMContentLoaded', function () {
             const slideContainer = document.getElementById('slideContainer');
             const nameWrapper = document.getElementById('nameWrapper');
             const introText = document.getElementById('introText');
@@ -691,7 +710,7 @@
             const contactBackButton = document.getElementById('contactBackButton');
             const libraryBackButton = document.getElementById('libraryBackButton');
             const bookGrid = document.getElementById('bookGrid');
-            
+
             let currentView = 'main'; // Track current view: 'main', 'contact', 'library'
 
             // Timeline data - ordered by start date (oldest first)
@@ -768,15 +787,25 @@
 
             // Book data
             const books = [
-                { 
-                    title: "Zero to One", 
+                {
+                    title: "Zero to One",
                     author: "Peter Thiel with Blake Masters",
                     cover: "https://covers.openlibrary.org/b/isbn/9780804139298-L.jpg"
                 },
-                { 
-                    title: "Elon Musk", 
+                {
+                    title: "Elon Musk",
                     author: "Ashlee Vance",
                     cover: "https://covers.openlibrary.org/b/isbn/9780062301239-L.jpg"
+                },
+                {
+                    title: "Apollo by the Numbers",
+                    author: "Richard W. Orloff",
+                    cover: "assets/apollo_cover.png"
+                },
+                {
+                    title: "The Hard Thing About Hard Things",
+                    author: "Ben Horowitz",
+                    cover: "assets/hard_thing_cover.png"
                 }
             ];
 
@@ -811,9 +840,9 @@
 
             // Check if large screen (desktop/laptop) - use both width and touch detection
             const isLargeScreen = window.innerWidth > 1024 && !('ontouchstart' in window);
-            
+
             let leftFollower, rightFollower;
-            
+
             // Only enable spring animation on large screens
             if (isLargeScreen) {
                 // Initialize spring followers
@@ -833,13 +862,13 @@
                 rightButton.style.position = 'fixed';
                 leftButton.style.willChange = 'auto';
                 rightButton.style.willChange = 'auto';
-                
+
                 // Ensure buttons don't move with any animation
                 function positionButtonsNextToName() {
                     if (nameWrapper.classList.contains('animate-to-top')) {
                         const nameRect = nameWrapper.getBoundingClientRect();
                         const nameCenterY = nameRect.top + (nameRect.height / 2);
-                        
+
                         // Use requestAnimationFrame to ensure position is set
                         requestAnimationFrame(() => {
                             leftButton.style.top = nameCenterY + 'px';
@@ -856,18 +885,18 @@
                         });
                     }
                 }
-                
+
                 // Position buttons initially
                 positionButtonsNextToName();
-                
+
                 // Position buttons when name animates to top
                 setTimeout(() => {
                     positionButtonsNextToName();
                 }, 600); // After name animation completes
-                
+
                 // Update on resize and when name animates
                 window.addEventListener('resize', positionButtonsNextToName);
-                
+
                 // Watch for name animation
                 const observer = new MutationObserver(() => {
                     positionButtonsNextToName();
@@ -878,12 +907,12 @@
             // Auto-animate name to top after 0.25s
             setTimeout(() => {
                 nameWrapper.classList.add('animate-to-top');
-                
+
                 // Show intro text and timeline after name animation completes
                 setTimeout(() => {
                     introText.classList.add('visible');
                     timelineContainer.classList.add('visible');
-                    
+
                     // Stagger timeline boxes
                     const boxes = timelineContainer.querySelectorAll('.timeline-box');
                     boxes.forEach((box, index) => {
@@ -919,9 +948,9 @@
                 const { startDate, isOngoing } = parseDate(item.date);
                 const box = document.createElement('div');
                 box.className = `timeline-box ${isOngoing ? 'ongoing' : 'completed'}`;
-                
+
                 const companyLabel = item.company ? `<div class="timeline-company">${item.company}</div>` : '';
-                
+
                 box.innerHTML = `
                     <div class="timeline-title-row">
                         <div class="timeline-title">${item.title}</div>
@@ -932,8 +961,8 @@
                     </div>
                     <div class="timeline-details">${item.details}</div>
                 `;
-                
-                box.addEventListener('click', function() {
+
+                box.addEventListener('click', function () {
                     // Close all other boxes
                     const allBoxes = timelineContainer.querySelectorAll('.timeline-box');
                     allBoxes.forEach(otherBox => {
@@ -941,12 +970,12 @@
                             otherBox.classList.remove('expanded');
                         }
                     });
-                    
+
                     // Toggle the clicked box
                     const wasExpanded = box.classList.contains('expanded');
                     box.classList.toggle('expanded');
                     updateContainerScroll();
-                    
+
                     // Scroll to box if it's being expanded
                     if (!wasExpanded && box.classList.contains('expanded')) {
                         setTimeout(() => {
@@ -954,7 +983,7 @@
                         }, 100);
                     }
                 });
-                
+
                 timelineContainer.appendChild(box);
             });
 
@@ -1022,4 +1051,5 @@
         });
     </script>
 </body>
+
 </html>
