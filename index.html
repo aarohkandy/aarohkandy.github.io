@@ -765,7 +765,6 @@
 
             <!-- Library View (left) -->
             <div class="view library-view">
-                <canvas class="snake-canvas" data-snake-view="library" aria-hidden="true"></canvas>
                 <button class="back-button" id="libraryBackButton">← Back</button>
                 <div class="bookshelf">
                     <div class="book-grid" id="bookGrid">
@@ -807,12 +806,38 @@
                     context: canvas.getContext('2d')
                 }));
                 const minApples = 5;
+                const foodPalette = [
+                    {
+                        glow: 'rgba(204, 75, 64, 0.15)',
+                        fill: 'rgba(204, 75, 64, 0.58)',
+                        stroke: 'rgba(104, 24, 20, 0.38)'
+                    },
+                    {
+                        glow: 'rgba(224, 154, 49, 0.16)',
+                        fill: 'rgba(224, 154, 49, 0.58)',
+                        stroke: 'rgba(116, 72, 18, 0.36)'
+                    },
+                    {
+                        glow: 'rgba(88, 151, 77, 0.15)',
+                        fill: 'rgba(88, 151, 77, 0.56)',
+                        stroke: 'rgba(35, 82, 35, 0.35)'
+                    },
+                    {
+                        glow: 'rgba(70, 129, 178, 0.15)',
+                        fill: 'rgba(70, 129, 178, 0.54)',
+                        stroke: 'rgba(28, 67, 101, 0.34)'
+                    },
+                    {
+                        glow: 'rgba(139, 95, 174, 0.15)',
+                        fill: 'rgba(139, 95, 174, 0.54)',
+                        stroke: 'rgba(70, 44, 96, 0.34)'
+                    }
+                ];
                 const appleSets = {
                     main: [],
-                    contact: [],
-                    library: []
+                    contact: []
                 };
-                let apples = appleSets[currentView];
+                let apples = appleSets[currentView] || null;
                 const snake = [];
                 const startingSegmentCount = 46;
                 const segmentLength = 9;
@@ -836,11 +861,18 @@
                 }
 
                 function syncApplesForView() {
-                    const nextApples = appleSets[currentView] || appleSets.main;
+                    const nextApples = appleSets[currentView];
+                    if (!nextApples) {
+                        apples = null;
+                        return false;
+                    }
+
                     if (apples !== nextApples) {
                         apples = nextApples;
                     }
+
                     ensureApples();
+                    return true;
                 }
 
                 function resizeCanvas() {
@@ -868,12 +900,17 @@
                         x,
                         y,
                         clicked,
-                        radius: clicked ? 5 : 4,
+                        radius: clicked ? 9 : 8,
+                        color: foodPalette[Math.floor(Math.random() * foodPalette.length)],
                         pulse: Math.random() * Math.PI * 2
                     };
                 }
 
                 function randomApple() {
+                    if (!apples) {
+                        return;
+                    }
+
                     const margin = 42;
                     const usableWidth = Math.max(width - margin * 2, 1);
                     const usableHeight = Math.max(height - margin * 2, 1);
@@ -884,6 +921,10 @@
                 }
 
                 function ensureApples() {
+                    if (!apples) {
+                        return;
+                    }
+
                     while (apples.length < minApples) {
                         randomApple();
                     }
@@ -914,6 +955,10 @@
                 }
 
                 function nearestApple() {
+                    if (!apples) {
+                        return null;
+                    }
+
                     let nearest = null;
                     let nearestDistance = Infinity;
 
@@ -931,21 +976,29 @@
                 function moveSnake(now) {
                     const delta = Math.min((now - lastFrame) / 16.67, 2);
                     lastFrame = now;
-                    syncApplesForView();
+                    if (!syncApplesForView()) {
+                        return;
+                    }
 
                     const target = nearestApple();
                     if (target) {
-                        const targetX = target.x + Math.sin(now * 0.0014 + target.pulse) * 18;
-                        const targetY = target.y + Math.cos(now * 0.0011 + target.pulse) * 14;
+                        const distanceToTarget = Math.hypot(target.x - head.x, target.y - head.y);
+                        const targetWobble = Math.min(12, distanceToTarget * 0.12);
+                        const targetX = target.x + Math.sin(now * 0.0014 + target.pulse) * targetWobble;
+                        const targetY = target.y + Math.cos(now * 0.0011 + target.pulse) * targetWobble;
                         const desiredAngle = Math.atan2(targetY - head.y, targetX - head.x);
                         const turn = normalizeAngle(desiredAngle - head.angle);
-                        const turnLimit = 0.046 * delta;
-                        head.angle += Math.max(-turnLimit, Math.min(turnLimit, turn * 0.08 * delta));
+                        if (distanceToTarget < 64) {
+                            head.angle = desiredAngle;
+                        } else {
+                            const turnLimit = 0.11 * delta;
+                            head.angle += Math.max(-turnLimit, Math.min(turnLimit, turn * 0.2 * delta));
+                        }
                     }
 
-                    head.angle += Math.sin(now * 0.0017) * 0.003 * delta;
+                    head.angle += Math.sin(now * 0.0017) * 0.0015 * delta;
 
-                    const speed = (1.45 + Math.sin(now * 0.002 + 0.7) * 0.16) * delta;
+                    const speed = (2.05 + Math.sin(now * 0.002 + 0.7) * 0.12) * delta;
                     head.x += Math.cos(head.angle) * speed;
                     head.y += Math.sin(head.angle) * speed;
 
@@ -971,7 +1024,7 @@
                     }
 
                     for (let index = apples.length - 1; index >= 0; index -= 1) {
-                        if (Math.hypot(apples[index].x - head.x, apples[index].y - head.y) < 16) {
+                        if (Math.hypot(apples[index].x - head.x, apples[index].y - head.y) < 28) {
                             apples.splice(index, 1);
                             growSnake();
                         }
@@ -984,16 +1037,22 @@
                     context.clearRect(0, 0, width, height);
 
                     applesToDraw.forEach(apple => {
-                        const pulse = Math.sin(now * 0.004 + apple.pulse) * 0.8;
+                        const color = apple.color || foodPalette[0];
+                        const pulse = Math.sin(now * 0.004 + apple.pulse) * 1.5;
                         context.beginPath();
-                        context.arc(apple.x, apple.y, apple.radius + pulse, 0, Math.PI * 2);
-                        context.fillStyle = apple.clicked ? 'rgba(114, 42, 35, 0.24)' : 'rgba(86, 78, 42, 0.18)';
+                        context.arc(apple.x, apple.y, apple.radius + 8 + pulse, 0, Math.PI * 2);
+                        context.fillStyle = color.glow;
                         context.fill();
 
                         context.beginPath();
-                        context.arc(apple.x, apple.y, apple.radius + 5 + pulse, 0, Math.PI * 2);
-                        context.strokeStyle = apple.clicked ? 'rgba(114, 42, 35, 0.08)' : 'rgba(86, 78, 42, 0.07)';
-                        context.lineWidth = 1.5;
+                        context.arc(apple.x, apple.y, apple.radius + pulse, 0, Math.PI * 2);
+                        context.fillStyle = color.fill;
+                        context.fill();
+
+                        context.beginPath();
+                        context.arc(apple.x, apple.y, apple.radius + 2 + pulse, 0, Math.PI * 2);
+                        context.strokeStyle = color.stroke;
+                        context.lineWidth = 2;
                         context.stroke();
                     });
 
@@ -1010,8 +1069,8 @@
                         context.quadraticCurveTo(current.x, current.y, midX, midY);
                     }
 
-                    context.strokeStyle = 'rgba(21, 45, 20, 0.045)';
-                    context.lineWidth = 13;
+                    context.strokeStyle = 'rgba(21, 45, 20, 0.075)';
+                    context.lineWidth = 22;
                     context.stroke();
 
                     context.beginPath();
@@ -1023,13 +1082,13 @@
                         const midY = (current.y + next.y) * 0.5;
                         context.quadraticCurveTo(current.x, current.y, midX, midY);
                     }
-                    context.strokeStyle = 'rgba(34, 86, 34, 0.085)';
-                    context.lineWidth = 6;
+                    context.strokeStyle = 'rgba(34, 86, 34, 0.16)';
+                    context.lineWidth = 11;
                     context.stroke();
 
                     context.beginPath();
-                    context.arc(head.x, head.y, 5.5, 0, Math.PI * 2);
-                    context.fillStyle = 'rgba(24, 66, 28, 0.13)';
+                    context.arc(head.x, head.y, 8, 0, Math.PI * 2);
+                    context.fillStyle = 'rgba(24, 66, 28, 0.22)';
                     context.fill();
                 }
 
@@ -1046,7 +1105,9 @@
                         return;
                     }
 
-                    syncApplesForView();
+                    if (!syncApplesForView()) {
+                        return;
+                    }
                     apples.push(makeApple(event.clientX, event.clientY, true));
                 });
 
