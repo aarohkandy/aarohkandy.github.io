@@ -32,6 +32,8 @@
             /* black */
             font-family: 'Poppins', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
             position: relative;
+            user-select: none;
+            -webkit-user-select: none;
         }
 
         .founders-badge {
@@ -85,7 +87,95 @@
             z-index: 2;
             width: 100%;
             height: 100%;
+            filter: blur(4px);
+            opacity: 0.72;
             pointer-events: none;
+            transition: filter 0.2s ease, opacity 0.2s ease;
+        }
+
+        body.snake-unblurred .snake-canvas {
+            filter: none;
+            opacity: 1;
+        }
+
+        .snake-controls {
+            position: fixed;
+            top: 92px;
+            left: 24px;
+            z-index: 1002;
+            display: grid;
+            grid-template-columns: repeat(2, auto);
+            gap: 8px;
+            align-items: center;
+            padding: 10px;
+            background: rgba(232, 232, 216, 0.86);
+            border: 1px solid rgba(0, 0, 0, 0.08);
+            border-radius: 8px;
+            box-shadow: 0 8px 22px rgba(0, 0, 0, 0.08);
+            backdrop-filter: blur(8px);
+            transition: opacity 0.2s ease, transform 0.2s ease;
+        }
+
+        body.snake-controls-hidden .snake-controls {
+            opacity: 0;
+            pointer-events: none;
+            transform: translateY(-6px);
+        }
+
+        .snake-control-group {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .snake-control-label {
+            font-size: 0.7rem;
+            font-weight: 600;
+            color: #444;
+            white-space: nowrap;
+        }
+
+        .snake-control-button {
+            min-width: 58px;
+            padding: 7px 9px;
+            border: 1px solid transparent;
+            border-radius: 6px;
+            background: rgba(245, 245, 220, 0.8);
+            color: #000;
+            font-family: inherit;
+            font-size: 0.72rem;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        .snake-control-button.active {
+            background: #11150f;
+            color: #f5f5dc;
+        }
+
+        .snake-control-checkbox {
+            width: 18px;
+            height: 18px;
+            accent-color: #426f3a;
+            cursor: pointer;
+        }
+
+        .snake-control-input {
+            width: 58px;
+            padding: 6px 7px;
+            border: 1px solid rgba(0, 0, 0, 0.14);
+            border-radius: 6px;
+            background: rgba(245, 245, 220, 0.9);
+            color: #000;
+            font-family: inherit;
+            font-size: 0.78rem;
+        }
+
+        .snake-control-input:focus,
+        .snake-control-button:focus-visible,
+        .snake-control-checkbox:focus-visible {
+            outline: 2px solid rgba(66, 111, 58, 0.5);
+            outline-offset: 2px;
         }
 
         /* Slide system wrapper */
@@ -280,6 +370,28 @@
             margin: 0;
             gap: 15px;
             flex-wrap: wrap;
+        }
+
+        .timeline-meta {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-left: auto;
+        }
+
+        .timeline-arrow {
+            width: 10px;
+            height: 10px;
+            border-right: 2px solid #777;
+            border-bottom: 2px solid #777;
+            transform: rotate(45deg);
+            transition: transform 0.25s ease;
+            flex: 0 0 auto;
+            margin-left: 2px;
+        }
+
+        .timeline-box.expanded .timeline-arrow {
+            transform: rotate(225deg);
         }
 
         .timeline-title {
@@ -484,12 +596,17 @@
                 padding: 3px 6px;
             }
 
-            /* Move date/company container below title on mobile */
-            .timeline-title-row>div:last-child {
+            .timeline-meta {
                 display: flex;
                 align-items: center;
                 gap: 8px;
                 margin-top: 4px;
+                margin-left: 0;
+            }
+
+            .timeline-arrow {
+                margin-top: 8px;
+                margin-left: auto;
             }
 
             .name-wrapper.animate-to-top {
@@ -593,6 +710,7 @@
             align-items: center;
             position: relative;
             z-index: 3;
+            max-width: min(90vw, 860px);
         }
 
         .contact-item {
@@ -605,6 +723,8 @@
             color: #000000;
             text-decoration: none;
             transition: color 0.3s ease;
+            overflow-wrap: anywhere;
+            text-align: center;
         }
 
         .contact-item a:hover {
@@ -717,6 +837,31 @@
                 border-radius: 11px;
             }
 
+            .snake-controls {
+                top: 118px;
+                left: 10px;
+                grid-template-columns: 1fr;
+                gap: 6px;
+                padding: 8px;
+            }
+
+            .snake-control-group {
+                justify-content: space-between;
+            }
+
+            .snake-control-button {
+                min-width: 54px;
+                padding: 6px 8px;
+            }
+
+            .snake-control-label {
+                font-size: 0.66rem;
+            }
+
+            .snake-control-input {
+                width: 54px;
+            }
+
         }
     </style>
 </head>
@@ -727,6 +872,25 @@
             <img src="assets/f_inc_logo.png" alt="">
         </div>
         <div><span class="founders-muted">BACKED BY</span> FOUNDERS INC.</div>
+    </div>
+
+    <div class="snake-controls" id="snakeControls" aria-label="Snake options">
+        <div class="snake-control-group" aria-label="Snake blur">
+            <button class="snake-control-button active" type="button" id="snakeBlurOn">blur</button>
+            <button class="snake-control-button" type="button" id="snakeBlurOff">unblur</button>
+        </div>
+        <label class="snake-control-group">
+            <input class="snake-control-checkbox" type="checkbox" id="snakeColorToggle" checked>
+            <span class="snake-control-label">multicolored food</span>
+        </label>
+        <label class="snake-control-group">
+            <span class="snake-control-label">default #</span>
+            <input class="snake-control-input" type="number" id="snakeDefaultCount" min="0" max="30" value="5">
+        </label>
+        <label class="snake-control-group">
+            <span class="snake-control-label">snake length</span>
+            <input class="snake-control-input" type="number" id="snakeLength" min="16" max="600" value="46">
+        </label>
     </div>
 
     <div class="slide-wrapper">
@@ -744,6 +908,9 @@
                     </div>
                     <div class="contact-item">
                         <a href="tel:4256230392">425-623-0392</a>
+                    </div>
+                    <div class="contact-item">
+                        <a href="https://cal.com/aaroh-kandhare-vem6pg/talk">cal.com/aaroh-kandhare-vem6pg/talk</a>
                     </div>
                 </div>
             </div>
@@ -790,6 +957,12 @@
             const contactBackButton = document.getElementById('contactBackButton');
             const libraryBackButton = document.getElementById('libraryBackButton');
             const bookGrid = document.getElementById('bookGrid');
+            const snakeControls = document.getElementById('snakeControls');
+            const snakeBlurOn = document.getElementById('snakeBlurOn');
+            const snakeBlurOff = document.getElementById('snakeBlurOff');
+            const snakeColorToggle = document.getElementById('snakeColorToggle');
+            const snakeDefaultCount = document.getElementById('snakeDefaultCount');
+            const snakeLength = document.getElementById('snakeLength');
 
             let currentView = 'main'; // Track current view: 'main', 'contact', 'library'
 
@@ -805,7 +978,8 @@
                     view: canvas.dataset.snakeView || 'main',
                     context: canvas.getContext('2d')
                 }));
-                const minApples = 5;
+                let minApples = snakeDefaultCount ? Number(snakeDefaultCount.value) : 5;
+                let multicoloredFood = snakeColorToggle ? snakeColorToggle.checked : true;
                 const foodPalette = [
                     {
                         glow: 'rgba(204, 75, 64, 0.15)',
@@ -833,6 +1007,11 @@
                         stroke: 'rgba(70, 44, 96, 0.34)'
                     }
                 ];
+                const defaultFoodColor = {
+                    glow: 'rgba(116, 92, 38, 0.14)',
+                    fill: 'rgba(118, 86, 30, 0.5)',
+                    stroke: 'rgba(72, 55, 18, 0.32)'
+                };
                 const appleSets = {
                     main: [],
                     contact: []
@@ -852,6 +1031,10 @@
                 let width = window.innerWidth;
                 let height = window.innerHeight;
                 let lastFrame = performance.now();
+
+                function clamp(value, min, max) {
+                    return Math.min(Math.max(value, min), max);
+                }
 
                 for (let index = 0; index < startingSegmentCount; index += 1) {
                     snake.push({
@@ -930,21 +1113,44 @@
                     }
                 }
 
-                function growSnake() {
+                function updateLengthControl() {
+                    if (snakeLength) {
+                        snakeLength.value = String(snake.length);
+                    }
+                }
+
+                function setSnakeLength(length) {
+                    const targetLength = clamp(Math.round(length), 16, maxSegmentCount);
+
+                    while (snake.length < targetLength) {
+                        appendSnakeSegment();
+                    }
+
+                    if (snake.length > targetLength) {
+                        snake.length = targetLength;
+                    }
+
+                    updateLengthControl();
+                }
+
+                function appendSnakeSegment() {
                     let tail = snake[snake.length - 1];
                     let previous = snake[snake.length - 2] || tail;
                     let angle = Math.atan2(tail.y - previous.y, tail.x - previous.x);
+                    const newTail = {
+                        x: tail.x + Math.cos(angle) * segmentLength,
+                        y: tail.y + Math.sin(angle) * segmentLength
+                    };
 
+                    snake.push(newTail);
+                }
+
+                function growSnake() {
                     for (let index = 0; index < growthPerApple && snake.length < maxSegmentCount; index += 1) {
-                        const newTail = {
-                            x: tail.x + Math.cos(angle) * segmentLength,
-                            y: tail.y + Math.sin(angle) * segmentLength
-                        };
-                        snake.push(newTail);
-                        previous = tail;
-                        tail = newTail;
-                        angle = Math.atan2(tail.y - previous.y, tail.x - previous.x);
+                        appendSnakeSegment();
                     }
+
+                    updateLengthControl();
                 }
 
                 function normalizeAngle(angle) {
@@ -1037,7 +1243,7 @@
                     context.clearRect(0, 0, width, height);
 
                     applesToDraw.forEach(apple => {
-                        const color = apple.color || foodPalette[0];
+                        const color = multicoloredFood ? (apple.color || foodPalette[0]) : defaultFoodColor;
                         const pulse = Math.sin(now * 0.004 + apple.pulse) * 1.5;
                         context.beginPath();
                         context.arc(apple.x, apple.y, apple.radius + 8 + pulse, 0, Math.PI * 2);
@@ -1100,8 +1306,58 @@
                     requestAnimationFrame(animate);
                 }
 
+                function isInteractiveTarget(target) {
+                    return target instanceof Element &&
+                        Boolean(target.closest('button, a, input, label, select, textarea, .snake-controls'));
+                }
+
+                function setSnakeBlur(isBlurred) {
+                    document.body.classList.toggle('snake-unblurred', !isBlurred);
+                    snakeBlurOn?.classList.toggle('active', isBlurred);
+                    snakeBlurOff?.classList.toggle('active', !isBlurred);
+                }
+
+                snakeControls?.addEventListener('click', event => event.stopPropagation());
+                snakeControls?.addEventListener('mousedown', event => event.stopPropagation());
+                snakeControls?.addEventListener('dblclick', event => event.stopPropagation());
+
+                snakeBlurOn?.addEventListener('click', () => {
+                    setSnakeBlur(true);
+                });
+
+                snakeBlurOff?.addEventListener('click', () => {
+                    setSnakeBlur(false);
+                });
+
+                snakeColorToggle?.addEventListener('change', () => {
+                    multicoloredFood = snakeColorToggle.checked;
+                });
+
+                snakeDefaultCount?.addEventListener('change', () => {
+                    minApples = clamp(Number(snakeDefaultCount.value) || 0, 0, 30);
+                    snakeDefaultCount.value = String(minApples);
+                    syncApplesForView();
+                });
+
+                snakeLength?.addEventListener('change', () => {
+                    const requestedLength = clamp(Number(snakeLength.value) || startingSegmentCount, 16, maxSegmentCount);
+                    setSnakeLength(requestedLength);
+                });
+
+                document.addEventListener('selectstart', event => {
+                    if (!isInteractiveTarget(event.target)) {
+                        event.preventDefault();
+                    }
+                });
+
+                document.addEventListener('dblclick', event => {
+                    if (!isInteractiveTarget(event.target)) {
+                        event.preventDefault();
+                    }
+                });
+
                 document.addEventListener('click', event => {
-                    if (event.target instanceof Element && event.target.closest('button, a')) {
+                    if (isInteractiveTarget(event.target)) {
                         return;
                     }
 
@@ -1113,6 +1369,7 @@
 
                 window.addEventListener('resize', resizeCanvas);
                 resizeCanvas();
+                updateLengthControl();
                 requestAnimationFrame(animate);
             }
 
@@ -1364,10 +1621,11 @@
                 box.innerHTML = `
                     <div class="timeline-title-row">
                         <div class="timeline-title">${item.title}</div>
-                        <div style="display: flex; align-items: center; gap: 10px;">
+                        <div class="timeline-meta">
                             ${companyLabel}
                             <div class="timeline-date">${startDate}</div>
                         </div>
+                        <span class="timeline-arrow" aria-hidden="true"></span>
                     </div>
                     <div class="timeline-details">${item.details}</div>
                 `;
@@ -1434,6 +1692,8 @@
 
             // Update button labels, handlers, and visibility based on current view
             function updateButtonLabels() {
+                document.body.classList.toggle('snake-controls-hidden', currentView === 'library');
+
                 if (currentView === 'main') {
                     leftButton.textContent = 'contact';
                     rightButton.textContent = 'library';
