@@ -34,6 +34,60 @@
             position: relative;
         }
 
+        .founders-badge {
+            position: fixed;
+            top: 22px;
+            right: 24px;
+            z-index: 1001;
+            display: flex;
+            align-items: center;
+            gap: 13px;
+            padding: 8px 24px 8px 8px;
+            color: #f7f9f2;
+            background: #020704;
+            border: 1px solid rgba(91, 123, 83, 0.38);
+            border-radius: 999px;
+            box-shadow: 0 14px 36px rgba(0, 0, 0, 0.14), inset 0 0 18px rgba(37, 228, 20, 0.07);
+            font-size: 0.86rem;
+            font-weight: 700;
+            letter-spacing: 0.18em;
+            line-height: 1;
+            white-space: nowrap;
+            pointer-events: none;
+        }
+
+        .founders-mark {
+            width: 52px;
+            height: 52px;
+            border-radius: 14px;
+            background: #000000;
+            box-shadow: inset 0 0 18px rgba(255, 255, 255, 0.06);
+            display: grid;
+            place-items: center;
+            flex: 0 0 auto;
+        }
+
+        .founders-mark img {
+            width: 100%;
+            height: 100%;
+            border-radius: inherit;
+            display: block;
+            object-fit: cover;
+        }
+
+        .founders-muted {
+            color: #84957b;
+        }
+
+        .snake-canvas {
+            position: absolute;
+            inset: 0;
+            z-index: 2;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+        }
+
         /* Slide system wrapper */
         .slide-wrapper {
             width: 100%;
@@ -138,6 +192,8 @@
             max-width: 800px;
             margin: 0 auto;
             padding: 120px 20px 20px;
+            position: relative;
+            z-index: 3;
             opacity: 0;
             transition: opacity 0.5s ease;
             font-size: 1.1rem;
@@ -162,6 +218,8 @@
             display: flex;
             flex-direction: column;
             justify-content: flex-start;
+            position: relative;
+            z-index: 3;
         }
 
         .timeline-container.visible {
@@ -496,11 +554,6 @@
 
             .contact-item {
                 font-size: 1.4rem;
-                gap: 15px;
-            }
-
-            .contact-icon {
-                font-size: 2rem;
             }
         }
 
@@ -526,6 +579,7 @@
             font-weight: 500;
             cursor: pointer;
             transition: background-color 0.3s ease;
+            z-index: 4;
         }
 
         .back-button:hover {
@@ -535,14 +589,15 @@
         .contact-content {
             display: flex;
             flex-direction: column;
-            gap: 40px;
+            gap: 24px;
             align-items: center;
+            position: relative;
+            z-index: 3;
         }
 
         .contact-item {
             display: flex;
             align-items: center;
-            gap: 20px;
             font-size: 1.8rem;
         }
 
@@ -554,10 +609,6 @@
 
         .contact-item a:hover {
             color: #666;
-        }
-
-        .contact-icon {
-            font-size: 2.5rem;
         }
 
         /* Library page */
@@ -589,7 +640,7 @@
             max-width: 1000px;
             margin-top: 20px;
             position: relative;
-            z-index: 1;
+            z-index: 3;
         }
 
         .book-grid {
@@ -649,22 +700,49 @@
             color: #666;
             text-align: center;
         }
+
+        @media (max-width: 768px) {
+            .founders-badge {
+                top: 68px;
+                right: 14px;
+                gap: 9px;
+                padding: 6px 14px 6px 6px;
+                font-size: 0.66rem;
+                letter-spacing: 0.14em;
+            }
+
+            .founders-mark {
+                width: 38px;
+                height: 38px;
+                border-radius: 11px;
+            }
+
+        }
     </style>
 </head>
 
 <body>
+    <div class="founders-badge" aria-label="Backed by Founders Inc.">
+        <div class="founders-mark" aria-hidden="true">
+            <img src="assets/f_inc_logo.png" alt="">
+        </div>
+        <div><span class="founders-muted">BACKED BY</span> FOUNDERS INC.</div>
+    </div>
+
     <div class="slide-wrapper">
         <div class="slide-container" id="slideContainer">
             <!-- Contact View (right) -->
             <div class="view contact-view">
+                <canvas class="snake-canvas" data-snake-view="contact" aria-hidden="true"></canvas>
                 <button class="back-button" id="contactBackButton">← Back</button>
                 <div class="contact-content">
                     <div class="contact-item">
-                        <span class="contact-icon">📧</span>
                         <a href="mailto:aarohkandy@gmail.com">aarohkandy@gmail.com</a>
                     </div>
                     <div class="contact-item">
-                        <span class="contact-icon">📞</span>
+                        <a href="mailto:akandy@stanford.edu">akandy@stanford.edu</a>
+                    </div>
+                    <div class="contact-item">
                         <a href="tel:4256230392">425-623-0392</a>
                     </div>
                 </div>
@@ -672,6 +750,7 @@
 
             <!-- Main View (center) -->
             <div class="view main-view">
+                <canvas class="snake-canvas" data-snake-view="main" aria-hidden="true"></canvas>
                 <div class="name-wrapper" id="nameWrapper">
                     <div class="name">aaroh kandhare</div>
                 </div>
@@ -686,6 +765,7 @@
 
             <!-- Library View (left) -->
             <div class="view library-view">
+                <canvas class="snake-canvas" data-snake-view="library" aria-hidden="true"></canvas>
                 <button class="back-button" id="libraryBackButton">← Back</button>
                 <div class="bookshelf">
                     <div class="book-grid" id="bookGrid">
@@ -701,6 +781,7 @@
 
     <script>
         document.addEventListener('DOMContentLoaded', function () {
+            const snakeCanvases = Array.from(document.querySelectorAll('.snake-canvas'));
             const slideContainer = document.getElementById('slideContainer');
             const nameWrapper = document.getElementById('nameWrapper');
             const introText = document.getElementById('introText');
@@ -712,6 +793,267 @@
             const bookGrid = document.getElementById('bookGrid');
 
             let currentView = 'main'; // Track current view: 'main', 'contact', 'library'
+
+            initSnakeBackground(snakeCanvases);
+
+            function initSnakeBackground(canvases) {
+                if (!canvases.length) {
+                    return;
+                }
+
+                const canvasViews = canvases.map(canvas => ({
+                    canvas,
+                    view: canvas.dataset.snakeView || 'main',
+                    context: canvas.getContext('2d')
+                }));
+                const minApples = 5;
+                const appleSets = {
+                    main: [],
+                    contact: [],
+                    library: []
+                };
+                let apples = appleSets[currentView];
+                const snake = [];
+                const startingSegmentCount = 46;
+                const segmentLength = 9;
+                const growthPerApple = 6;
+                const maxSegmentCount = 600;
+                const head = {
+                    x: window.innerWidth * 0.5,
+                    y: window.innerHeight * 0.5,
+                    angle: -0.4
+                };
+
+                let width = window.innerWidth;
+                let height = window.innerHeight;
+                let lastFrame = performance.now();
+
+                for (let index = 0; index < startingSegmentCount; index += 1) {
+                    snake.push({
+                        x: head.x - index * segmentLength,
+                        y: head.y + Math.sin(index * 0.4) * 2
+                    });
+                }
+
+                function syncApplesForView() {
+                    const nextApples = appleSets[currentView] || appleSets.main;
+                    if (apples !== nextApples) {
+                        apples = nextApples;
+                    }
+                    ensureApples();
+                }
+
+                function resizeCanvas() {
+                    const ratio = Math.min(window.devicePixelRatio || 1, 2);
+                    width = window.innerWidth;
+                    height = window.innerHeight;
+
+                    canvasViews.forEach(({ canvas, context }) => {
+                        canvas.width = Math.floor(width * ratio);
+                        canvas.height = Math.floor(height * ratio);
+                        canvas.style.width = `${width}px`;
+                        canvas.style.height = `${height}px`;
+                        context.setTransform(ratio, 0, 0, ratio, 0, 0);
+                    });
+
+                    Object.values(appleSets).flat().forEach(apple => {
+                        apple.x = Math.min(Math.max(apple.x, 28), width - 28);
+                        apple.y = Math.min(Math.max(apple.y, 28), height - 28);
+                    });
+                    syncApplesForView();
+                }
+
+                function makeApple(x, y, clicked = false) {
+                    return {
+                        x,
+                        y,
+                        clicked,
+                        radius: clicked ? 5 : 4,
+                        pulse: Math.random() * Math.PI * 2
+                    };
+                }
+
+                function randomApple() {
+                    const margin = 42;
+                    const usableWidth = Math.max(width - margin * 2, 1);
+                    const usableHeight = Math.max(height - margin * 2, 1);
+                    apples.push(makeApple(
+                        margin + Math.random() * usableWidth,
+                        margin + Math.random() * usableHeight
+                    ));
+                }
+
+                function ensureApples() {
+                    while (apples.length < minApples) {
+                        randomApple();
+                    }
+                }
+
+                function growSnake() {
+                    let tail = snake[snake.length - 1];
+                    let previous = snake[snake.length - 2] || tail;
+                    let angle = Math.atan2(tail.y - previous.y, tail.x - previous.x);
+
+                    for (let index = 0; index < growthPerApple && snake.length < maxSegmentCount; index += 1) {
+                        const newTail = {
+                            x: tail.x + Math.cos(angle) * segmentLength,
+                            y: tail.y + Math.sin(angle) * segmentLength
+                        };
+                        snake.push(newTail);
+                        previous = tail;
+                        tail = newTail;
+                        angle = Math.atan2(tail.y - previous.y, tail.x - previous.x);
+                    }
+                }
+
+                function normalizeAngle(angle) {
+                    let normalized = angle;
+                    while (normalized > Math.PI) normalized -= Math.PI * 2;
+                    while (normalized < -Math.PI) normalized += Math.PI * 2;
+                    return normalized;
+                }
+
+                function nearestApple() {
+                    let nearest = null;
+                    let nearestDistance = Infinity;
+
+                    apples.forEach(apple => {
+                        const distance = Math.hypot(apple.x - head.x, apple.y - head.y);
+                        if (distance < nearestDistance) {
+                            nearest = apple;
+                            nearestDistance = distance;
+                        }
+                    });
+
+                    return nearest;
+                }
+
+                function moveSnake(now) {
+                    const delta = Math.min((now - lastFrame) / 16.67, 2);
+                    lastFrame = now;
+                    syncApplesForView();
+
+                    const target = nearestApple();
+                    if (target) {
+                        const targetX = target.x + Math.sin(now * 0.0014 + target.pulse) * 18;
+                        const targetY = target.y + Math.cos(now * 0.0011 + target.pulse) * 14;
+                        const desiredAngle = Math.atan2(targetY - head.y, targetX - head.x);
+                        const turn = normalizeAngle(desiredAngle - head.angle);
+                        const turnLimit = 0.046 * delta;
+                        head.angle += Math.max(-turnLimit, Math.min(turnLimit, turn * 0.08 * delta));
+                    }
+
+                    head.angle += Math.sin(now * 0.0017) * 0.003 * delta;
+
+                    const speed = (1.45 + Math.sin(now * 0.002 + 0.7) * 0.16) * delta;
+                    head.x += Math.cos(head.angle) * speed;
+                    head.y += Math.sin(head.angle) * speed;
+
+                    if (head.x < 8 || head.x > width - 8 || head.y < 8 || head.y > height - 8) {
+                        head.x = Math.min(Math.max(head.x, 8), width - 8);
+                        head.y = Math.min(Math.max(head.y, 8), height - 8);
+                        head.angle = Math.atan2(height * 0.5 - head.y, width * 0.5 - head.x);
+                    }
+
+                    snake[0].x = head.x;
+                    snake[0].y = head.y;
+
+                    for (let index = 1; index < snake.length; index += 1) {
+                        const previous = snake[index - 1];
+                        const current = snake[index];
+                        const dx = current.x - previous.x;
+                        const dy = current.y - previous.y;
+                        const distance = Math.hypot(dx, dy) || 1;
+                        const targetX = previous.x + (dx / distance) * segmentLength;
+                        const targetY = previous.y + (dy / distance) * segmentLength;
+                        current.x += (targetX - current.x) * 0.42;
+                        current.y += (targetY - current.y) * 0.42;
+                    }
+
+                    for (let index = apples.length - 1; index >= 0; index -= 1) {
+                        if (Math.hypot(apples[index].x - head.x, apples[index].y - head.y) < 16) {
+                            apples.splice(index, 1);
+                            growSnake();
+                        }
+                    }
+
+                    ensureApples();
+                }
+
+                function drawSnake(context, applesToDraw, now) {
+                    context.clearRect(0, 0, width, height);
+
+                    applesToDraw.forEach(apple => {
+                        const pulse = Math.sin(now * 0.004 + apple.pulse) * 0.8;
+                        context.beginPath();
+                        context.arc(apple.x, apple.y, apple.radius + pulse, 0, Math.PI * 2);
+                        context.fillStyle = apple.clicked ? 'rgba(114, 42, 35, 0.24)' : 'rgba(86, 78, 42, 0.18)';
+                        context.fill();
+
+                        context.beginPath();
+                        context.arc(apple.x, apple.y, apple.radius + 5 + pulse, 0, Math.PI * 2);
+                        context.strokeStyle = apple.clicked ? 'rgba(114, 42, 35, 0.08)' : 'rgba(86, 78, 42, 0.07)';
+                        context.lineWidth = 1.5;
+                        context.stroke();
+                    });
+
+                    context.lineCap = 'round';
+                    context.lineJoin = 'round';
+                    context.beginPath();
+                    context.moveTo(snake[0].x, snake[0].y);
+
+                    for (let index = 1; index < snake.length - 1; index += 1) {
+                        const current = snake[index];
+                        const next = snake[index + 1];
+                        const midX = (current.x + next.x) * 0.5;
+                        const midY = (current.y + next.y) * 0.5;
+                        context.quadraticCurveTo(current.x, current.y, midX, midY);
+                    }
+
+                    context.strokeStyle = 'rgba(21, 45, 20, 0.045)';
+                    context.lineWidth = 13;
+                    context.stroke();
+
+                    context.beginPath();
+                    context.moveTo(snake[0].x, snake[0].y);
+                    for (let index = 1; index < snake.length - 1; index += 1) {
+                        const current = snake[index];
+                        const next = snake[index + 1];
+                        const midX = (current.x + next.x) * 0.5;
+                        const midY = (current.y + next.y) * 0.5;
+                        context.quadraticCurveTo(current.x, current.y, midX, midY);
+                    }
+                    context.strokeStyle = 'rgba(34, 86, 34, 0.085)';
+                    context.lineWidth = 6;
+                    context.stroke();
+
+                    context.beginPath();
+                    context.arc(head.x, head.y, 5.5, 0, Math.PI * 2);
+                    context.fillStyle = 'rgba(24, 66, 28, 0.13)';
+                    context.fill();
+                }
+
+                function animate(now) {
+                    moveSnake(now);
+                    canvasViews.forEach(({ context, view }) => {
+                        drawSnake(context, appleSets[view] || [], now);
+                    });
+                    requestAnimationFrame(animate);
+                }
+
+                document.addEventListener('click', event => {
+                    if (event.target instanceof Element && event.target.closest('button, a')) {
+                        return;
+                    }
+
+                    syncApplesForView();
+                    apples.push(makeApple(event.clientX, event.clientY, true));
+                });
+
+                window.addEventListener('resize', resizeCanvas);
+                resizeCanvas();
+                requestAnimationFrame(animate);
+            }
 
             // Timeline data - ordered by start date (oldest first)
             const accomplishments = [
@@ -782,6 +1124,13 @@
                     date: "Jun 2025 - Present",
                     company: "company 2",
                     details: "• Created website and technology<br>• Built product used by 200+ schools and 30000+ students in India<br>• Implemented AI translation with multiple voices<br>• Skills: AI, Back-End Web Development"
+                },
+                {
+                    title: "Co-Founder of Mosscross",
+                    preview: "Co-founded third company modernizing roof cleaning with physical products, backed by Founders Inc.",
+                    date: "Mar 2026 - Present",
+                    company: "company 3",
+                    details: "• Co-founded third company<br>• Modernizing roof cleaning with physical products<br>• Backed by Founders Inc.<br>• Skills: Product Development, Operations, Physical Products"
                 }
             ];
 
