@@ -994,7 +994,7 @@
         <div><span class="founders-muted">BACKED BY</span> FOUNDERS INC.</div>
     </div>
 
-    <details class="snake-controls" id="snakeControls" aria-label="Snake options" open>
+    <details class="snake-controls" id="snakeControls" aria-label="Snake options">
         <summary class="snake-controls-summary">
             <span class="snake-controls-title">
                 <span class="snake-controls-kicker">snake</span>
@@ -1095,7 +1095,7 @@
 
             let currentView = 'main'; // Track current view: 'main', 'contact', 'library'
 
-            if (snakeControls && window.innerWidth <= 768) {
+            if (snakeControls) {
                 snakeControls.open = false;
             }
 
