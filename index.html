@@ -11,6 +11,12 @@
         href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Poppins:wght@300;400;500;600&display=swap"
         rel="stylesheet">
     <style>
+        :root {
+            --top-rail-y: 24px;
+            --top-rail-height: 54px;
+            --top-safe-y: 120px;
+        }
+
         * {
             margin: 0;
             padding: 0;
@@ -38,13 +44,14 @@
 
         .founders-badge {
             position: fixed;
-            top: 22px;
+            top: var(--top-rail-y);
             right: 24px;
             z-index: 1001;
             display: flex;
             align-items: center;
-            gap: 13px;
-            padding: 8px 24px 8px 8px;
+            height: var(--top-rail-height);
+            gap: 11px;
+            padding: 6px 20px 6px 6px;
             color: #f7f9f2;
             background: #020704;
             border: 1px solid rgba(91, 123, 83, 0.38);
@@ -59,9 +66,9 @@
         }
 
         .founders-mark {
-            width: 52px;
-            height: 52px;
-            border-radius: 14px;
+            width: 42px;
+            height: 42px;
+            border-radius: 12px;
             background: #000000;
             box-shadow: inset 0 0 18px rgba(255, 255, 255, 0.06);
             display: grid;
@@ -100,19 +107,10 @@
 
         .snake-controls {
             position: fixed;
-            top: 92px;
+            top: var(--top-rail-y);
             left: 24px;
             z-index: 1002;
-            display: grid;
-            grid-template-columns: repeat(2, auto);
-            gap: 8px;
-            align-items: center;
-            padding: 10px;
-            background: rgba(232, 232, 216, 0.86);
-            border: 1px solid rgba(0, 0, 0, 0.08);
-            border-radius: 8px;
-            box-shadow: 0 8px 22px rgba(0, 0, 0, 0.08);
-            backdrop-filter: blur(8px);
+            width: 300px;
             transition: opacity 0.2s ease, transform 0.2s ease;
         }
 
@@ -122,10 +120,82 @@
             transform: translateY(-6px);
         }
 
+        .snake-controls summary {
+            list-style: none;
+        }
+
+        .snake-controls summary::-webkit-details-marker {
+            display: none;
+        }
+
+        .snake-controls-summary {
+            height: var(--top-rail-height);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            padding: 0 16px;
+            color: #11150f;
+            background: rgba(232, 232, 216, 0.92);
+            border: 1px solid rgba(0, 0, 0, 0.09);
+            border-radius: 999px;
+            box-shadow: 0 12px 28px rgba(0, 0, 0, 0.1);
+            backdrop-filter: blur(12px);
+            cursor: pointer;
+        }
+
+        .snake-controls-title {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+        }
+
+        .snake-controls-kicker {
+            font-size: 0.58rem;
+            font-weight: 700;
+            letter-spacing: 0.18em;
+            color: #74806e;
+            text-transform: uppercase;
+        }
+
+        .snake-controls-name {
+            font-size: 0.82rem;
+            font-weight: 700;
+            letter-spacing: 0.02em;
+        }
+
+        .snake-controls-chevron {
+            width: 9px;
+            height: 9px;
+            border-right: 2px solid #4f594b;
+            border-bottom: 2px solid #4f594b;
+            transform: rotate(45deg);
+            transition: transform 0.2s ease;
+            flex: 0 0 auto;
+        }
+
+        .snake-controls[open] .snake-controls-chevron {
+            transform: rotate(225deg);
+        }
+
+        .snake-controls-panel {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-top: 10px;
+            padding: 12px;
+            background: rgba(232, 232, 216, 0.94);
+            border: 1px solid rgba(0, 0, 0, 0.08);
+            border-radius: 8px;
+            box-shadow: 0 18px 40px rgba(0, 0, 0, 0.12);
+            backdrop-filter: blur(12px);
+        }
+
         .snake-control-group {
             display: flex;
             align-items: center;
             gap: 6px;
+            min-height: 34px;
         }
 
         .snake-control-label {
@@ -140,7 +210,7 @@
             padding: 7px 9px;
             border: 1px solid transparent;
             border-radius: 6px;
-            background: rgba(245, 245, 220, 0.8);
+            background: rgba(245, 245, 220, 0.82);
             color: #000;
             font-family: inherit;
             font-size: 0.72rem;
@@ -151,6 +221,10 @@
         .snake-control-button.active {
             background: #11150f;
             color: #f5f5dc;
+        }
+
+        .snake-control-button:hover {
+            border-color: rgba(66, 111, 58, 0.22);
         }
 
         .snake-control-checkbox {
@@ -234,7 +308,7 @@
 
         .name-wrapper.animate-to-top {
             position: fixed;
-            top: 30px;
+            top: var(--top-rail-y);
             left: 50%;
             transform: translate(-50%, 0);
             z-index: 10;
@@ -610,7 +684,7 @@
             }
 
             .name-wrapper.animate-to-top {
-                top: 20px;
+                top: var(--top-rail-y);
                 padding: 0 15px;
             }
 
@@ -822,27 +896,58 @@
         }
 
         @media (max-width: 768px) {
+            :root {
+                --top-rail-y: 12px;
+                --top-rail-height: 42px;
+                --top-safe-y: 92px;
+            }
+
             .founders-badge {
-                top: 68px;
-                right: 14px;
+                top: var(--top-rail-y);
+                right: 10px;
                 gap: 9px;
-                padding: 6px 14px 6px 6px;
+                height: var(--top-rail-height);
+                padding: 4px;
                 font-size: 0.66rem;
                 letter-spacing: 0.14em;
             }
 
+            .founders-badge>div:last-child {
+                display: none;
+            }
+
             .founders-mark {
-                width: 38px;
-                height: 38px;
-                border-radius: 11px;
+                width: 34px;
+                height: 34px;
+                border-radius: 10px;
             }
 
             .snake-controls {
-                top: 118px;
+                top: var(--top-rail-y);
                 left: 10px;
+                width: 96px;
+            }
+
+            .snake-controls-summary {
+                height: var(--top-rail-height);
+                padding: 0 11px;
+                gap: 8px;
+            }
+
+            .snake-controls-kicker {
+                display: none;
+            }
+
+            .snake-controls-name {
+                font-size: 0.72rem;
+            }
+
+            .snake-controls-panel {
+                width: min(270px, calc(100vw - 20px));
                 grid-template-columns: 1fr;
-                gap: 6px;
-                padding: 8px;
+                gap: 7px;
+                margin-top: 8px;
+                padding: 9px;
             }
 
             .snake-control-group {
@@ -862,6 +967,21 @@
                 width: 54px;
             }
 
+            .floating-button {
+                top: calc(var(--top-rail-y) + var(--top-rail-height) + 24px) !important;
+                transform: translateY(-50%) !important;
+            }
+
+            .name-wrapper.animate-to-top {
+                width: auto;
+                padding: 0;
+            }
+
+            .name-wrapper.animate-to-top .name {
+                font-size: 1.25rem;
+                white-space: nowrap;
+            }
+
         }
     </style>
 </head>
@@ -874,24 +994,33 @@
         <div><span class="founders-muted">BACKED BY</span> FOUNDERS INC.</div>
     </div>
 
-    <div class="snake-controls" id="snakeControls" aria-label="Snake options">
-        <div class="snake-control-group" aria-label="Snake blur">
-            <button class="snake-control-button active" type="button" id="snakeBlurOn">blur</button>
-            <button class="snake-control-button" type="button" id="snakeBlurOff">unblur</button>
+    <details class="snake-controls" id="snakeControls" aria-label="Snake options" open>
+        <summary class="snake-controls-summary">
+            <span class="snake-controls-title">
+                <span class="snake-controls-kicker">snake</span>
+                <span class="snake-controls-name">settings</span>
+            </span>
+            <span class="snake-controls-chevron" aria-hidden="true"></span>
+        </summary>
+        <div class="snake-controls-panel">
+            <div class="snake-control-group" aria-label="Snake blur">
+                <button class="snake-control-button active" type="button" id="snakeBlurOn">blur</button>
+                <button class="snake-control-button" type="button" id="snakeBlurOff">unblur</button>
+            </div>
+            <label class="snake-control-group">
+                <input class="snake-control-checkbox" type="checkbox" id="snakeColorToggle" checked>
+                <span class="snake-control-label">multicolored food</span>
+            </label>
+            <label class="snake-control-group">
+                <span class="snake-control-label">default #</span>
+                <input class="snake-control-input" type="number" id="snakeDefaultCount" min="0" max="30" value="5">
+            </label>
+            <label class="snake-control-group">
+                <span class="snake-control-label">snake length</span>
+                <input class="snake-control-input" type="number" id="snakeLength" min="16" max="600" value="46">
+            </label>
         </div>
-        <label class="snake-control-group">
-            <input class="snake-control-checkbox" type="checkbox" id="snakeColorToggle" checked>
-            <span class="snake-control-label">multicolored food</span>
-        </label>
-        <label class="snake-control-group">
-            <span class="snake-control-label">default #</span>
-            <input class="snake-control-input" type="number" id="snakeDefaultCount" min="0" max="30" value="5">
-        </label>
-        <label class="snake-control-group">
-            <span class="snake-control-label">snake length</span>
-            <input class="snake-control-input" type="number" id="snakeLength" min="16" max="600" value="46">
-        </label>
-    </div>
+    </details>
 
     <div class="slide-wrapper">
         <div class="slide-container" id="slideContainer">
@@ -965,6 +1094,10 @@
             const snakeLength = document.getElementById('snakeLength');
 
             let currentView = 'main'; // Track current view: 'main', 'contact', 'library'
+
+            if (snakeControls && window.innerWidth <= 768) {
+                snakeControls.open = false;
+            }
 
             initSnakeBackground(snakeCanvases);
 
@@ -1379,6 +1512,7 @@
                     title: "VEX Team Lead",
                     preview: "Co-lead for 5 years and main lead for 2 more, driving team to state competitions and global invitationals",
                     date: "Apr 2018 - Present",
+                    status: "completed",
                     details: "• Led team to state competitions<br>• Led team to global invitationals<br>• Skills: CAD, Software Development, Robotics, Python, C++, Java"
                 },
                 {
@@ -1409,6 +1543,7 @@
                     title: "Club President of Interlake Builders Club",
                     preview: "Guided team direction, boosted membership by 275%, mentored members and improved skills",
                     date: "Sep 2024 - Present",
+                    status: "completed",
                     details: "• Guided team direction<br>• Boosted membership by 275%<br>• Mentored members<br>• Skills: Manufacturing, Leadership"
                 },
                 {
@@ -1434,6 +1569,7 @@
                     preview: "Chief Marketing Officer for CoachT and RunwayAI, managed 50+ B2B relationships, created outreach automations",
                     date: "May 2025 - Present",
                     company: "company 1",
+                    status: "completed",
                     details: "• Managed 50+ B2B relationships<br>• Created outreach automations<br>• Sold to large company at 16<br>• Skills: Leadership, Market Research, Marketing Strategy"
                 },
                 {
@@ -1441,6 +1577,7 @@
                     preview: "Created website and technology, product used by 200+ schools and 30000+ students in India",
                     date: "Jun 2025 - Present",
                     company: "company 2",
+                    status: "completed",
                     details: "• Created website and technology<br>• Built product used by 200+ schools and 30000+ students in India<br>• Implemented AI translation with multiple voices<br>• Skills: AI, Back-End Web Development"
                 },
                 {
@@ -1449,6 +1586,12 @@
                     date: "Mar 2026 - Present",
                     company: "company 3",
                     details: "• Co-founded third company<br>• Modernizing roof cleaning with physical products<br>• Backed by Founders Inc.<br>• Skills: Product Development, Operations, Physical Products"
+                },
+                {
+                    title: "Bravado Battlebots",
+                    preview: "Mantis Combat Robotics merged with a 250-pound BattleBots team called Bravado Battlebots",
+                    date: "Apr 21 2026 - Present",
+                    details: "• Mantis Combat Robotics merged with a 250-pound BattleBots team called Bravado Battlebots<br>• Building on combat robotics work at a larger scale<br>• Skills: Combat Robotics, Manufacturing, Team Integration"
                 }
             ];
 
@@ -1489,7 +1632,7 @@
                 }
 
                 setTarget(y) {
-                    this.targetY = y;
+                    this.targetY = clampFloatingButtonY(y);
                 }
 
                 animate() {
@@ -1503,6 +1646,22 @@
 
                     requestAnimationFrame(() => this.animate());
                 }
+            }
+
+            function clampFloatingButtonY(y) {
+                const topSafeY = Number.parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--top-safe-y')) || 120;
+                const buttonHeight = leftButton?.offsetHeight || rightButton?.offsetHeight || 58;
+                const topRailBottom = topSafeY + (buttonHeight / 2);
+                const controlsBottom = snakeControls?.open ? snakeControls.getBoundingClientRect().bottom + (buttonHeight / 2) + 12 : topRailBottom;
+                const minY = Math.min(Math.max(topRailBottom, controlsBottom), window.innerHeight / 2);
+                const maxY = Math.max(window.innerHeight - 76, minY);
+                return Math.min(Math.max(y, minY), maxY);
+            }
+
+            function resetFloatingButtonsToMiddle() {
+                const middleY = window.innerHeight / 2;
+                leftFollower?.setTarget(middleY);
+                rightFollower?.setTarget(middleY);
             }
 
             // Check if large screen (desktop/laptop) - use both width and touch detection
@@ -1523,6 +1682,14 @@
                     leftFollower.setTarget(mouseY);
                     rightFollower.setTarget(mouseY);
                 });
+
+                document.addEventListener('mouseleave', resetFloatingButtonsToMiddle);
+                window.addEventListener('blur', resetFloatingButtonsToMiddle);
+                window.addEventListener('mouseout', (event) => {
+                    if (!event.relatedTarget) {
+                        resetFloatingButtonsToMiddle();
+                    }
+                });
             } else {
                 // On mobile/tablet, disable any animation and fix buttons next to name
                 leftButton.style.position = 'fixed';
@@ -1534,7 +1701,7 @@
                 function positionButtonsNextToName() {
                     if (nameWrapper.classList.contains('animate-to-top')) {
                         const nameRect = nameWrapper.getBoundingClientRect();
-                        const nameCenterY = nameRect.top + (nameRect.height / 2);
+                        const nameCenterY = nameRect.top + (nameRect.height / 2) + 52;
 
                         // Use requestAnimationFrame to ensure position is set
                         requestAnimationFrame(() => {
@@ -1613,8 +1780,9 @@
             // Create timeline boxes (reverse order so newest is first)
             accomplishments.slice().reverse().forEach((item, index) => {
                 const { startDate, isOngoing } = parseDate(item.date);
+                const isCompleted = item.status === 'completed' || !isOngoing;
                 const box = document.createElement('div');
-                box.className = `timeline-box ${isOngoing ? 'ongoing' : 'completed'}`;
+                box.className = `timeline-box ${isCompleted ? 'completed' : 'ongoing'}`;
 
                 const companyLabel = item.company ? `<div class="timeline-company">${item.company}</div>` : '';
 
