@@ -94,8 +94,8 @@
             z-index: 2;
             width: 100%;
             height: 100%;
-            filter: blur(4px);
-            opacity: 0.72;
+            filter: blur(8px);
+            opacity: 0.58;
             pointer-events: none;
             transition: filter 0.2s ease, opacity 0.2s ease;
         }
@@ -1015,10 +1015,6 @@
                 <span class="snake-control-label">default #</span>
                 <input class="snake-control-input" type="number" id="snakeDefaultCount" min="0" max="30" value="5">
             </label>
-            <label class="snake-control-group">
-                <span class="snake-control-label">snake length</span>
-                <input class="snake-control-input" type="number" id="snakeLength" min="16" max="600" value="46">
-            </label>
         </div>
     </details>
 
@@ -1091,12 +1087,17 @@
             const snakeBlurOff = document.getElementById('snakeBlurOff');
             const snakeColorToggle = document.getElementById('snakeColorToggle');
             const snakeDefaultCount = document.getElementById('snakeDefaultCount');
-            const snakeLength = document.getElementById('snakeLength');
 
             let currentView = 'main'; // Track current view: 'main', 'contact', 'library'
 
             if (snakeControls) {
                 snakeControls.open = false;
+            }
+
+            function closeSnakeControls() {
+                if (snakeControls) {
+                    snakeControls.open = false;
+                }
             }
 
             initSnakeBackground(snakeCanvases);
@@ -1151,14 +1152,33 @@
                 };
                 let apples = appleSets[currentView] || null;
                 const snake = [];
+                const secondSnake = [];
                 const startingSegmentCount = 46;
                 const segmentLength = 9;
                 const growthPerApple = 6;
                 const maxSegmentCount = 600;
+                const splitSegmentCount = 300;
+                let snakeHasSplit = false;
+                let splitStartedAt = 0;
+                const firstSnakeStyle = {
+                    glow: 'rgba(21, 45, 20, 0.075)',
+                    body: 'rgba(34, 86, 34, 0.16)',
+                    head: 'rgba(24, 66, 28, 0.22)'
+                };
+                const secondSnakeStyle = {
+                    glow: 'rgba(42, 58, 90, 0.08)',
+                    body: 'rgba(49, 95, 122, 0.18)',
+                    head: 'rgba(40, 78, 112, 0.24)'
+                };
                 const head = {
                     x: window.innerWidth * 0.5,
                     y: window.innerHeight * 0.5,
                     angle: -0.4
+                };
+                const secondHead = {
+                    x: window.innerWidth * 0.5,
+                    y: window.innerHeight * 0.5,
+                    angle: 0.5
                 };
 
                 let width = window.innerWidth;
@@ -1169,12 +1189,35 @@
                     return Math.min(Math.max(value, min), max);
                 }
 
-                for (let index = 0; index < startingSegmentCount; index += 1) {
-                    snake.push({
-                        x: head.x - index * segmentLength,
-                        y: head.y + Math.sin(index * 0.4) * 2
-                    });
+                function seedSnake(body, bodyHead, length, wavePhase = 0) {
+                    body.length = 0;
+                    const backX = Math.cos(bodyHead.angle + Math.PI);
+                    const backY = Math.sin(bodyHead.angle + Math.PI);
+                    const sideX = Math.cos(bodyHead.angle + Math.PI / 2);
+                    const sideY = Math.sin(bodyHead.angle + Math.PI / 2);
+
+                    for (let index = 0; index < length; index += 1) {
+                        const sway = Math.sin(index * 0.4 + wavePhase) * 3;
+                        body.push({
+                            x: bodyHead.x + backX * index * segmentLength + sideX * sway,
+                            y: bodyHead.y + backY * index * segmentLength + sideY * sway
+                        });
+                    }
                 }
+
+                function activeSnakes() {
+                    const snakes = [
+                        { body: snake, bodyHead: head, style: firstSnakeStyle, phase: 0 }
+                    ];
+
+                    if (snakeHasSplit) {
+                        snakes.push({ body: secondSnake, bodyHead: secondHead, style: secondSnakeStyle, phase: Math.PI });
+                    }
+
+                    return snakes;
+                }
+
+                seedSnake(snake, head, startingSegmentCount);
 
                 function syncApplesForView() {
                     const nextApples = appleSets[currentView];
@@ -1246,44 +1289,55 @@
                     }
                 }
 
-                function updateLengthControl() {
-                    if (snakeLength) {
-                        snakeLength.value = String(snake.length);
-                    }
-                }
-
-                function setSnakeLength(length) {
-                    const targetLength = clamp(Math.round(length), 16, maxSegmentCount);
-
-                    while (snake.length < targetLength) {
-                        appendSnakeSegment();
-                    }
-
-                    if (snake.length > targetLength) {
-                        snake.length = targetLength;
-                    }
-
-                    updateLengthControl();
-                }
-
-                function appendSnakeSegment() {
-                    let tail = snake[snake.length - 1];
-                    let previous = snake[snake.length - 2] || tail;
+                function appendSnakeSegment(body) {
+                    let tail = body[body.length - 1];
+                    let previous = body[body.length - 2] || tail;
                     let angle = Math.atan2(tail.y - previous.y, tail.x - previous.x);
                     const newTail = {
                         x: tail.x + Math.cos(angle) * segmentLength,
                         y: tail.y + Math.sin(angle) * segmentLength
                     };
 
-                    snake.push(newTail);
+                    body.push(newTail);
+                }
+
+                function splitSnake() {
+                    if (snakeHasSplit) {
+                        return;
+                    }
+
+                    const originX = head.x;
+                    const originY = head.y;
+                    const baseAngle = head.angle;
+                    const sideX = Math.cos(baseAngle + Math.PI / 2);
+                    const sideY = Math.sin(baseAngle + Math.PI / 2);
+
+                    head.x = clamp(originX + sideX * 20, 12, width - 12);
+                    head.y = clamp(originY + sideY * 20, 12, height - 12);
+                    head.angle = baseAngle - 0.55;
+
+                    secondHead.x = clamp(originX - sideX * 36, 12, width - 12);
+                    secondHead.y = clamp(originY - sideY * 36, 12, height - 12);
+                    secondHead.angle = baseAngle + 0.72;
+
+                    seedSnake(snake, head, splitSegmentCount, 0);
+                    seedSnake(secondSnake, secondHead, splitSegmentCount, Math.PI);
+                    snakeHasSplit = true;
+                    splitStartedAt = performance.now();
                 }
 
                 function growSnake() {
-                    for (let index = 0; index < growthPerApple && snake.length < maxSegmentCount; index += 1) {
-                        appendSnakeSegment();
+                    if (snakeHasSplit) {
+                        return;
                     }
 
-                    updateLengthControl();
+                    for (let index = 0; index < growthPerApple && snake.length < maxSegmentCount; index += 1) {
+                        appendSnakeSegment(snake);
+                    }
+
+                    if (snake.length >= maxSegmentCount) {
+                        splitSnake();
+                    }
                 }
 
                 function normalizeAngle(angle) {
@@ -1293,7 +1347,7 @@
                     return normalized;
                 }
 
-                function nearestApple() {
+                function nearestApple(bodyHead, avoidApple = null) {
                     if (!apples) {
                         return null;
                     }
@@ -1302,7 +1356,11 @@
                     let nearestDistance = Infinity;
 
                     apples.forEach(apple => {
-                        const distance = Math.hypot(apple.x - head.x, apple.y - head.y);
+                        if (apple === avoidApple && apples.length > 1) {
+                            return;
+                        }
+
+                        const distance = Math.hypot(apple.x - bodyHead.x, apple.y - bodyHead.y);
                         if (distance < nearestDistance) {
                             nearest = apple;
                             nearestDistance = distance;
@@ -1312,47 +1370,41 @@
                     return nearest;
                 }
 
-                function moveSnake(now) {
-                    const delta = Math.min((now - lastFrame) / 16.67, 2);
-                    lastFrame = now;
-                    if (!syncApplesForView()) {
-                        return;
-                    }
-
-                    const target = nearestApple();
+                function moveSnakeBody(body, bodyHead, now, delta, phase, avoidApple = null) {
+                    const target = nearestApple(bodyHead, avoidApple);
                     if (target) {
-                        const distanceToTarget = Math.hypot(target.x - head.x, target.y - head.y);
+                        const distanceToTarget = Math.hypot(target.x - bodyHead.x, target.y - bodyHead.y);
                         const targetWobble = Math.min(12, distanceToTarget * 0.12);
-                        const targetX = target.x + Math.sin(now * 0.0014 + target.pulse) * targetWobble;
-                        const targetY = target.y + Math.cos(now * 0.0011 + target.pulse) * targetWobble;
-                        const desiredAngle = Math.atan2(targetY - head.y, targetX - head.x);
-                        const turn = normalizeAngle(desiredAngle - head.angle);
+                        const targetX = target.x + Math.sin(now * 0.0014 + target.pulse + phase) * targetWobble;
+                        const targetY = target.y + Math.cos(now * 0.0011 + target.pulse + phase) * targetWobble;
+                        const desiredAngle = Math.atan2(targetY - bodyHead.y, targetX - bodyHead.x);
+                        const turn = normalizeAngle(desiredAngle - bodyHead.angle);
                         if (distanceToTarget < 64) {
-                            head.angle = desiredAngle;
+                            bodyHead.angle = desiredAngle;
                         } else {
                             const turnLimit = 0.11 * delta;
-                            head.angle += Math.max(-turnLimit, Math.min(turnLimit, turn * 0.2 * delta));
+                            bodyHead.angle += Math.max(-turnLimit, Math.min(turnLimit, turn * 0.2 * delta));
                         }
                     }
 
-                    head.angle += Math.sin(now * 0.0017) * 0.0015 * delta;
+                    bodyHead.angle += Math.sin(now * 0.0017 + phase) * 0.0015 * delta;
 
-                    const speed = (2.05 + Math.sin(now * 0.002 + 0.7) * 0.12) * delta;
-                    head.x += Math.cos(head.angle) * speed;
-                    head.y += Math.sin(head.angle) * speed;
+                    const speed = (2.05 + Math.sin(now * 0.002 + 0.7 + phase) * 0.12) * delta;
+                    bodyHead.x += Math.cos(bodyHead.angle) * speed;
+                    bodyHead.y += Math.sin(bodyHead.angle) * speed;
 
-                    if (head.x < 8 || head.x > width - 8 || head.y < 8 || head.y > height - 8) {
-                        head.x = Math.min(Math.max(head.x, 8), width - 8);
-                        head.y = Math.min(Math.max(head.y, 8), height - 8);
-                        head.angle = Math.atan2(height * 0.5 - head.y, width * 0.5 - head.x);
+                    if (bodyHead.x < 8 || bodyHead.x > width - 8 || bodyHead.y < 8 || bodyHead.y > height - 8) {
+                        bodyHead.x = Math.min(Math.max(bodyHead.x, 8), width - 8);
+                        bodyHead.y = Math.min(Math.max(bodyHead.y, 8), height - 8);
+                        bodyHead.angle = Math.atan2(height * 0.5 - bodyHead.y, width * 0.5 - bodyHead.x);
                     }
 
-                    snake[0].x = head.x;
-                    snake[0].y = head.y;
+                    body[0].x = bodyHead.x;
+                    body[0].y = bodyHead.y;
 
-                    for (let index = 1; index < snake.length; index += 1) {
-                        const previous = snake[index - 1];
-                        const current = snake[index];
+                    for (let index = 1; index < body.length; index += 1) {
+                        const previous = body[index - 1];
+                        const current = body[index];
                         const dx = current.x - previous.x;
                         const dy = current.y - previous.y;
                         const distance = Math.hypot(dx, dy) || 1;
@@ -1362,14 +1414,71 @@
                         current.y += (targetY - current.y) * 0.42;
                     }
 
+                    return target;
+                }
+
+                function moveSnake(now) {
+                    const delta = Math.min((now - lastFrame) / 16.67, 2);
+                    lastFrame = now;
+                    if (!syncApplesForView()) {
+                        return;
+                    }
+
+                    const active = activeSnakes();
+                    const firstTarget = active.length > 1 ? nearestApple(head) : null;
+                    active.forEach(({ body, bodyHead, phase }, index) => {
+                        moveSnakeBody(body, bodyHead, now, delta, phase, index === 1 ? firstTarget : null);
+                    });
+
                     for (let index = apples.length - 1; index >= 0; index -= 1) {
-                        if (Math.hypot(apples[index].x - head.x, apples[index].y - head.y) < 28) {
+                        const wasEaten = active.some(({ bodyHead }) => Math.hypot(apples[index].x - bodyHead.x, apples[index].y - bodyHead.y) < 28);
+                        if (wasEaten) {
                             apples.splice(index, 1);
                             growSnake();
                         }
                     }
 
                     ensureApples();
+                }
+
+                function drawSnakeBody(context, body, bodyHead, style) {
+                    if (body.length < 2) {
+                        return;
+                    }
+                    context.lineCap = 'round';
+                    context.lineJoin = 'round';
+                    context.beginPath();
+                    context.moveTo(body[0].x, body[0].y);
+
+                    for (let index = 1; index < body.length - 1; index += 1) {
+                        const current = body[index];
+                        const next = body[index + 1];
+                        const midX = (current.x + next.x) * 0.5;
+                        const midY = (current.y + next.y) * 0.5;
+                        context.quadraticCurveTo(current.x, current.y, midX, midY);
+                    }
+
+                    context.strokeStyle = style.glow;
+                    context.lineWidth = 22;
+                    context.stroke();
+
+                    context.beginPath();
+                    context.moveTo(body[0].x, body[0].y);
+                    for (let index = 1; index < body.length - 1; index += 1) {
+                        const current = body[index];
+                        const next = body[index + 1];
+                        const midX = (current.x + next.x) * 0.5;
+                        const midY = (current.y + next.y) * 0.5;
+                        context.quadraticCurveTo(current.x, current.y, midX, midY);
+                    }
+                    context.strokeStyle = style.body;
+                    context.lineWidth = 11;
+                    context.stroke();
+
+                    context.beginPath();
+                    context.arc(bodyHead.x, bodyHead.y, 8, 0, Math.PI * 2);
+                    context.fillStyle = style.head;
+                    context.fill();
                 }
 
                 function drawSnake(context, applesToDraw, now) {
@@ -1395,40 +1504,19 @@
                         context.stroke();
                     });
 
-                    context.lineCap = 'round';
-                    context.lineJoin = 'round';
-                    context.beginPath();
-                    context.moveTo(snake[0].x, snake[0].y);
-
-                    for (let index = 1; index < snake.length - 1; index += 1) {
-                        const current = snake[index];
-                        const next = snake[index + 1];
-                        const midX = (current.x + next.x) * 0.5;
-                        const midY = (current.y + next.y) * 0.5;
-                        context.quadraticCurveTo(current.x, current.y, midX, midY);
+                    if (snakeHasSplit && now - splitStartedAt < 1800) {
+                        const pulse = 1 - ((now - splitStartedAt) / 1800);
+                        context.beginPath();
+                        context.moveTo(head.x, head.y);
+                        context.lineTo(secondHead.x, secondHead.y);
+                        context.strokeStyle = `rgba(45, 72, 54, ${0.18 * pulse})`;
+                        context.lineWidth = 18 * pulse;
+                        context.stroke();
                     }
 
-                    context.strokeStyle = 'rgba(21, 45, 20, 0.075)';
-                    context.lineWidth = 22;
-                    context.stroke();
-
-                    context.beginPath();
-                    context.moveTo(snake[0].x, snake[0].y);
-                    for (let index = 1; index < snake.length - 1; index += 1) {
-                        const current = snake[index];
-                        const next = snake[index + 1];
-                        const midX = (current.x + next.x) * 0.5;
-                        const midY = (current.y + next.y) * 0.5;
-                        context.quadraticCurveTo(current.x, current.y, midX, midY);
-                    }
-                    context.strokeStyle = 'rgba(34, 86, 34, 0.16)';
-                    context.lineWidth = 11;
-                    context.stroke();
-
-                    context.beginPath();
-                    context.arc(head.x, head.y, 8, 0, Math.PI * 2);
-                    context.fillStyle = 'rgba(24, 66, 28, 0.22)';
-                    context.fill();
+                    activeSnakes().forEach(({ body, bodyHead, style }) => {
+                        drawSnakeBody(context, body, bodyHead, style);
+                    });
                 }
 
                 function animate(now) {
@@ -1472,11 +1560,6 @@
                     syncApplesForView();
                 });
 
-                snakeLength?.addEventListener('change', () => {
-                    const requestedLength = clamp(Number(snakeLength.value) || startingSegmentCount, 16, maxSegmentCount);
-                    setSnakeLength(requestedLength);
-                });
-
                 document.addEventListener('selectstart', event => {
                     if (!isInteractiveTarget(event.target)) {
                         event.preventDefault();
@@ -1501,8 +1584,14 @@
                 });
 
                 window.addEventListener('resize', resizeCanvas);
+                document.addEventListener('mouseleave', closeSnakeControls);
+                window.addEventListener('blur', closeSnakeControls);
+                window.addEventListener('mouseout', event => {
+                    if (!event.relatedTarget) {
+                        closeSnakeControls();
+                    }
+                });
                 resizeCanvas();
-                updateLengthControl();
                 requestAnimationFrame(animate);
             }
 
