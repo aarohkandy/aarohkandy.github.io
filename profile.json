@@ -1,0 +1,127 @@
+{
+  "canonicalUrl": "https://aarohkandy.github.io/",
+  "name": "Aaroh Kandhare",
+  "summary": "Aaroh Kandhare builds solutions for people, physical and technological.",
+  "description": "Builder focused on robotics, CAD, combat robotics, rockets, manufacturing, education technology, AI translation, back-end web development, product development, operations, and physical products.",
+  "contact": {
+    "email": [
+      "aarohkandy@gmail.com",
+      "akandy@stanford.edu"
+    ],
+    "phone": "425-623-0392",
+    "calendar": "https://cal.com/aaroh-kandhare-vem6pg/talk"
+  },
+  "focusAreas": [
+    "Robotics",
+    "CAD",
+    "Combat robotics",
+    "Rocket technology",
+    "Manufacturing",
+    "Python",
+    "C++",
+    "Java",
+    "AI",
+    "Back-end web development",
+    "Product development",
+    "Operations",
+    "Physical products"
+  ],
+  "timeline": [
+    {
+      "title": "VEX Team Lead",
+      "date": "Apr 2018 - Present",
+      "description": "Co-lead for 5 years and main lead for 2 more, driving team to state competitions and global invitationals.",
+      "skills": ["CAD", "Software Development", "Robotics", "Python", "C++", "Java"]
+    },
+    {
+      "title": "Teaching Assistant",
+      "date": "Jun 2023 - Sep 2023",
+      "description": "Oversaw teams building VEX robots and provided feedback to students.",
+      "skills": ["CAD", "Teaching", "Teamwork"]
+    },
+    {
+      "title": "Interlake Rocketry Club Team Lead",
+      "date": "Sep 2023 - Present",
+      "description": "Led a team of 10 designing rockets in CAD and created a simulation for actively controlled rockets.",
+      "skills": ["Rocket Technology", "Aerodynamics", "Manufacturing"]
+    },
+    {
+      "title": "1899 Saints Robotics",
+      "date": "Sep 2023 - Present",
+      "description": "Led a sub-team building a t-shirt cannon robot and managed complex design requirements and budget.",
+      "skills": ["CAD", "Leadership", "Electrical Engineering"]
+    },
+    {
+      "title": "Teaching Team Lead",
+      "date": "May 2024 - Aug 2024",
+      "description": "Taught elementary students robotics, coding basics, CAD, and leadership skills.",
+      "skills": ["CAD", "Leadership", "Python"]
+    },
+    {
+      "title": "Club President of Interlake Builders Club",
+      "date": "Sep 2024 - Present",
+      "description": "Guided team direction, boosted membership by 275%, and mentored members.",
+      "skills": ["Manufacturing", "Leadership"]
+    },
+    {
+      "title": "Founder and Captain of Mantis Combat Robotics",
+      "date": "Sep 2024 - Present",
+      "description": "Founded and led a combat robotics team.",
+      "skills": ["Robotics", "Leadership", "Engineering"]
+    },
+    {
+      "title": "DECA Competitive Events SCDC Qualifier",
+      "date": "Sep 2024 - Mar 2025",
+      "description": "Qualified for SCDC in Team Decision Making and ranked top 5 in a regional tournament.",
+      "skills": ["Teamwork", "Business Management", "Strategic Planning"]
+    },
+    {
+      "title": "Volunteer Staff at American Red Cross",
+      "date": "Mar 2025 - Present",
+      "description": "Supporting community initiatives and programs.",
+      "skills": []
+    },
+    {
+      "title": "CMO of CoachT (exit 1)",
+      "date": "May 2025 - Present",
+      "description": "Managed 50+ B2B relationships, created outreach automations, and sold to a large company at 16.",
+      "skills": ["Leadership", "Market Research", "Marketing Strategy"]
+    },
+    {
+      "title": "COO of Vaidra Education",
+      "date": "Jun 2025 - Present",
+      "description": "Created website and technology for a product used by 200+ schools and 30000+ students in India, including AI translation with multiple voices.",
+      "skills": ["AI", "Back-End Web Development"]
+    },
+    {
+      "title": "Co-Founder of Mosscross",
+      "date": "Mar 2026 - Present",
+      "description": "Co-founded a company modernizing roof cleaning with physical products, backed by Founders Inc.",
+      "skills": ["Product Development", "Operations", "Physical Products"]
+    },
+    {
+      "title": "Bravado Battlebots",
+      "date": "Apr 21 2026 - Present",
+      "description": "Mantis Combat Robotics merged with a 250-pound BattleBots team called Bravado Battlebots, building on combat robotics work at a larger scale.",
+      "skills": ["Combat Robotics", "Manufacturing", "Team Integration"]
+    }
+  ],
+  "library": [
+    {
+      "title": "Zero to One",
+      "author": "Peter Thiel with Blake Masters"
+    },
+    {
+      "title": "Elon Musk",
+      "author": "Ashlee Vance"
+    },
+    {
+      "title": "Apollo by the Numbers",
+      "author": "Richard W. Orloff"
+    },
+    {
+      "title": "The Hard Thing About Hard Things",
+      "author": "Ben Horowitz"
+    }
+  ]
+}

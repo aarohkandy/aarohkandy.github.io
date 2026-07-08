@@ -1,0 +1,33 @@
+# Aaroh Kandhare
+
+Canonical URL: https://aarohkandy.github.io/
+Structured JSON: https://aarohkandy.github.io/profile.json
+Contact: aarohkandy@gmail.com, akandy@stanford.edu, 425-623-0392
+Calendar: https://cal.com/aaroh-kandhare-vem6pg/talk
+
+## Summary
+
+Aaroh Kandhare builds solutions for people, physical and technological. Focus areas include robotics, CAD, combat robotics, rockets, manufacturing, education technology, AI translation, back-end web development, product development, operations, and physical products.
+
+## Timeline, Roles, and Projects
+
+- VEX Team Lead, Apr 2018 - Present: Co-lead for 5 years and main lead for 2 more, driving team to state competitions and global invitationals. Skills: CAD, software development, robotics, Python, C++, Java.
+- Teaching Assistant, Jun 2023 - Sep 2023: Oversaw teams building VEX robots and provided feedback to students. Skills: CAD, teaching, teamwork.
+- Interlake Rocketry Club Team Lead, Sep 2023 - Present: Led a team of 10 designing rockets in CAD and created a simulation for actively controlled rockets. Skills: rocket technology, aerodynamics, manufacturing.
+- 1899 Saints Robotics, Sep 2023 - Present: Led a sub-team building a t-shirt cannon robot and managed complex design requirements and budget. Skills: CAD, leadership, electrical engineering.
+- Teaching Team Lead, May 2024 - Aug 2024: Taught elementary students robotics, coding basics, CAD, and leadership skills. Skills: CAD, leadership, Python.
+- Club President of Interlake Builders Club, Sep 2024 - Present: Guided team direction, boosted membership by 275%, and mentored members. Skills: manufacturing, leadership.
+- Founder and Captain of Mantis Combat Robotics, Sep 2024 - Present: Founded and led a combat robotics team. Skills: robotics, leadership, engineering.
+- DECA Competitive Events SCDC Qualifier, Sep 2024 - Mar 2025: Qualified for SCDC in Team Decision Making and ranked top 5 in a regional tournament. Skills: teamwork, business management, strategic planning.
+- Volunteer Staff at American Red Cross, Mar 2025 - Present: Supporting community initiatives and programs.
+- CMO of CoachT (exit 1), May 2025 - Present: Managed 50+ B2B relationships, created outreach automations, and sold to a large company at 16. Skills: leadership, market research, marketing strategy.
+- COO of Vaidra Education, Jun 2025 - Present: Created website and technology for a product used by 200+ schools and 30000+ students in India, including AI translation with multiple voices. Skills: AI, back-end web development.
+- Co-Founder of Mosscross, Mar 2026 - Present: Co-founded a company modernizing roof cleaning with physical products, backed by Founders Inc. Skills: product development, operations, physical products.
+- Bravado Battlebots, Apr 21 2026 - Present: Mantis Combat Robotics merged with a 250-pound BattleBots team called Bravado Battlebots, building on combat robotics work at a larger scale. Skills: combat robotics, manufacturing, team integration.
+
+## Reading Library
+
+- Zero to One by Peter Thiel with Blake Masters.
+- Elon Musk by Ashlee Vance.
+- Apollo by the Numbers by Richard W. Orloff.
+- The Hard Thing About Hard Things by Ben Horowitz.
