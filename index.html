@@ -111,13 +111,28 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link
-        href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Poppins:wght@300;400;500;600&display=swap"
+        href="https://fonts.googleapis.com/css2?family=Caveat:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&family=Playfair+Display:wght@400;500;600;700&family=Poppins:wght@300;400;500;600&display=swap"
         rel="stylesheet">
     <style>
         :root {
             --top-rail-y: 24px;
             --top-rail-height: 54px;
             --top-safe-y: 120px;
+
+            /* Warm, personal palette — tuned to the beige + living-snake identity */
+            --paper: #f5f5dc;
+            --ink: #1a1a17;
+            --card: #e8e8d8;
+            --card-hover: #e1e1cd;
+            --accent-now: #4a7c59;
+            /* forest green, echoes the snake */
+            --accent-now-soft: rgba(74, 124, 89, 0.14);
+            --past-line: #dcd7c1;
+            --muted-ink: #8a8574;
+            --ease-soft: cubic-bezier(0.22, 1, 0.36, 1);
+            --mono: 'IBM Plex Mono', ui-monospace, 'SFMono-Regular', Menlo, Consolas, monospace;
+            --draft-line: rgba(26, 26, 23, 0.24);
+            --draft-line-strong: rgba(26, 26, 23, 0.5);
         }
 
         * {
@@ -135,14 +150,40 @@
         }
 
         body {
-            background-color: #f5f5dc;
+            background-color: var(--paper);
             /* beige */
-            color: #000000;
-            /* black */
+            color: var(--ink);
             font-family: 'Poppins', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
             position: relative;
             user-select: none;
             -webkit-user-select: none;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+            text-rendering: optimizeLegibility;
+        }
+
+        /* Text selection carries the snake's green — the same accent as every "now" signal */
+        ::selection {
+            background: var(--accent-now);
+            color: var(--paper);
+        }
+
+        ::-moz-selection {
+            background: var(--accent-now);
+            color: var(--paper);
+        }
+
+        /* Let people actually select & copy the writing (and see the green selection).
+           The name, buttons and snake canvas stay locked to keep the app-like feel. */
+        .intro-text,
+        .now-line,
+        .timeline-title,
+        .timeline-details,
+        .contact-item a,
+        .book-title,
+        .book-author {
+            user-select: text;
+            -webkit-user-select: text;
         }
 
         .scrape-profile {
@@ -474,20 +515,72 @@
         /* Intro text */
         .intro-text {
             width: 100%;
-            max-width: 800px;
+            max-width: 720px;
             margin: 0 auto;
             padding: 120px 20px 20px;
             position: relative;
             z-index: 3;
             opacity: 0;
-            transition: opacity 0.5s ease;
-            font-size: 1.1rem;
-            line-height: 1.8;
-            color: #000000;
+            transform: translateY(8px);
+            transition: opacity 0.7s var(--ease-soft), transform 0.7s var(--ease-soft);
+            font-size: 1.18rem;
+            line-height: 1.75;
+            letter-spacing: 0.01em;
+            color: var(--ink);
         }
 
         .intro-text.visible {
             opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* One honest, hand-edited "now" line — reuses the timeline's green pulse dot */
+        .now-line {
+            width: 100%;
+            max-width: 720px;
+            margin: 8px auto 0;
+            padding: 0 20px;
+            text-align: center;
+            font-weight: 300;
+            font-size: 0.95rem;
+            letter-spacing: 0.01em;
+            line-height: 1.6;
+            color: var(--muted-ink);
+            position: relative;
+            z-index: 3;
+            opacity: 0;
+            transform: translateY(8px);
+            transition: opacity 0.7s var(--ease-soft), transform 0.7s var(--ease-soft);
+        }
+
+        /* Static green "now" dot — shared by the now-line and the reading-now book (no pulse) */
+        .timeline-status-dot {
+            width: 7px;
+            height: 7px;
+            border-radius: 50%;
+            background: var(--accent-now);
+            flex: 0 0 auto;
+        }
+
+        .now-line .timeline-status-dot {
+            display: inline-block;
+            vertical-align: middle;
+            margin: -2px 6px 0 0;
+        }
+
+        .now-line.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .now-line em {
+            font-style: normal;
+            color: var(--ink);
+        }
+
+        .now-date {
+            color: #9a927f;
+            font-size: 0.8rem;
         }
 
         /* Timeline */
@@ -544,110 +637,178 @@
             );
         }
 
+        /* ---- Timeline: technical drafting, alternating off a center spine ---- */
+        .timeline-track {
+            position: relative;
+            padding: 6px 0 12px;
+        }
+
+        /* The center spine */
+        .timeline-track::before {
+            content: '';
+            position: absolute;
+            top: 4px;
+            bottom: 10px;
+            left: 50%;
+            width: 1px;
+            background: var(--draft-line);
+            transform: translateX(-50%);
+        }
+
         .timeline-box {
-            background-color: #e8e8d8;
-            border-radius: 10px;
-            padding: 10px 15px;
-            margin-bottom: 10px;
+            box-sizing: border-box;
+            position: relative;
+            width: calc(50% - 30px);
+            margin-bottom: 20px;
+            padding: 11px 15px 12px;
+            background: rgba(245, 245, 220, 0.5);
+            border: 1px solid var(--draft-line);
+            border-radius: 2px;
             cursor: pointer;
-            transition: background-color 0.3s ease, transform 0.2s ease;
+            transition: border-color 0.25s var(--ease-soft), background-color 0.25s var(--ease-soft);
             opacity: 0;
-            transform: translateY(20px);
-            flex-shrink: 0;
+            transform: translateY(12px);
         }
 
         .timeline-box.visible {
             opacity: 1;
-            transform: translateY(0);
+            transform: none;
         }
 
-        .timeline-box:hover {
-            background-color: #d8d8c8;
-            transform: translateY(-2px);
+        .timeline-box.tl-left {
+            margin-right: auto;
         }
 
-        .timeline-box.expanded {
-            background-color: #d8d8c8;
-        }
-
-        .timeline-box.ongoing {
-            border-left: 4px solid #4caf50;
-        }
-
-        .timeline-box.completed {
-            border-left: 4px solid #f44336;
-        }
-
-        .timeline-title-row {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin: 0;
-            gap: 15px;
-            flex-wrap: wrap;
-        }
-
-        .timeline-meta {
-            display: flex;
-            align-items: center;
-            gap: 10px;
+        .timeline-box.tl-right {
             margin-left: auto;
         }
 
-        .timeline-arrow {
-            width: 10px;
-            height: 10px;
-            border-right: 2px solid #777;
-            border-bottom: 2px solid #777;
-            transform: rotate(45deg);
-            transition: transform 0.25s ease;
-            flex: 0 0 auto;
-            margin-left: 2px;
+        .timeline-box:hover {
+            border-color: var(--draft-line-strong);
+            background: rgba(245, 245, 220, 0.8);
         }
 
-        .timeline-box.expanded .timeline-arrow {
-            transform: rotate(225deg);
+        .timeline-box.expanded {
+            border-color: var(--ink);
+            background: rgba(245, 245, 220, 0.86);
         }
 
-        .timeline-title {
-            font-size: 1.2rem;
-            font-weight: 500;
-            margin: 0;
-            flex: 1;
+        /* Leader line from card to the spine */
+        .timeline-box::before {
+            content: '';
+            position: absolute;
+            top: 21px;
+            height: 1px;
+            width: 30px;
+            background: var(--draft-line);
         }
 
-        .timeline-company {
-            font-size: 0.75rem;
-            color: #888;
-            background-color: #e0e0e0;
-            padding: 4px 8px;
-            border-radius: 4px;
-            white-space: nowrap;
+        /* Node — a drafting vertex sitting on the spine */
+        .timeline-box::after {
+            content: '';
+            position: absolute;
+            top: 21px;
+            width: 8px;
+            height: 8px;
+            box-sizing: border-box;
+            background: var(--paper);
+            border: 1.5px solid var(--ink);
+            transform: translateY(-50%) rotate(45deg);
+        }
+
+        .timeline-box.tl-left::before {
+            right: -30px;
+        }
+
+        .timeline-box.tl-left::after {
+            right: -34px;
+        }
+
+        .timeline-box.tl-right::before {
+            left: -30px;
+        }
+
+        .timeline-box.tl-right::after {
+            left: -34px;
+        }
+
+        /* Ongoing = filled green vertex; past = hollow ink vertex */
+        .timeline-box.ongoing::after {
+            background: var(--accent-now);
+            border-color: var(--accent-now);
+        }
+
+        .timeline-box:hover::after,
+        .timeline-box.expanded::after {
+            border-color: var(--ink);
+        }
+
+        .timeline-box.ongoing:hover::after,
+        .timeline-box.ongoing.expanded::after {
+            border-color: var(--accent-now);
+        }
+
+        .tl-head {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            gap: 12px;
+        }
+
+        .tl-headings {
+            display: flex;
+            flex-direction: column;
+            gap: 3px;
+            min-width: 0;
         }
 
         .timeline-date {
-            font-size: 0.85rem;
-            color: #666;
+            font-family: var(--mono);
+            font-size: 0.7rem;
+            font-weight: 400;
+            letter-spacing: 0.04em;
+            text-transform: lowercase;
+            color: var(--muted-ink);
             white-space: nowrap;
         }
 
         .timeline-box.ongoing .timeline-date {
-            color: #4caf50;
-            font-weight: 500;
+            color: var(--accent-now);
         }
 
-        .timeline-box.completed .timeline-date {
-            color: #f44336;
+        .timeline-title {
+            font-size: 1.02rem;
+            font-weight: 500;
+            line-height: 1.25;
+            letter-spacing: -0.01em;
+            color: var(--ink);
+        }
+
+        .tl-toggle {
+            font-family: var(--mono);
+            font-size: 0.95rem;
+            line-height: 1;
+            color: var(--muted-ink);
+            flex: 0 0 auto;
+            margin-top: 2px;
+            transition: color 0.2s ease;
+        }
+
+        .timeline-box.expanded .tl-toggle {
+            color: var(--ink);
         }
 
         .timeline-details {
             max-height: 0;
             overflow: hidden;
-            transition: max-height 0.4s ease, opacity 0.3s ease, margin-top 0.3s ease;
             opacity: 0;
             margin-top: 0;
-            font-size: 0.95rem;
-            line-height: 1.8;
+            padding-top: 0;
+            border-top: 1px solid transparent;
+            transition: max-height 0.4s var(--ease-soft), opacity 0.3s ease, margin-top 0.3s ease, padding-top 0.3s ease;
+            font-size: 0.85rem;
+            line-height: 1.7;
+            color: #3f3b30;
             word-wrap: break-word;
         }
 
@@ -657,31 +818,74 @@
             margin: 0;
         }
 
-        @media (max-width: 768px) {
-            .timeline-details {
-                font-size: 0.85rem;
-                line-height: 1.5;
-            }
-        }
-
-        @media (max-width: 480px) {
-            .timeline-details {
-                font-size: 0.8rem;
-            }
-        }
-
         .timeline-box.expanded .timeline-details {
-            max-height: 500px;
+            max-height: 520px;
             opacity: 1;
-            margin-top: 12px;
+            margin-top: 11px;
+            padding-top: 11px;
+            border-top-color: var(--draft-line);
+        }
+
+        /* Collapse to a single left-hand spine on narrow screens */
+        @media (max-width: 720px) {
+            .timeline-track::before {
+                left: 14px;
+                transform: none;
+            }
+
+            .timeline-box.tl-left,
+            .timeline-box.tl-right {
+                width: calc(100% - 42px);
+                margin-left: 42px;
+                margin-right: 0;
+            }
+
+            .timeline-box.tl-left::before,
+            .timeline-box.tl-right::before {
+                left: -28px;
+                right: auto;
+                width: 28px;
+            }
+
+            .timeline-box.tl-left::after,
+            .timeline-box.tl-right::after {
+                left: -32px;
+                right: auto;
+            }
+        }
+
+        /* Keyboard focus — visible and on-brand */
+        .timeline-box:focus-visible,
+        .floating-button:focus-visible,
+        .back-button:focus-visible,
+        .contact-item a:focus-visible {
+            outline: 2px solid var(--accent-now);
+            outline-offset: 3px;
+        }
+
+        :focus:not(:focus-visible) {
+            outline: none;
+        }
+
+        /* Respect users who prefer less motion */
+        @media (prefers-reduced-motion: reduce) {
+
+            *,
+            *::before,
+            *::after {
+                animation-duration: 0.001ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: 0.001ms !important;
+                scroll-behavior: auto !important;
+            }
         }
 
         /* Floating buttons */
         .floating-button {
             position: fixed;
             padding: 15px 30px;
-            background-color: #e8e8d8;
-            color: #000000;
+            background-color: var(--card);
+            color: var(--ink);
             border: none;
             border-radius: 25px;
             font-family: 'Poppins', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
@@ -691,8 +895,8 @@
             cursor: pointer;
             z-index: 999;
             pointer-events: auto;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-            transition: background-color 0.3s ease, opacity 0.3s ease;
+            box-shadow: 0 6px 18px rgba(45, 41, 30, 0.1);
+            transition: background-color 0.3s var(--ease-soft), box-shadow 0.3s var(--ease-soft), opacity 0.3s ease;
             opacity: 1;
         }
 
@@ -702,7 +906,8 @@
         }
 
         .floating-button:hover {
-            background-color: #d8d8c8;
+            background-color: var(--card-hover);
+            box-shadow: 0 12px 28px rgba(45, 41, 30, 0.16);
         }
 
         .floating-button-left {
@@ -794,41 +999,8 @@
                 max-height: calc(100vh - 200px);
             }
 
-            .timeline-title-row {
-                flex-direction: column;
-                align-items: flex-start;
-                gap: 6px;
-            }
-
             .timeline-title {
-                font-size: 1rem;
-                white-space: nowrap;
-                overflow: hidden;
-                text-overflow: ellipsis;
-                width: 100%;
-            }
-
-            .timeline-date {
-                font-size: 0.75rem;
-                margin-top: 2px;
-            }
-
-            .timeline-company {
-                font-size: 0.7rem;
-                padding: 3px 6px;
-            }
-
-            .timeline-meta {
-                display: flex;
-                align-items: center;
-                gap: 8px;
-                margin-top: 4px;
-                margin-left: 0;
-            }
-
-            .timeline-arrow {
-                margin-top: 8px;
-                margin-left: auto;
+                font-size: 0.98rem;
             }
 
             .name-wrapper.animate-to-top {
@@ -872,19 +1044,12 @@
             }
 
             .timeline-box {
-                padding: 8px 12px;
-                margin-bottom: 8px;
+                padding: 10px 13px 11px;
+                margin-bottom: 16px;
             }
 
             .timeline-title {
-                font-size: 0.9rem;
-                white-space: nowrap;
-                overflow: hidden;
-                text-overflow: ellipsis;
-            }
-
-            .timeline-date {
-                font-size: 0.7rem;
+                font-size: 0.92rem;
             }
 
             .name-wrapper.animate-to-top .name {
@@ -954,7 +1119,7 @@
         }
 
         .contact-item a:hover {
-            color: #666;
+            color: var(--accent-now);
         }
 
         /* Library page */
@@ -1005,8 +1170,8 @@
             background-color: transparent;
             border-radius: 8px;
             padding: 0;
-            transition: transform 0.3s ease;
-            cursor: pointer;
+            transition: transform 0.4s var(--ease-soft);
+            cursor: default;
             width: 180px;
             display: flex;
             flex-direction: column;
@@ -1048,6 +1213,22 @@
             font-size: 0.9rem;
             color: #666;
             text-align: center;
+        }
+
+        /* One book on the shelf is "reading now" — same green pulse dot as the timeline */
+        .book-now-dot {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            z-index: 2;
+        }
+
+        .book-now-label {
+            font-size: 0.75rem;
+            font-weight: 500;
+            color: var(--accent-now);
+            text-align: center;
+            margin-top: 4px;
         }
 
         @media (max-width: 768px) {
@@ -1142,6 +1323,342 @@
                 text-overflow: ellipsis;
             }
 
+        }
+        /* ===== The paper: an aged parchment in the library ===== */
+        .svg-filters {
+            position: absolute;
+            width: 0;
+            height: 0;
+            overflow: hidden;
+        }
+
+        /* Library tile that opens the paper */
+        .paper-card {
+            cursor: pointer;
+        }
+
+        .paper-cover {
+            background:
+                radial-gradient(120% 80% at 28% 18%, rgba(255, 250, 231, 0.55), transparent 60%),
+                linear-gradient(152deg, #e8d8ad 0%, #ddc994 52%, #ccb277 100%);
+            border: 1px solid rgba(92, 63, 24, 0.4);
+            box-shadow: 0 6px 16px rgba(58, 38, 14, 0.34), inset 0 0 34px rgba(120, 84, 34, 0.26);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            padding: 20px 16px;
+            text-align: center;
+        }
+
+        .paper-cover-kicker {
+            font-family: 'Caveat', cursive;
+            font-size: 1rem;
+            letter-spacing: 0.02em;
+            color: #7c5b2a;
+        }
+
+        .paper-cover-title {
+            font-family: 'Caveat', cursive;
+            font-weight: 700;
+            font-size: 2.15rem;
+            line-height: 0.96;
+            color: #3a2810;
+        }
+
+        .paper-cover-rule {
+            width: 48px;
+            height: 8px;
+            background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='48' height='8' viewBox='0 0 48 8'%3E%3Cpath d='M1,4 C 10,1 16,7 24,4 S 40,1 47,4' fill='none' stroke='%235b3e19' stroke-width='1.4' stroke-linecap='round'/%3E%3C/svg%3E") no-repeat center/contain;
+        }
+
+        .paper-cover-by {
+            font-family: 'Caveat', cursive;
+            font-size: 1.05rem;
+            color: #5b3e19;
+        }
+
+        .paper-card .book-author {
+            font-family: 'Caveat', cursive;
+            font-size: 1.1rem;
+            color: #7c6a45;
+        }
+
+        /* The parchment modal */
+        .paper-modal {
+            position: fixed;
+            inset: 0;
+            z-index: 2000;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            padding: 4vh 16px;
+        }
+
+        .paper-modal.open {
+            display: flex;
+        }
+
+        .paper-modal-backdrop {
+            position: absolute;
+            inset: 0;
+            background: rgba(22, 15, 5, 0.6);
+            -webkit-backdrop-filter: blur(3px);
+            backdrop-filter: blur(3px);
+        }
+
+        .parchment-wrap {
+            position: relative;
+            width: min(760px, 94vw);
+            filter: drop-shadow(0 26px 50px rgba(0, 0, 0, 0.45));
+            animation: parchIn 0.42s var(--ease-soft) both;
+        }
+
+        @keyframes parchIn {
+            from {
+                opacity: 0;
+                transform: translateY(16px) rotate(-0.4deg);
+            }
+
+            to {
+                opacity: 1;
+                transform: none;
+            }
+        }
+
+        .parchment {
+            position: relative;
+        }
+
+        /* Textured, torn-edged paper body (behind the text) */
+        .parchment-bg {
+            position: absolute;
+            inset: -16px;
+            background-image:
+                url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E"),
+                url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='500' height='500'%3E%3Cfilter id='m'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.012' numOctaves='4' seed='11'/%3E%3CfeColorMatrix values='0 0 0 0 0.34 0 0 0 0 0.2 0 0 0 0 0.06 0 0 0 -1.7 0.85'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23m)'/%3E%3C/svg%3E"),
+                radial-gradient(78% 62% at 18% 8%, rgba(255, 250, 226, 0.55), transparent 55%),
+                radial-gradient(72% 62% at 94% 98%, rgba(92, 56, 18, 0.42), transparent 60%),
+                radial-gradient(58% 48% at 4% 92%, rgba(92, 56, 18, 0.34), transparent 62%),
+                radial-gradient(42% 32% at 72% 26%, rgba(108, 70, 22, 0.2), transparent 60%),
+                linear-gradient(154deg, #e6d6a8 0%, #dbca9c 42%, #ccb67c 76%, #c0aa6f 100%);
+            background-size: 200px 200px, 500px 500px, cover, cover, cover, cover, cover;
+            background-repeat: repeat, repeat, no-repeat, no-repeat, no-repeat, no-repeat, no-repeat;
+            background-blend-mode: soft-light, multiply, normal, normal, normal, normal, normal;
+            box-shadow: inset 0 0 60px 14px rgba(92, 56, 16, 0.42), inset 0 0 170px 46px rgba(66, 40, 10, 0.3);
+            filter: url(#paperEdge);
+        }
+
+        /* Coffee rings and drips */
+        .parchment-stains {
+            position: absolute;
+            inset: 0;
+            z-index: 1;
+            pointer-events: none;
+            mix-blend-mode: multiply;
+            opacity: 0.92;
+            filter: url(#stainRough);
+            background-repeat: no-repeat;
+            background-image:
+                radial-gradient(circle at 76% 18%, transparent 40px, rgba(86, 48, 14, 0.16) 41px, rgba(66, 36, 8, 0.28) 45px, rgba(86, 48, 14, 0.12) 51px, transparent 59px),
+                radial-gradient(circle at 76% 18%, rgba(96, 56, 18, 0.08) 0, rgba(96, 56, 18, 0.05) 38px, transparent 44px),
+                radial-gradient(circle at 15% 72%, transparent 25px, rgba(72, 40, 10, 0.22) 26px, rgba(72, 40, 10, 0.1) 33px, transparent 41px),
+                radial-gradient(circle at 15% 72%, rgba(90, 52, 16, 0.07) 0, transparent 30px),
+                radial-gradient(circle at 58% 63%, rgba(80, 44, 12, 0.13) 0, transparent 15px),
+                radial-gradient(circle at 40% 33%, rgba(80, 44, 12, 0.08) 0, transparent 9px),
+                radial-gradient(circle at 88% 66%, rgba(80, 44, 12, 0.1) 0, transparent 12px),
+                linear-gradient(90deg, transparent 47.5%, rgba(74, 44, 12, 0.13) 50%, transparent 52.5%),
+                linear-gradient(0deg, transparent 62%, rgba(74, 44, 12, 0.1) 65%, transparent 68%);
+        }
+
+        /* Folded corner */
+        .dogear {
+            position: absolute;
+            right: 0;
+            bottom: 0;
+            width: 42px;
+            height: 42px;
+            z-index: 2;
+            pointer-events: none;
+            background: linear-gradient(135deg, transparent 45%, #d3c088 46%, #bda76f 100%);
+            box-shadow: -4px -4px 9px rgba(60, 38, 12, 0.22);
+            clip-path: polygon(100% 0, 100% 100%, 0 100%);
+            filter: url(#paperEdge);
+        }
+
+        .parchment-content {
+            position: relative;
+            z-index: 2;
+            max-height: 90vh;
+            overflow-y: auto;
+            overscroll-behavior: contain;
+            -webkit-overflow-scrolling: touch;
+            padding: 50px 56px 46px;
+            color: #3a2a0f;
+            font-family: 'Caveat', cursive;
+            font-weight: 500;
+            font-size: 1.44rem;
+            line-height: 1.48;
+            scrollbar-width: none;
+            user-select: text;
+            -webkit-user-select: text;
+        }
+
+        .parchment-content::-webkit-scrollbar {
+            display: none;
+        }
+
+        .parchment-content p {
+            margin-bottom: 0.55em;
+        }
+
+        .pc-kicker {
+            font-family: 'Caveat', cursive;
+            font-size: 1.1rem;
+            letter-spacing: 0.02em;
+            color: #7c5828;
+            margin-bottom: 2px;
+        }
+
+        .pc-title {
+            font-family: 'Caveat', cursive;
+            font-weight: 700;
+            font-size: 3.1rem;
+            line-height: 0.98;
+            color: #2f2009;
+            margin-bottom: 2px;
+            filter: url(#inkRough);
+        }
+
+        .pc-title::after {
+            content: '';
+            display: block;
+            height: 11px;
+            width: 58%;
+            margin-top: 3px;
+            background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='150' height='11' viewBox='0 0 150 11'%3E%3Cpath d='M2,6 C 24,2 40,9 62,5 S 108,2 128,6 146,9 148,5' fill='none' stroke='%234a3110' stroke-width='2' stroke-linecap='round'/%3E%3C/svg%3E") repeat-x left center/150px 11px;
+            opacity: 0.8;
+        }
+
+        .pc-sub {
+            font-size: 1.6rem;
+            line-height: 1.15;
+            color: #5a3d18;
+            margin-bottom: 6px;
+        }
+
+        .pc-by {
+            font-size: 1.15rem;
+            color: #7c5828;
+            margin-bottom: 8px;
+        }
+
+        .pc-hr {
+            border: none;
+            height: 11px;
+            background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='150' height='11' viewBox='0 0 150 11'%3E%3Cpath d='M2,6 C 26,2 44,10 66,5 S 110,2 130,6 146,9 148,5' fill='none' stroke='%235a3d18' stroke-width='1.5' stroke-linecap='round'/%3E%3C/svg%3E") repeat-x left center/150px 11px;
+            margin: 12px 0 18px;
+            opacity: 0.75;
+        }
+
+        .pc-h {
+            font-family: 'Caveat', cursive;
+            font-weight: 700;
+            font-size: 1.95rem;
+            line-height: 1.05;
+            color: #45300e;
+            margin: 20px 0 4px;
+            filter: url(#inkRough);
+        }
+
+        .pc-stat {
+            font-family: 'Caveat', cursive;
+            font-weight: 600;
+            font-size: 1.28rem;
+            letter-spacing: 0.01em;
+            color: #5c3f16;
+            text-align: center;
+            padding: 15px 20px;
+            margin: 18px 6px;
+            border: none;
+            background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 320 80' preserveAspectRatio='none'%3E%3Cpath d='M9,11 C 92,5 184,13 280,7 C 313,5 307,36 315,56 C 318,73 210,66 120,70 C 42,73 11,67 7,61 C 3,42 11,27 9,11 Z' fill='none' stroke='%236b4c1e' stroke-width='1.4'/%3E%3C/svg%3E") no-repeat center/100% 100%;
+        }
+
+        .pc-foot {
+            font-size: 1.15rem;
+            color: #6b5230;
+            margin-top: 16px;
+        }
+
+        .pc-link-row {
+            margin-top: 4px;
+        }
+
+        .pc-link {
+            font-family: 'Caveat', cursive;
+            font-weight: 600;
+            font-size: 1.3rem;
+            color: #6a4310;
+            padding-bottom: 7px;
+            background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='9' viewBox='0 0 120 9'%3E%3Cpath d='M1,5 C 20,1 34,8 52,4 S 92,1 110,5 118,7 119,4' fill='none' stroke='%236a4310' stroke-width='1.4' stroke-linecap='round'/%3E%3C/svg%3E") repeat-x left bottom/120px 9px;
+            text-decoration: none;
+        }
+
+        .pc-link:hover {
+            color: #3a2810;
+        }
+
+        .pc-sign {
+            font-family: 'Caveat', cursive;
+            font-weight: 700;
+            font-size: 2.5rem;
+            color: #43300d;
+            margin-top: 14px;
+            transform: rotate(-4deg);
+            transform-origin: left center;
+        }
+
+        .parchment-close {
+            position: absolute;
+            top: -14px;
+            right: -14px;
+            z-index: 3;
+            width: 38px;
+            height: 38px;
+            border-radius: 50%;
+            border: 1px solid rgba(255, 255, 255, 0.25);
+            background: #241a0c;
+            color: #efe4c9;
+            font-size: 1.3rem;
+            line-height: 1;
+            cursor: pointer;
+            box-shadow: 0 6px 16px rgba(0, 0, 0, 0.4);
+        }
+
+        .parchment-close:hover {
+            background: #38290f;
+        }
+
+        @media (max-width: 640px) {
+            .parchment-content {
+                padding: 36px 28px 32px;
+                font-size: 1.3rem;
+                max-height: 88vh;
+            }
+
+            .pc-title {
+                font-size: 2.5rem;
+            }
+
+            .pc-h {
+                font-size: 1.7rem;
+            }
+
+            .parchment-close {
+                top: -10px;
+                right: -4px;
+            }
         }
     </style>
 </head>
@@ -1271,6 +1788,11 @@
                     hi. I am aaroh. i like making solutions for people, physical and technological.<br><br>boring people
                     are awful.
                 </div>
+                <p class="now-line" id="nowLine">
+                    <span class="timeline-status-dot" aria-hidden="true"></span>
+                    now — building <em>mosscross</em>, reading <em>zero to one</em>
+                    <span class="now-date">· as of july 2026</span>
+                </p>
                 <div class="timeline-container" id="timelineContainer">
                     <!-- Timeline boxes will be inserted here -->
                 </div>
@@ -1281,6 +1803,17 @@
                 <button class="back-button" id="libraryBackButton">← Back</button>
                 <div class="bookshelf">
                     <div class="book-grid" id="bookGrid">
+                        <div class="book-card paper-card" id="paperScrollBtn" role="button" tabindex="0"
+                            aria-haspopup="dialog" aria-label="Open my research paper, 7/10 Stars Please">
+                            <div class="book-cover paper-cover">
+                                <div class="paper-cover-kicker">preprint</div>
+                                <div class="paper-cover-title">7/10<br>Stars<br>Please</div>
+                                <div class="paper-cover-rule"></div>
+                                <div class="paper-cover-by">a. kandhare · 2026</div>
+                            </div>
+                            <div class="book-title">7/10 Stars Please</div>
+                            <div class="book-author">a paper i wrote — tap to read</div>
+                        </div>
                         <!-- Book cards will be inserted here -->
                     </div>
                 </div>
@@ -1290,6 +1823,96 @@
 
     <button class="floating-button floating-button-left" id="leftButton">contact</button>
     <button class="floating-button floating-button-right" id="rightButton">library</button>
+
+    <!-- Rough torn-paper edge filter -->
+    <svg class="svg-filters" width="0" height="0" aria-hidden="true" focusable="false">
+        <filter id="paperEdge" x="-25%" y="-25%" width="150%" height="150%">
+            <feTurbulence type="fractalNoise" baseFrequency="0.009 0.013" numOctaves="5" seed="8" result="noise" />
+            <feDisplacementMap in="SourceGraphic" in2="noise" scale="22" xChannelSelector="R" yChannelSelector="G" />
+        </filter>
+        <filter id="stainRough" x="-40%" y="-40%" width="180%" height="180%">
+            <feTurbulence type="fractalNoise" baseFrequency="0.016 0.02" numOctaves="4" seed="21" result="noise" />
+            <feDisplacementMap in="SourceGraphic" in2="noise" scale="13" xChannelSelector="R" yChannelSelector="G" />
+        </filter>
+        <filter id="inkRough" x="-12%" y="-12%" width="124%" height="124%">
+            <feTurbulence type="fractalNoise" baseFrequency="0.02 0.03" numOctaves="3" seed="4" result="noise" />
+            <feDisplacementMap in="SourceGraphic" in2="noise" scale="2.2" xChannelSelector="R" yChannelSelector="G" />
+        </filter>
+    </svg>
+
+    <!-- The paper, as an aged parchment -->
+    <div class="paper-modal" id="paperModal" role="dialog" aria-modal="true" aria-labelledby="paperModalTitle"
+        aria-hidden="true">
+        <div class="paper-modal-backdrop" data-close></div>
+        <div class="parchment-wrap" role="document">
+            <button class="parchment-close" id="paperModalClose" type="button" aria-label="Close">×</button>
+            <div class="parchment">
+                <div class="parchment-bg" aria-hidden="true"></div>
+                <div class="parchment-stains" aria-hidden="true"></div>
+                <div class="dogear" aria-hidden="true"></div>
+                <div class="parchment-content">
+                    <p class="pc-kicker">Cadybara Arena · Research Preprint</p>
+                    <h2 class="pc-title" id="paperModalTitle">7/10 Stars Please</h2>
+                    <p class="pc-sub">How prompt detail changed what people preferred in an AI-generated CAD pilot</p>
+                    <p class="pc-by">Aaroh Kandhare · July 2026</p>
+                    <hr class="pc-hr">
+                    <p>More detail sounds like it should make an AI-generated CAD design better. In our first arena pilot,
+                        it did not work that cleanly.</p>
+                    <p>We generated snowmen, wall hooks, and wall planters at five prompt-detail levels — 1, 3, 5, 7, and
+                        10 — then placed the renderable outputs into pairwise battles and collected preferences through a
+                        public interface. Level 7 came out first overall, but each product family chose a different
+                        winner. The interesting result is not that seven is always best. It is that prompt detail appears
+                        to have a useful middle range, and that range changes with the object being designed.</p>
+                    <h3 class="pc-h">The short version</h3>
+                    <p>Across the 230 votes accepted for the main analysis, Level 7 earned a 62.5% raw preference score;
+                        the next closest was Level 1 at 55.1%. Correcting for the fact that the five levels faced
+                        different opponent mixes did not remove the lead — Level 7 remained first at 62.9% in a
+                        family-adjusted paired-comparison model. But snowmen favored Level 7, wall hooks slightly favored
+                        Level 3, and wall planters favored Level 10. Moderate detail led the pooled archive; it was not a
+                        universal recipe.</p>
+                    <p class="pc-stat">94 renderable designs · 245 archived votes · 230 accepted · 3 families · 5 detail
+                        levels</p>
+                    <h3 class="pc-h">What happened</h3>
+                    <p>The raw pooled scores were 55.1% (L1), 50.0% (L3), 42.7% (L5), 62.5% (L7), and 40.1% (L10). The
+                        shape is a spike, not a smooth curve. More instructions did not steadily improve preference, and
+                        the least detailed prompt still finished second. Level 7 also had the easiest opponent mix — yet
+                        after adjusting for schedule and family it still ranked first.</p>
+                    <h3 class="pc-h">The pooled model does not erase the direct loss</h3>
+                    <p>Level 7 performed well against Levels 1, 5, and 10, but it lost its direct Level-3 matchup — 43.3%
+                        in 15 votes, where the fitted model predicted 63.2%. The family splits make the same point: Level
+                        7 led snowmen (66.7%), Level 3 led wall hooks (66.7%), and Level 10 led wall planters (83.3%).
+                        Small subsets, but enough to reject the claim that one amount of detail works best for every CAD
+                        task.</p>
+                    <h3 class="pc-h">What 7/10 might mean</h3>
+                    <p>A Level-7 prompt looked like a complete design brief without specifying every implementation
+                        choice — form, dimensions, wall thickness, open top, flat back, mounting hole. Later levels added
+                        drainage layout, exact placements, fillets, watertightness, print orientation. One reading is
+                        that the model got enough structure to understand the object while keeping some freedom to
+                        resolve the geometry. Plausible, not proven — wall planters actually favored Level 10. The better
+                        rule isn't “always stop at seven.” It's “give the model the constraints that define the product,
+                        then be careful about instructions that overcoordinate details the generator may not resolve
+                        well.”</p>
+                    <h3 class="pc-h">What this pilot cannot prove</h3>
+                    <p>All archived votes share one browser session, so we can't verify how many people voted or claim
+                        the percentages represent a population. The full prompt ladder survives only for wall planters.
+                        Failed generations are absent, so this measures which surviving render people preferred, not
+                        which level was most likely to produce a usable file. The comparison network is thin. The pilot
+                        is strong enough to reveal a pattern worth testing — not strong enough to settle the question.
+                    </p>
+                    <h3 class="pc-h">Bottom line</h3>
+                    <p>Level 7 was the most preferred condition in this archive, before and after adjustment. But the
+                        stronger conclusion is the useful one: prompt specificity should be treated as a design choice,
+                        not a volume knob. The right level depends on what the object needs the model to understand, and
+                        which choices the model should still be allowed to make.</p>
+                    <p class="pc-foot">Full methods, citations, prompt-ladder text, and model diagnostics are in the
+                        preprint.</p>
+                    <p class="pc-link-row"><a class="pc-link" href="assets/7_10_stars_please.pdf" target="_blank"
+                            rel="noopener">read the full preprint (pdf) →</a></p>
+                    <p class="pc-sign">— Aaroh</p>
+                </div>
+            </div>
+        </div>
+    </div>
 
     <script>
         document.addEventListener('DOMContentLoaded', function () {
@@ -1782,14 +2405,19 @@
                     syncApplesForView();
                 });
 
+                function isSelectableTarget(target) {
+                    return target instanceof Element &&
+                        Boolean(target.closest('.intro-text, .now-line, .timeline-title, .timeline-details, .contact-item, .book-title, .book-author, .parchment-content'));
+                }
+
                 document.addEventListener('selectstart', event => {
-                    if (!isInteractiveTarget(event.target)) {
+                    if (!isInteractiveTarget(event.target) && !isSelectableTarget(event.target)) {
                         event.preventDefault();
                     }
                 });
 
                 document.addEventListener('dblclick', event => {
-                    if (!isInteractiveTarget(event.target)) {
+                    if (!isInteractiveTarget(event.target) && !isSelectableTarget(event.target)) {
                         event.preventDefault();
                     }
                 });
@@ -1879,7 +2507,6 @@
                     title: "CMO of CoachT (exit 1)",
                     preview: "Chief Marketing Officer for CoachT and RunwayAI, managed 50+ B2B relationships, created outreach automations",
                     date: "May 2025 - Present",
-                    company: "company 1",
                     status: "completed",
                     details: "• Managed 50+ B2B relationships<br>• Created outreach automations<br>• Sold to large company at 16<br>• Skills: Leadership, Market Research, Marketing Strategy"
                 },
@@ -1887,7 +2514,6 @@
                     title: "COO of Vaidra Education",
                     preview: "Created website and technology, product used by 200+ schools and 30000+ students in India",
                     date: "Jun 2025 - Present",
-                    company: "company 2",
                     status: "completed",
                     details: "• Created website and technology<br>• Built product used by 200+ schools and 30000+ students in India<br>• Implemented AI translation with multiple voices<br>• Skills: AI, Back-End Web Development"
                 },
@@ -1895,7 +2521,6 @@
                     title: "Co-Founder of Mosscross",
                     preview: "Co-founded third company modernizing roof cleaning with physical products, backed by Founders Inc.",
                     date: "Mar 2026 - Present",
-                    company: "company 3",
                     details: "• Co-founded third company<br>• Modernizing roof cleaning with physical products<br>• Backed by Founders Inc.<br>• Skills: Product Development, Operations, Physical Products"
                 },
                 {
@@ -1911,7 +2536,8 @@
                 {
                     title: "Zero to One",
                     author: "Peter Thiel with Blake Masters",
-                    cover: "https://covers.openlibrary.org/b/isbn/9780804139298-L.jpg"
+                    cover: "https://covers.openlibrary.org/b/isbn/9780804139298-L.jpg",
+                    now: true
                 },
                 {
                     title: "Elon Musk",
@@ -2056,6 +2682,10 @@
                 // Show intro text and timeline after name animation completes
                 setTimeout(() => {
                     introText.classList.add('visible');
+                    const nowLineEl = document.getElementById('nowLine');
+                    if (nowLineEl) {
+                        nowLineEl.classList.add('visible');
+                    }
                     timelineContainer.classList.add('visible');
 
                     // Stagger timeline boxes
@@ -2166,64 +2796,119 @@
                 mainTouchY = null;
             });
 
-            // Create timeline boxes (reverse order so newest is first)
+            // Create timeline (newest first, alternating left/right off a center spine)
+            const timelineTrack = document.createElement('div');
+            timelineTrack.className = 'timeline-track';
+            timelineContainer.appendChild(timelineTrack);
+
             accomplishments.slice().reverse().forEach((item, index) => {
                 const { startDate, isOngoing } = parseDate(item.date);
                 const isCompleted = item.status === 'completed' || !isOngoing;
+                const side = index % 2 === 0 ? 'tl-left' : 'tl-right';
                 const box = document.createElement('div');
-                box.className = `timeline-box ${isCompleted ? 'completed' : 'ongoing'}`;
-
-                const companyLabel = item.company ? `<div class="timeline-company">${item.company}</div>` : '';
+                box.className = `timeline-box ${side} ${isCompleted ? 'completed' : 'ongoing'}`;
+                box.setAttribute('role', 'button');
+                box.setAttribute('tabindex', '0');
+                box.setAttribute('aria-expanded', 'false');
 
                 box.innerHTML = `
-                    <div class="timeline-title-row">
-                        <div class="timeline-title">${item.title}</div>
-                        <div class="timeline-meta">
-                            ${companyLabel}
-                            <div class="timeline-date">${startDate}</div>
+                    <div class="tl-head">
+                        <div class="tl-headings">
+                            <span class="timeline-date">${startDate}</span>
+                            <div class="timeline-title">${item.title}</div>
                         </div>
-                        <span class="timeline-arrow" aria-hidden="true"></span>
+                        <span class="tl-toggle" aria-hidden="true">+</span>
                     </div>
                     <div class="timeline-details">${item.details}</div>
                 `;
 
-                box.addEventListener('click', function () {
+                const toggle = box.querySelector('.tl-toggle');
+
+                function toggleBox() {
                     // Close all other boxes
-                    const allBoxes = timelineContainer.querySelectorAll('.timeline-box');
+                    const allBoxes = timelineTrack.querySelectorAll('.timeline-box');
                     allBoxes.forEach(otherBox => {
                         if (otherBox !== box) {
                             otherBox.classList.remove('expanded');
+                            otherBox.setAttribute('aria-expanded', 'false');
+                            const otherToggle = otherBox.querySelector('.tl-toggle');
+                            if (otherToggle) {
+                                otherToggle.textContent = '+';
+                            }
                         }
                     });
 
                     // Toggle the clicked box
                     const wasExpanded = box.classList.contains('expanded');
                     box.classList.toggle('expanded');
+                    box.setAttribute('aria-expanded', String(!wasExpanded));
+                    if (toggle) {
+                        toggle.textContent = wasExpanded ? '+' : '−';
+                    }
                     updateContainerScroll();
 
-                    // Scroll to box if it's being expanded
+                    // Scroll the box toward center — vertically only, within the timeline
+                    // container (never scrollIntoView, which also shifts the page sideways
+                    // once cards are off-center).
                     if (!wasExpanded && box.classList.contains('expanded')) {
                         setTimeout(() => {
-                            box.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                            const containerRect = timelineContainer.getBoundingClientRect();
+                            const boxRect = box.getBoundingClientRect();
+                            const delta = (boxRect.top - containerRect.top)
+                                - (timelineContainer.clientHeight / 2)
+                                + (boxRect.height / 2);
+                            timelineContainer.scrollTo({
+                                top: timelineContainer.scrollTop + delta,
+                                behavior: 'smooth'
+                            });
                             updateTimelineEdge();
                         }, 100);
                     }
+                }
+
+                box.addEventListener('click', toggleBox);
+                box.addEventListener('keydown', event => {
+                    if (event.key === 'Enter' || event.key === ' ' || event.key === 'Spacebar') {
+                        event.preventDefault();
+                        toggleBox();
+                    }
                 });
 
-                timelineContainer.appendChild(box);
+                timelineTrack.appendChild(box);
             });
             updateTimelineEdge();
+
+            // The slide viewport must never scroll (navigation happens via transform).
+            // Focusing/expanding an off-center timeline card can make the browser scroll
+            // the wrapper sideways and reveal a neighbouring view — snap it back to 0.
+            const slideWrapper = document.querySelector('.slide-wrapper');
+            if (slideWrapper) {
+                slideWrapper.addEventListener('scroll', () => {
+                    if (slideWrapper.scrollLeft !== 0 || slideWrapper.scrollTop !== 0) {
+                        slideWrapper.scrollLeft = 0;
+                        slideWrapper.scrollTop = 0;
+                    }
+                }, { passive: true });
+            }
 
             // Create book cards
             books.forEach(book => {
                 const card = document.createElement('div');
-                card.className = 'book-card';
+                card.className = `book-card${book.now ? ' reading-now' : ''}`;
+                const nowDot = book.now
+                    ? '<span class="timeline-status-dot book-now-dot" aria-hidden="true" title="reading now"></span>'
+                    : '';
+                const nowLabel = book.now
+                    ? '<div class="book-now-label">reading now</div>'
+                    : '';
                 card.innerHTML = `
                     <div class="book-cover">
+                        ${nowDot}
                         <img src="${book.cover}" alt="${book.title}" onerror="this.style.display='none'; this.parentElement.innerHTML='📚';">
                     </div>
                     <div class="book-title">${book.title}</div>
                     <div class="book-author">${book.author}</div>
+                    ${nowLabel}
                 `;
                 bookGrid.appendChild(card);
             });
@@ -2278,6 +2963,66 @@
             updateButtonLabels();
             contactBackButton.addEventListener('click', slideToMain);
             libraryBackButton.addEventListener('click', slideToMain);
+
+            // The paper — open/close the parchment
+            const paperScrollBtn = document.getElementById('paperScrollBtn');
+            const paperModal = document.getElementById('paperModal');
+            const paperModalClose = document.getElementById('paperModalClose');
+            const parchmentContent = paperModal ? paperModal.querySelector('.parchment-content') : null;
+
+            function openPaper() {
+                if (!paperModal) {
+                    return;
+                }
+                paperModal.classList.add('open');
+                paperModal.setAttribute('aria-hidden', 'false');
+                if (parchmentContent) {
+                    parchmentContent.scrollTop = 0;
+                }
+                if (paperModalClose) {
+                    paperModalClose.focus();
+                }
+            }
+
+            function closePaper() {
+                if (!paperModal) {
+                    return;
+                }
+                paperModal.classList.remove('open');
+                paperModal.setAttribute('aria-hidden', 'true');
+                if (paperScrollBtn) {
+                    paperScrollBtn.focus();
+                }
+            }
+
+            if (paperScrollBtn) {
+                paperScrollBtn.addEventListener('click', openPaper);
+                paperScrollBtn.addEventListener('keydown', event => {
+                    if (event.key === 'Enter' || event.key === ' ' || event.key === 'Spacebar') {
+                        event.preventDefault();
+                        openPaper();
+                    }
+                });
+            }
+
+            if (paperModalClose) {
+                paperModalClose.addEventListener('click', closePaper);
+            }
+
+            if (paperModal) {
+                paperModal.addEventListener('click', event => {
+                    if (event.target instanceof Element &&
+                        (event.target.hasAttribute('data-close') || event.target.classList.contains('paper-modal-backdrop'))) {
+                        closePaper();
+                    }
+                });
+            }
+
+            document.addEventListener('keydown', event => {
+                if (event.key === 'Escape' && paperModal && paperModal.classList.contains('open')) {
+                    closePaper();
+                }
+            });
         });
     </script>
 </body>
