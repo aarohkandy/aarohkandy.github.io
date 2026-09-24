@@ -33,7 +33,7 @@ section:target{display:block;animation:in .45s ease both}
 .box span{font-size:15px;color:#a2a2a2}
 .box:hover,.box:focus-visible{border-color:#898989;background:rgba(255,255,255,.04);transform:translateY(-2px)}
 @media(prefers-reduced-motion:reduce){.box{transition:none}.box:hover{transform:none}}
-body:has(#moonshot:target) a[href="#moonshot"],body:has(#auros:target) a[href="#auros"],body:has(#coacht:target) a[href="#coacht"],body:has(#cadybara:target) a[href="#cadybara"],body:has(#mosscross:target) a[href="#mosscross"],body:has(#rocket:target) a[href="#rocket"],body:has(#research:target) a[href="#research"],body:has(#vaidra:target) a[href="#vaidra"],body:has(#vex:target) a[href="#vex"],body:has(#battlebots:target) a[href="#battlebots"],body:has(#frc:target) a[href="#frc"],body:has(#everything:target) a[href="#everything"],body:has(#contact:target) a[href="#contact"]{color:var(--ink)}
+body:has(#moonshot:target) a[href="#moonshot"],body:has(#auros:target) a[href="#auros"],body:has(#runway:target) a[href="#runway"],body:has(#cadybara:target) a[href="#cadybara"],body:has(#mosscross:target) a[href="#mosscross"],body:has(#rocket:target) a[href="#rocket"],body:has(#research:target) a[href="#research"],body:has(#vaidra:target) a[href="#vaidra"],body:has(#vex:target) a[href="#vex"],body:has(#battlebots:target) a[href="#battlebots"],body:has(#frc:target) a[href="#frc"],body:has(#everything:target) a[href="#everything"],body:has(#contact:target) a[href="#contact"]{color:var(--ink)}
 a:focus-visible{outline:1px solid var(--mute);outline-offset:4px}
 @media(max-width:760px),(max-height:620px){.boxes{grid-template-columns:1fr;gap:12px;max-width:26rem;margin:0 auto}}
 

@@ -2,7 +2,7 @@
   "canonicalUrl": "https://aarohkandy.github.io/",
   "name": "Aaroh Kandhare",
   "location": "Bellevue, Washington",
-  "summary": "Head of hardware at a YC startup, founder of Auros, exit at 16.",
+  "summary": "Head of hardware at a YC S26 startup (Moonshot), founder of Auros, exited Runway AI at 16.",
   "contact": {
     "email": "aarohkandy@gmail.com",
     "phone": "425-623-0392",
@@ -21,9 +21,9 @@
       "summary": "Auros is a personalized Linux you install with a double click. It's for people who aren't technical, or who just need a kiosk."
     },
     {
-      "id": "coacht",
-      "header": "exit @ coacht at 16",
-      "summary": "I co-founded CoachT and ran marketing. We made AI coaching software for taekwondo studios."
+      "id": "runway",
+      "header": "exit @ runway ai at 16",
+      "summary": "Runway AI coaches pageant contestants with AI. It started as CoachT, for taekwondo studios, and I co-founded it and ran marketing."
     },
     {
       "id": "cadybara",
@@ -66,5 +66,5 @@
       "summary": "On Team 1899 I led 17 students across 3 subteams building a t-shirt cannon. I also built mechanisms for our robot, which qualified for the 2024 World Championship."
     }
   ],
-  "updated": "2026-09-23"
+  "updated": "2026-09-24"
 }
