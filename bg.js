@@ -25,13 +25,14 @@
     cell = (innerWidth < 760 ? 20 : 24) * dpr; cols = Math.ceil(W / cell) + 1; rows = Math.ceil(Ht / cell) + 1; }
   function draw(t) {
     g.clearRect(0, 0, W, Ht); paths = Array.from({ length: BUCKETS }, () => new Path2D());
+    const tw = t * 1.25;                              // waves 25% faster; ripples keep real time
     const k1 = 0.0105 / dpr, k2 = 0.0086 / dpr, a1 = 0.32, a2 = Math.PI + 0.58;
     const c1 = Math.cos(a1), s1 = Math.sin(a1), c2 = Math.cos(a2), s2 = Math.sin(a2);
     for (let j = 0; j < rows; j++) for (let i = 0; i < cols; i++) {
       const x = i * cell + (j & 1) * cell / 2, y = j * cell;
-      const bend = (noise(x / (340 * dpr), y / (340 * dpr), t * 0.09) - 0.5) * 5.5;
-      const w1 = Math.sin(k1 * (x * c1 + y * s1) - t * 1.05 + bend);
-      const w2 = Math.sin(k2 * (x * c2 + y * s2) - t * 0.83 - bend * 0.7);
+      const bend = (noise(x / (340 * dpr), y / (340 * dpr), tw * 0.09) - 0.5) * 5.5;
+      const w1 = Math.sin(k1 * (x * c1 + y * s1) - tw * 1.05 + bend);
+      const w2 = Math.sin(k2 * (x * c2 + y * s2) - tw * 0.83 - bend * 0.7);
       let v = (w1 + w2) * 0.25 + 0.5;                 // 0..1, peaks where the two trains meet
       for (const rp of ripples) {                     // ring: gaussian band moving outward, fading with age
         const age = t - rp.t, d = Math.hypot(x - rp.x, y - rp.y) - age * 520 * dpr, wd = 46 * dpr;

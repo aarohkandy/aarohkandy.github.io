@@ -7,20 +7,22 @@ nav{position:fixed;z-index:2;right:32px;top:28px;text-align:right;font-size:clam
 nav a{display:block;color:var(--mute);text-decoration:none;transition:color .2s}
 nav a:hover,nav a:focus-visible{color:var(--ink);outline:none}
 nav .me{color:var(--ink);font-weight:600;margin-bottom:.4em}
-section{display:none;position:fixed;z-index:1;left:17vw;top:50%;transform:translateY(-50%);width:min(34rem,44vw);max-height:84vh;overflow:auto;scrollbar-width:none}
+section{display:none;position:fixed;z-index:1;left:50%;top:50%;transform:translate(-50%,-50%);width:min(40rem,56vw);max-height:86vh;overflow:auto;scrollbar-width:none;text-align:center}
 section:target{display:block;animation:in .45s ease both}
 @keyframes in{from{opacity:0;margin-top:10px}to{opacity:1;margin-top:0}}
-h2{font-size:15px;font-weight:400;color:var(--mute);margin:0 0 .9rem;letter-spacing:.02em}
-.lead{font-size:clamp(21px,1.75vw,27px);line-height:1.38;margin:0 0 1.2rem}
-.meta{font-size:15px;color:var(--mute);margin:0}.meta a{text-decoration-color:var(--dim);text-underline-offset:3px}.meta a:hover{color:var(--ink)}
-ul{list-style:none;margin:0;padding:0}
-#everything li{font-size:17px;line-height:1.45;margin:0 0 .5rem;color:var(--mute)}#everything li b{font-weight:400;color:var(--ink)}
-#everything li a{text-decoration:none}#everything li a:hover b{text-decoration:underline;text-decoration-color:var(--dim)}
-body:has(#auros:target) a[href="#auros"],body:has(#moonshot:target) a[href="#moonshot"],body:has(#rocket:target) a[href="#rocket"],body:has(#cadybara:target) a[href="#cadybara"],body:has(#research:target) a[href="#research"],body:has(#battlebots:target) a[href="#battlebots"],body:has(#vex:target) a[href="#vex"],body:has(#frc:target) a[href="#frc"],body:has(#vaidra:target) a[href="#vaidra"],body:has(#mosscross:target) a[href="#mosscross"],body:has(#coacht:target) a[href="#coacht"],body:has(#everything:target) a[href="#everything"],body:has(#contact:target) a[href="#contact"]{color:var(--ink)}
+@media(max-width:1180px) and (min-width:761px){section{left:calc(50% - 95px);width:min(40rem,52vw)}}
+.head{font-size:clamp(30px,3.2vw,48px);line-height:1.14;font-weight:400;letter-spacing:-.01em;margin:0 0 1.1rem;color:var(--ink);text-wrap:balance}
+.para{font-size:clamp(18px,1.35vw,21px);line-height:1.5;color:#a3a39f;margin:0 auto .5rem;max-width:32rem;text-wrap:pretty}
+.para a{color:var(--ink);text-decoration-color:var(--dim);text-underline-offset:4px}.para a:hover{text-decoration-color:var(--ink)}
+.all{list-style:none;margin:0;padding:0}.all li{font-size:clamp(18px,1.4vw,22px);line-height:1.35;margin:0 0 .55rem}
+.all a{color:#a3a39f;text-decoration:none;transition:color .2s}.all a:hover,.all a:focus-visible{color:var(--ink);outline:none}
+.btn{display:inline-block;margin:.4rem 0 1.2rem;padding:.65rem 1.5rem;border:1px solid #5a5a57;border-radius:999px;color:var(--ink);text-decoration:none;font-size:19px;transition:border-color .2s,background .2s}
+.btn:hover,.btn:focus-visible{border-color:var(--ink);background:rgba(255,255,255,.05);outline:none}
 @media(max-width:760px){
  body{height:auto;min-height:100vh;overflow:auto}
  nav{position:relative;right:auto;top:auto;transform:none;text-align:left;padding:28px 22px 8px;font-size:21px;display:flex;flex-wrap:wrap;gap:.1rem 1rem}
  nav .me{flex-basis:100%;margin-bottom:.35rem}nav a{display:inline}
- section{position:relative;left:auto;top:auto;transform:none;width:auto;max-height:none;padding:26px 22px 60px}
+ section{position:relative;left:auto;top:auto;transform:none;width:auto;max-height:none;padding:34px 22px 70px}
 }
 @media(prefers-reduced-motion:reduce){section:target{animation:none}}
+.nw{white-space:nowrap}
