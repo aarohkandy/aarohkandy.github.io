@@ -54,8 +54,10 @@
     ripples.push({ x: e.clientX * dpr, y: e.clientY * dpr, t: (performance.now() - t0) / 1000 });
     if (ripples.length > 6) ripples.shift();
   }, { passive: true });
-  addEventListener('resize', () => { size(); measure(); draw((performance.now() - t0) / 1000); }, { passive: true });
-  addEventListener('hashchange', () => requestAnimationFrame(measure));
-  addEventListener('load', measure); setInterval(measure, 1000); // catches font swaps and the section fade-in
+  addEventListener('resize', () => { size(); measure(); draw(still ? 4 : (performance.now() - t0) / 1000); }, { passive: true });
+  const remask = () => { measure(); if (still) draw(4); };  // the still frame must redraw when the text moves
+  addEventListener('hashchange', () => requestAnimationFrame(remask));
+  addEventListener('scroll', () => requestAnimationFrame(remask), { passive: true });
+  addEventListener('load', remask); setInterval(remask, 1000); // catches font swaps and the section fade-in
   size(); measure(); draw(4); if (!still) requestAnimationFrame(loop);
 })();
