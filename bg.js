@@ -2,6 +2,7 @@
 // meet, pile up and pass through. A slow noise field bends them so it never looks mechanical.
 // Grey on black, ~30 fps, still under reduced motion, paused in hidden tabs.
 // A click sends one ring out from the pointer that runs through the waves and fades in ~2 s.
+// Wherever there is text (the nav, the open section) the field fades to ~20%, so words sit on clean black.
 (() => {
   const c = document.getElementById('bg'); if (!c) return;
   const g = c.getContext('2d'), still = matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -12,6 +13,13 @@
   const noise = (x, y, z) => { const X = Math.floor(x), Y = Math.floor(y), Z = Math.floor(z), u = sm(x - X), v = sm(y - Y), w = sm(z - Z), n = (a, b, d) => H(X + a, Y + b, Z + d);
     return L(L(L(n(0,0,0), n(1,0,0), u), L(n(0,1,0), n(1,1,0), u), v), L(L(n(0,0,1), n(1,0,1), u), L(n(0,1,1), n(1,1,1), u), v), w); };
   const ripples = []; // {x, y, t} in device px and seconds
+  let boxes = [];     // text areas in device px, re-measured on navigation and resize
+  const measure = () => { boxes = [...document.querySelectorAll('nav, section:target')].map(e => e.getBoundingClientRect())
+    .filter(r => r.width && r.height).map(r => ({ l: r.left * dpr, r: r.right * dpr, t: r.top * dpr, b: r.bottom * dpr })); };
+  const quiet = (x, y) => { let m = 1; const pad = 22 * dpr, soft = 110 * dpr;
+    for (const b of boxes) { const dx = Math.max(b.l - pad - x, 0, x - b.r - pad), dy = Math.max(b.t - pad - y, 0, y - b.b - pad);
+      const k = Math.min(1, Math.hypot(dx, dy) / soft); m = Math.min(m, 0.2 + 0.8 * k * k * (3 - 2 * k)); }
+    return m; };
   const BUCKETS = 7; let W, Ht, cell, dpr, cols, rows, paths;
   function size() { dpr = Math.min(devicePixelRatio || 1, 2); W = c.width = innerWidth * dpr; Ht = c.height = innerHeight * dpr;
     cell = (innerWidth < 760 ? 20 : 24) * dpr; cols = Math.ceil(W / cell) + 1; rows = Math.ceil(Ht / cell) + 1; }
@@ -30,13 +38,13 @@
         v += Math.exp(-(d * d) / (wd * wd)) * 0.55 * (1 - age / 2.2);
       }
       v = Math.min(1, v);
-      const e = v * v * v;                              // keep most of the field quiet
+      const e = v * v * v * quiet(x, y);                // keep most of the field quiet, and quieter under text
       const r = e * cell * 0.46; if (r < 0.7 * dpr) continue;
       const p = paths[Math.min(BUCKETS - 1, Math.floor(e * BUCKETS))];
       p.moveTo(x, y - r); p.lineTo(x + r, y); p.lineTo(x, y + r); p.lineTo(x - r, y); p.closePath();
     }
     while (ripples.length && t - ripples[0].t > 2.2) ripples.shift();
-    for (let b = 0; b < BUCKETS; b++) { g.fillStyle = `rgba(200,200,196,${0.035 + b * 0.019})`; g.fill(paths[b]); }
+    for (let b = 0; b < BUCKETS; b++) { g.fillStyle = `rgba(200,200,196,${0.028 + b * 0.012})`; g.fill(paths[b]); }
   }
   let last = 0; const t0 = performance.now();
   const loop = now => { if (!document.hidden && now - last > 33) { last = now; draw((now - t0) / 1000); } requestAnimationFrame(loop); };
@@ -45,6 +53,8 @@
     ripples.push({ x: e.clientX * dpr, y: e.clientY * dpr, t: (performance.now() - t0) / 1000 });
     if (ripples.length > 6) ripples.shift();
   }, { passive: true });
-  addEventListener('resize', () => { size(); draw((performance.now() - t0) / 1000); }, { passive: true });
-  size(); draw(4); if (!still) requestAnimationFrame(loop);
+  addEventListener('resize', () => { size(); measure(); draw((performance.now() - t0) / 1000); }, { passive: true });
+  addEventListener('hashchange', () => requestAnimationFrame(measure));
+  addEventListener('load', measure); setInterval(measure, 1000); // catches font swaps and the section fade-in
+  size(); measure(); draw(4); if (!still) requestAnimationFrame(loop);
 })();
