@@ -44,7 +44,7 @@ a:focus-visible{outline:1px solid var(--mute);outline-offset:4px}
 .home::-webkit-scrollbar{display:none}
 .home > .card{flex:1 0 auto}
 section:target ~ .home{display:none}
-.card{--sans:ui-sans-serif,-apple-system,"Helvetica Neue",Arial,sans-serif;position:relative;display:grid;grid-template-columns:clamp(96px,9vw,150px) minmax(0,1fr) minmax(0,clamp(130px,13.5vw,260px)) clamp(96px,8vw,128px);grid-template-rows:auto 1fr;column-gap:clamp(18px,2.2vw,36px);align-items:center;min-height:0;padding:12px clamp(18px,2vw,30px) 14px;border:1px solid #2a2a28;border-radius:16px;background:linear-gradient(180deg,rgba(18,18,17,.82),rgba(11,11,11,.82));overflow:hidden;transition:border-color .25s}
+.card{--sans:ui-sans-serif,-apple-system,"Helvetica Neue",Arial,sans-serif;position:relative;display:grid;grid-template-columns:clamp(96px,9vw,150px) minmax(0,1fr) minmax(0,clamp(130px,13.5vw,260px)) clamp(96px,8vw,128px);grid-template-rows:auto 1fr;column-gap:clamp(18px,2.2vw,36px);align-items:center;min-height:0;padding:12px clamp(18px,2vw,30px) 14px;border:1px solid #2a2a28;border-radius:16px;background:linear-gradient(180deg,rgba(18,18,17,.34),rgba(11,11,11,.26));overflow:hidden;transition:border-color .25s}
 .card:hover{border-color:#3d3d3a}
 .num{grid-column:1/-1;display:flex;align-items:center;gap:14px;font:12px/1 var(--sans);letter-spacing:.14em;color:var(--mute);margin-bottom:2px}
 .num i{display:block;width:88px;height:1px;background:#2f2f2c}

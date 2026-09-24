@@ -14,11 +14,12 @@
     return L(L(L(n(0,0,0), n(1,0,0), u), L(n(0,1,0), n(1,1,0), u), v), L(L(n(0,0,1), n(1,0,1), u), L(n(0,1,1), n(1,1,1), u), v), w); };
   const ripples = []; // {x, y, t} in device px and seconds
   let boxes = [];     // text areas in device px, re-measured on navigation and resize
-  const measure = () => { boxes = [...document.querySelectorAll('nav, section:target, .card')].map(e => e.getBoundingClientRect())
-    .filter(r => r.width && r.height).map(r => ({ l: r.left * dpr, r: r.right * dpr, t: r.top * dpr, b: r.bottom * dpr })); };
-  const quiet = (x, y) => { let m = 1; const pad = 22 * dpr, soft = 110 * dpr;
+  const measure = () => { boxes = [...document.querySelectorAll('nav, section:target, .card .copy, .card .mark, .card .aside, .card .flow')]
+    .map(e => [e.getBoundingClientRect(), e.closest('.card') ? 50 : 110]).filter(([r]) => r.width && r.height)
+    .map(([r, soft]) => ({ l: r.left * dpr, r: r.right * dpr, t: r.top * dpr, b: r.bottom * dpr, soft: soft * dpr })); };
+  const quiet = (x, y) => { let m = 1; const pad = 22 * dpr;
     for (const b of boxes) { const dx = Math.max(b.l - pad - x, 0, x - b.r - pad), dy = Math.max(b.t - pad - y, 0, y - b.b - pad);
-      const k = Math.min(1, Math.hypot(dx, dy) / soft); m = Math.min(m, 0.2 + 0.8 * k * k * (3 - 2 * k)); }
+      const k = Math.min(1, Math.hypot(dx, dy) / b.soft); m = Math.min(m, 0.2 + 0.8 * k * k * (3 - 2 * k)); }
     return m; };
   const BUCKETS = 7; let W, Ht, cell, dpr, cols, rows, paths;
   function size() { dpr = Math.min(devicePixelRatio || 1, 2); W = c.width = innerWidth * dpr; Ht = c.height = innerHeight * dpr;
