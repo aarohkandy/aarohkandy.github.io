@@ -1,0 +1,26 @@
+:root{--bg:#0b0b0b;--ink:#ececea;--mute:#7c7c79;--dim:#4a4a48;--rule:#2b2b29;color-scheme:dark}
+*{box-sizing:border-box}html{-webkit-text-size-adjust:100%;background:var(--bg)}
+body{margin:0;height:100vh;overflow:hidden;background:var(--bg);color:var(--ink);font:18px/1.5 Charter,"Iowan Old Style","Palatino Linotype",Georgia,serif}
+canvas#bg{position:fixed;inset:0;width:100%;height:100%;z-index:0;pointer-events:none}
+a{color:inherit}
+nav{position:fixed;z-index:2;right:6vw;top:50%;transform:translateY(-50%);text-align:right;font-size:clamp(22px,2.1vw,31px);line-height:1.3}
+nav a{display:block;color:var(--mute);text-decoration:none;transition:color .2s}
+nav a:hover,nav a:focus-visible{color:var(--ink);outline:none}
+nav .me{color:var(--ink);font-weight:600;margin-bottom:.55em}
+section{display:none;position:fixed;z-index:1;left:9vw;top:50%;transform:translateY(-50%);width:min(34rem,46vw);max-height:84vh;overflow:auto;scrollbar-width:none}
+section:target{display:block;animation:in .45s ease both}
+@keyframes in{from{opacity:0;margin-top:10px}to{opacity:1;margin-top:0}}
+h2{font-size:15px;font-weight:400;color:var(--mute);margin:0 0 .9rem;letter-spacing:.02em}
+.lead{font-size:clamp(21px,1.75vw,27px);line-height:1.38;margin:0 0 1.2rem}
+.meta{font-size:15px;color:var(--mute);margin:0}.meta a{text-decoration-color:var(--dim);text-underline-offset:3px}.meta a:hover{color:var(--ink)}
+ul{list-style:none;margin:0;padding:0}
+#everything li{font-size:17px;line-height:1.45;margin:0 0 .5rem;color:var(--mute)}#everything li b{font-weight:400;color:var(--ink)}
+#everything li a{text-decoration:none}#everything li a:hover b{text-decoration:underline;text-decoration-color:var(--dim)}
+body:has(#auros:target) a[href="#auros"],body:has(#moonshot:target) a[href="#moonshot"],body:has(#rocket:target) a[href="#rocket"],body:has(#cadybara:target) a[href="#cadybara"],body:has(#research:target) a[href="#research"],body:has(#battlebots:target) a[href="#battlebots"],body:has(#vex:target) a[href="#vex"],body:has(#frc:target) a[href="#frc"],body:has(#vaidra:target) a[href="#vaidra"],body:has(#coacht:target) a[href="#coacht"],body:has(#everything:target) a[href="#everything"],body:has(#contact:target) a[href="#contact"]{color:var(--ink)}
+@media(max-width:760px){
+ body{height:auto;min-height:100vh;overflow:auto}
+ nav{position:relative;right:auto;top:auto;transform:none;text-align:left;padding:28px 22px 8px;font-size:21px;display:flex;flex-wrap:wrap;gap:.1rem 1rem}
+ nav .me{flex-basis:100%;margin-bottom:.35rem}nav a{display:inline}
+ section{position:relative;left:auto;top:auto;transform:none;width:auto;max-height:none;padding:26px 22px 60px}
+}
+@media(prefers-reduced-motion:reduce){section:target{animation:none}}
