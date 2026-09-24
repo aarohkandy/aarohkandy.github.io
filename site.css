@@ -38,7 +38,7 @@ a:focus-visible{outline:1px solid var(--mute);outline-offset:4px}
 @media(max-width:760px),(max-height:620px){.boxes{grid-template-columns:1fr;gap:12px;max-width:26rem;margin:0 auto}}
 
 /* home cards */
-.home{position:fixed;z-index:1;top:28px;bottom:28px;left:4vw;right:calc(64px + clamp(150px,13vw,230px));display:flex;flex-direction:column;justify-content:flex-start;align-items:center;gap:0;padding-top:clamp(8px,3vh,36px);min-height:0;overflow-y:auto;scrollbar-width:none;overscroll-behavior:contain}
+.home{position:fixed;z-index:1;top:28px;bottom:28px;left:4vw;right:calc(56px + 13.5rem);display:flex;flex-direction:column;justify-content:flex-start;align-items:center;gap:0;padding-top:clamp(8px,3vh,36px);min-height:0;overflow-y:auto;scrollbar-width:none;overscroll-behavior:contain}
 .home::-webkit-scrollbar{display:none}
 .stack{margin:auto 0;width:min(1200px,100%);display:grid;grid-auto-rows:1fr;gap:18px}
 .stack > .card{flex:0 0 auto;min-height:clamp(150px,18vh,180px)}
@@ -114,11 +114,3 @@ body:has(section:target) nav .me{color:var(--mute)}
 }
 
 @media(max-height:620px){.name{font-size:clamp(28px,8vh,44px)}}
-
-/* desktop nav: one column running the full height of the screen, with dock-style magnification (dock.js) */
-@media(min-width:1024px) and (min-height:621px){
- nav .links{position:fixed;z-index:10;top:28px;bottom:28px;right:32px;display:flex;flex-direction:column;justify-content:space-between;align-items:flex-end;font-size:clamp(22px,min(2vw,3.1vh),34px);line-height:1}
- nav .links a{transform-origin:100% 50%;padding:2px 0 2px 24px;margin:0}
- nav .me{margin:0}
-}
-
