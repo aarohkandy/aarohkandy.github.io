@@ -2,7 +2,7 @@
   "canonicalUrl": "https://aarohkandy.github.io/",
   "name": "Aaroh Kandhare",
   "location": "Bellevue, Washington",
-  "summary": "Aaroh Kandhare builds rockets, combat robots, AI hardware and a Linux you install with a double click.",
+  "summary": "Head of hardware at a YC startup, founder of Auros, exit at 16.",
   "contact": {
     "email": "aarohkandy@gmail.com",
     "phone": "425-623-0392",
@@ -11,99 +11,60 @@
   },
   "projects": [
     {
-      "id": "auros",
-      "summary": "A Linux you install with a double click, set up for one person or one kiosk, where ten lines of YAML go in and a bootable machine comes out.",
-      "details": "building it now",
-      "links": [
-        "https://github.com/aarohkandy"
-      ]
-    },
-    {
       "id": "moonshot",
-      "summary": "I lead engineering on Moonshot's 51-part AI wearable, which is shipping now, and before it went to the factory I caught the camera sitting 2.25 mm outside its own housing.",
-      "details": "Y Combinator-backed · engineering team lead · 11 factory drawings · 168 fit checks across 1,275 part pairs",
-      "links": []
+      "header": "head of hardware @ yc startup",
+      "summary": "I lead engineering at Moonshot. We make an AI pendant, and it's shipping to customers now."
     },
     {
-      "id": "rocket",
-      "summary": "I built a 3D-printed rocket that steers with its own thrust, and wrote the 6-DOF simulator that's put it through 14,030 runs.",
-      "details": "sponsored by Stanford · thrust vector control · 430 g · flight computer in electronics testing",
-      "links": [
-        "https://rsim.vercel.app"
-      ]
-    },
-    {
-      "id": "cadybara",
-      "summary": "I'm the first engineer at Cadybara, a Founders Inc-backed text-to-CAD startup, and I built the backend and the public arena where AI-generated designs go head to head.",
-      "details": "my study there: more prompt detail made the CAD worse, 62.5% at level 7 against 40.1% at level 10",
-      "links": [
-        "https://cadbattle.vercel.app"
-      ]
-    },
-    {
-      "id": "research",
-      "summary": "I design air, surface and underwater vehicles and the ocean-atmosphere missions they run for NOAA's lab at the University of Washington, and I speed up metal 3D-printing models at Northwestern.",
-      "details": "UW and NOAA PMEL · Northwestern · 14.7 TB of model output indexed without downloading it",
-      "links": []
-    },
-    {
-      "id": "battlebots",
-      "summary": "I've built and fought combat robots at 1, 3, 5 and 25 lb, and now I lead design on a 250 lb one for a planned 2028 BattleBots entry.",
-      "details": "founder, Mantis · design lead, Bravado · a brushless hub motor I designed for the 1 lb",
-      "links": []
-    },
-    {
-      "id": "vex",
-      "summary": "I placed 2nd in a VEX World Championship division, and I've qualified for Worlds five times in eight seasons since fourth grade.",
-      "details": "captain and engineering lead · VEX IQ and V5",
-      "links": []
-    },
-    {
-      "id": "frc",
-      "summary": "On FRC 1899 I led 17 students across 3 subteams on a t-shirt cannon, and built mechanisms for our 2024 World Championship robot.",
-      "details": "Saints Robotics · offseason project lead · mechanical",
-      "links": []
-    },
-    {
-      "id": "vaidra",
-      "summary": "I built Vaidra's speech pipeline in 7 languages, for classrooms in India that have one speaker and no screens.",
-      "details": "COO, 2025 to 2026 · reached about 9,000 students",
-      "links": []
-    },
-    {
-      "id": "mosscross",
-      "summary": "Moss wrecks roofs here and the companies scraping it off by hand make too much money to automate it, so we're doing it with drones and an autopilot I wrote.",
-      "details": "backed by Founders Inc · the autopilot plans coverage across a roof and corrects for wind",
-      "links": []
+      "id": "auros",
+      "header": "founder @ auros",
+      "summary": "Auros is a personalized Linux you install with a double click. It's for people who aren't technical, or who just need a kiosk."
     },
     {
       "id": "coacht",
-      "summary": "I co-founded CoachT, AI coaching software for taekwondo studios, and it was acquired when I was 16.",
-      "details": "chief marketing officer · 50+ studio accounts · automated all of our outreach",
-      "links": []
+      "header": "exit @ coacht at 16",
+      "summary": "I co-founded CoachT and ran marketing. We made AI coaching software for taekwondo studios."
+    },
+    {
+      "id": "cadybara",
+      "header": "only engineer @ text-to-cad startup",
+      "summary": "Cadybara turns a description of a part into CAD. It's backed by Founders Inc, and I built it."
+    },
+    {
+      "id": "mosscross",
+      "header": "founder @ drone startup",
+      "summary": "MossCross is backed by Founders Inc. We clean moss off Pacific Northwest roofs with drones and an autopilot I wrote. Everyone else does it by hand and makes too much to bother automating."
+    },
+    {
+      "id": "rocket",
+      "header": "stanford-sponsored rocket",
+      "summary": "It's 3D-printed and designed to land itself by tilting its own engine. I wrote a defense-grade 6-DOF simulator for it with live CFD and FEA that emulates its electronics and flight code, and ran it 14,030 times."
+    },
+    {
+      "id": "research",
+      "header": "research intern @ uw and northwestern",
+      "summary": "At UW I design autonomous drones with NOAA that run below, on and above the water, and do the data analysis that keeps them alive. At Northwestern I build multiscale physics simulations of metal 3D printing."
+    },
+    {
+      "id": "vaidra",
+      "header": "coo @ indian edtech",
+      "summary": "I built Vaidra's speech pipeline in 7 languages for classrooms with one speaker and no screens. It reached 9,000+ students across 200+ schools."
+    },
+    {
+      "id": "vex",
+      "header": "2nd in division @ vex worlds",
+      "summary": "I've made Worlds 5 times in 8 seasons as captain and engineering lead. I started in 4th grade."
+    },
+    {
+      "id": "battlebots",
+      "header": "mechanical team @ 250 lb battlebot",
+      "summary": "Bravado is aiming for BattleBots in 2028. Solo, as Mantis Combat Robotics, I designed and built 1, 3, 5 and 25 lb bots."
+    },
+    {
+      "id": "frc",
+      "header": "led frc subteam",
+      "summary": "On Team 1899 I led 17 students across 3 subteams building a t-shirt cannon. I also built mechanisms for our robot, which qualified for the 2024 World Championship."
     }
-  ],
-  "everything": [
-    "Auros, a Linux you install with a double click",
-    "Moonshot, engineering lead on a YC-backed AI wearable that's shipping",
-    "ARC-01, a 3D-printed rocket with thrust vector control, sponsored by Stanford",
-    "HopperSim, the 6-DOF simulator for it, 14,030 runs",
-    "Cadybara, first engineer, text-to-CAD",
-    "Capybara Arena, where AI-generated CAD goes head to head",
-    "7/10 Stars Please, a paper on how much detail to give a CAD model",
-    "UW and NOAA PMEL, vehicle and mission simulation",
-    "Northwestern, metal 3D-printing models",
-    "Mantis, 1, 3, 5 and 25 lb combat robots",
-    "Bravado, design lead on a 250 lb robot",
-    "VEX, 2nd in a World Championship division",
-    "FRC 1899, 17 students on a t-shirt cannon",
-    "Vaidra, a speech pipeline in 7 languages",
-    "CoachT, acquired when I was 16",
-    "LocalFlow, my own dictation app for macOS",
-    "MossCross, drones that take moss off roofs, backed by Founders Inc",
-    "Interlake Builders Club, president, membership nearly quadrupled in a year",
-    "Teaching, robotics, CAD and code for 110 kids",
-    "Stanford, a summer quarter"
   ],
   "updated": "2026-09-23"
 }

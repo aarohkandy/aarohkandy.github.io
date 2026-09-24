@@ -9,43 +9,20 @@ Location: Bellevue, Washington
 
 ## Summary
 
-Aaroh Kandhare builds rockets, combat robots, AI hardware and a Linux you install with a double click.
+Head of hardware at a YC startup, founder of Auros, exit at 16.
 
-## Projects
+## Projects, most impressive first
 
-- auros: A Linux you install with a double click, set up for one person or one kiosk, where ten lines of YAML go in and a bootable machine comes out. (building it now)
-- moonshot: I lead engineering on Moonshot's 51-part AI wearable, which is shipping now, and before it went to the factory I caught the camera sitting 2.25 mm outside its own housing. (Y Combinator-backed · engineering team lead · 11 factory drawings · 168 fit checks across 1,275 part pairs)
-- rocket: I built a 3D-printed rocket that steers with its own thrust, and wrote the 6-DOF simulator that's put it through 14,030 runs. (sponsored by Stanford · thrust vector control · 430 g · flight computer in electronics testing)
-- cadybara: I'm the first engineer at Cadybara, a Founders Inc-backed text-to-CAD startup, and I built the backend and the public arena where AI-generated designs go head to head. (my study there: more prompt detail made the CAD worse, 62.5% at level 7 against 40.1% at level 10)
-- research: I design air, surface and underwater vehicles and the ocean-atmosphere missions they run for NOAA's lab at the University of Washington, and I speed up metal 3D-printing models at Northwestern. (UW and NOAA PMEL · Northwestern · 14.7 TB of model output indexed without downloading it)
-- battlebots: I've built and fought combat robots at 1, 3, 5 and 25 lb, and now I lead design on a 250 lb one for a planned 2028 BattleBots entry. (founder, Mantis · design lead, Bravado · a brushless hub motor I designed for the 1 lb)
-- vex: I placed 2nd in a VEX World Championship division, and I've qualified for Worlds five times in eight seasons since fourth grade. (captain and engineering lead · VEX IQ and V5)
-- frc: On FRC 1899 I led 17 students across 3 subteams on a t-shirt cannon, and built mechanisms for our 2024 World Championship robot. (Saints Robotics · offseason project lead · mechanical)
-- vaidra: I built Vaidra's speech pipeline in 7 languages, for classrooms in India that have one speaker and no screens. (COO, 2025 to 2026 · reached about 9,000 students)
-- mosscross: Moss wrecks roofs here and the companies scraping it off by hand make too much money to automate it, so we're doing it with drones and an autopilot I wrote. (backed by Founders Inc · the autopilot plans coverage across a roof and corrects for wind)
-- coacht: I co-founded CoachT, AI coaching software for taekwondo studios, and it was acquired when I was 16. (chief marketing officer · 50+ studio accounts · automated all of our outreach)
-
-## Everything
-
-- Auros, a Linux you install with a double click
-- Moonshot, engineering lead on a YC-backed AI wearable that's shipping
-- ARC-01, a 3D-printed rocket with thrust vector control, sponsored by Stanford
-- HopperSim, the 6-DOF simulator for it, 14,030 runs
-- Cadybara, first engineer, text-to-CAD
-- Capybara Arena, where AI-generated CAD goes head to head
-- 7/10 Stars Please, a paper on how much detail to give a CAD model
-- UW and NOAA PMEL, vehicle and mission simulation
-- Northwestern, metal 3D-printing models
-- Mantis, 1, 3, 5 and 25 lb combat robots
-- Bravado, design lead on a 250 lb robot
-- VEX, 2nd in a World Championship division
-- FRC 1899, 17 students on a t-shirt cannon
-- Vaidra, a speech pipeline in 7 languages
-- CoachT, acquired when I was 16
-- LocalFlow, my own dictation app for macOS
-- MossCross, drones that take moss off roofs, backed by Founders Inc
-- Interlake Builders Club, president, membership nearly quadrupled in a year
-- Teaching, robotics, CAD and code for 110 kids
-- Stanford, a summer quarter
+- head of hardware @ yc startup: I lead engineering at Moonshot. We make an AI pendant, and it's shipping to customers now.
+- founder @ auros: Auros is a personalized Linux you install with a double click. It's for people who aren't technical, or who just need a kiosk.
+- exit @ coacht at 16: I co-founded CoachT and ran marketing. We made AI coaching software for taekwondo studios.
+- only engineer @ text-to-cad startup: Cadybara turns a description of a part into CAD. It's backed by Founders Inc, and I built it.
+- founder @ drone startup: MossCross is backed by Founders Inc. We clean moss off Pacific Northwest roofs with drones and an autopilot I wrote. Everyone else does it by hand and makes too much to bother automating.
+- stanford-sponsored rocket: It's 3D-printed and designed to land itself by tilting its own engine. I wrote a defense-grade 6-DOF simulator for it with live CFD and FEA that emulates its electronics and flight code, and ran it 14,030 times.
+- research intern @ uw and northwestern: At UW I design autonomous drones with NOAA that run below, on and above the water, and do the data analysis that keeps them alive. At Northwestern I build multiscale physics simulations of metal 3D printing.
+- coo @ indian edtech: I built Vaidra's speech pipeline in 7 languages for classrooms with one speaker and no screens. It reached 9,000+ students across 200+ schools.
+- 2nd in division @ vex worlds: I've made Worlds 5 times in 8 seasons as captain and engineering lead. I started in 4th grade.
+- mechanical team @ 250 lb battlebot: Bravado is aiming for BattleBots in 2028. Solo, as Mantis Combat Robotics, I designed and built 1, 3, 5 and 25 lb bots.
+- led frc subteam: On Team 1899 I led 17 students across 3 subteams building a t-shirt cannon. I also built mechanisms for our robot, which qualified for the 2024 World Championship.
 
 Updated 2026-09-23.

@@ -7,12 +7,12 @@ nav{position:fixed;z-index:2;right:32px;top:28px;text-align:right;font-size:clam
 nav a{display:block;color:var(--mute);text-decoration:none;transition:color .2s}
 nav a:hover,nav a:focus-visible{color:var(--ink)}
 nav .me{color:var(--ink);font-weight:600;margin-bottom:.4em}
-section{display:none;position:fixed;z-index:1;left:50%;top:50%;transform:translate(-50%,-50%);width:min(40rem,56vw);max-height:86vh;overflow:auto;scrollbar-width:none;text-align:center}
+section{display:none;position:fixed;z-index:1;left:50%;top:50%;transform:translate(-50%,-50%);width:min(52rem,62vw);max-height:86vh;overflow:auto;scrollbar-width:none;text-align:center}
 section:target{display:block;animation:in .45s ease both}
 @keyframes in{from{opacity:0;margin-top:10px}to{opacity:1;margin-top:0}}
-@media(max-width:1180px) and (min-width:761px){section{left:calc(50% - 95px);width:min(40rem,52vw)}}
-.head{font-size:clamp(30px,3.2vw,48px);line-height:1.14;font-weight:400;letter-spacing:-.01em;margin:0 0 1.1rem;color:var(--ink);text-wrap:balance}
-.para{font-size:clamp(18px,1.35vw,21px);line-height:1.5;color:#a3a39f;margin:0 auto .5rem;max-width:32rem;text-wrap:pretty}
+@media(max-width:1180px) and (min-width:761px){section{left:calc(50% - 100px);width:calc(100vw - 290px)}}
+.head{font-size:clamp(26px,2.85vw,44px);line-height:1.14;white-space:nowrap;font-weight:400;letter-spacing:-.01em;margin:0 0 1.1rem;color:var(--ink);text-wrap:balance}
+.para{font-size:clamp(18px,1.35vw,21px);line-height:1.5;color:#a3a39f;margin:0 auto .5rem;max-width:35rem;text-wrap:pretty}
 .para a{color:var(--ink);text-decoration-color:var(--dim);text-underline-offset:4px}.para a:hover{text-decoration-color:var(--ink)}
 .all{list-style:none;margin:0;padding:0}.all li{font-size:clamp(18px,1.4vw,22px);line-height:1.35;margin:0 0 .55rem;text-wrap:balance}
 .all a{color:#a3a39f;text-decoration:underline;text-decoration-color:var(--rule);text-underline-offset:5px;transition:color .2s}.all a:hover,.all a:focus-visible{color:var(--ink)}
@@ -24,8 +24,17 @@ section:target{display:block;animation:in .45s ease both}
  nav .me{flex-basis:100%;margin-bottom:.35rem}nav a{display:inline;padding:.3rem 0}
  .para a{display:inline-block;padding:.35rem 0}
  section{position:relative;left:auto;top:auto;transform:none;width:auto;max-height:none;padding:34px 22px 70px}
+ .head{white-space:normal;font-size:clamp(26px,7.2vw,34px)}
 }
 @media(prefers-reduced-motion:reduce){section:target{animation:none}}
 .nw{white-space:nowrap}
-body:has(#moonshot:target) a[href="#moonshot"],body:has(#coacht:target) a[href="#coacht"],body:has(#cadybara:target) a[href="#cadybara"],body:has(#mosscross:target) a[href="#mosscross"],body:has(#rocket:target) a[href="#rocket"],body:has(#research:target) a[href="#research"],body:has(#vaidra:target) a[href="#vaidra"],body:has(#vex:target) a[href="#vex"],body:has(#battlebots:target) a[href="#battlebots"],body:has(#auros:target) a[href="#auros"],body:has(#frc:target) a[href="#frc"],body:has(#everything:target) a[href="#everything"],body:has(#contact:target) a[href="#contact"]{color:var(--ink)}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%);white-space:nowrap}
+.boxes{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;text-align:left}
+.box{display:flex;flex-direction:column;gap:.45rem;padding:1.5rem 1.4rem 1.35rem;border:1px solid #3a3a37;border-radius:14px;background:rgba(11,11,11,.55);color:var(--ink);text-decoration:none;transition:border-color .2s,background .2s,transform .2s}
+.box b{font-weight:400;font-size:clamp(22px,1.9vw,28px);line-height:1.1}
+.box span{font-size:15px;color:#a3a39f}
+.box:hover,.box:focus-visible{border-color:#8a8a86;background:rgba(255,255,255,.04);transform:translateY(-2px)}
+@media(prefers-reduced-motion:reduce){.box{transition:none}.box:hover{transform:none}}
+body:has(#moonshot:target) a[href="#moonshot"],body:has(#auros:target) a[href="#auros"],body:has(#coacht:target) a[href="#coacht"],body:has(#cadybara:target) a[href="#cadybara"],body:has(#mosscross:target) a[href="#mosscross"],body:has(#rocket:target) a[href="#rocket"],body:has(#research:target) a[href="#research"],body:has(#vaidra:target) a[href="#vaidra"],body:has(#vex:target) a[href="#vex"],body:has(#battlebots:target) a[href="#battlebots"],body:has(#frc:target) a[href="#frc"],body:has(#everything:target) a[href="#everything"],body:has(#contact:target) a[href="#contact"]{color:var(--ink)}
 a:focus-visible{outline:1px solid var(--mute);outline-offset:4px}
+@media(max-width:760px),(max-height:620px){.boxes{grid-template-columns:1fr;gap:12px;max-width:26rem;margin:0 auto}}
