@@ -16,7 +16,7 @@ h2{font-size:15px;font-weight:400;color:var(--mute);margin:0 0 .9rem;letter-spac
 ul{list-style:none;margin:0;padding:0}
 #everything li{font-size:17px;line-height:1.45;margin:0 0 .5rem;color:var(--mute)}#everything li b{font-weight:400;color:var(--ink)}
 #everything li a{text-decoration:none}#everything li a:hover b{text-decoration:underline;text-decoration-color:var(--dim)}
-body:has(#auros:target) a[href="#auros"],body:has(#moonshot:target) a[href="#moonshot"],body:has(#rocket:target) a[href="#rocket"],body:has(#cadybara:target) a[href="#cadybara"],body:has(#research:target) a[href="#research"],body:has(#battlebots:target) a[href="#battlebots"],body:has(#vex:target) a[href="#vex"],body:has(#frc:target) a[href="#frc"],body:has(#vaidra:target) a[href="#vaidra"],body:has(#coacht:target) a[href="#coacht"],body:has(#everything:target) a[href="#everything"],body:has(#contact:target) a[href="#contact"]{color:var(--ink)}
+body:has(#auros:target) a[href="#auros"],body:has(#moonshot:target) a[href="#moonshot"],body:has(#rocket:target) a[href="#rocket"],body:has(#cadybara:target) a[href="#cadybara"],body:has(#research:target) a[href="#research"],body:has(#battlebots:target) a[href="#battlebots"],body:has(#vex:target) a[href="#vex"],body:has(#frc:target) a[href="#frc"],body:has(#vaidra:target) a[href="#vaidra"],body:has(#mosscross:target) a[href="#mosscross"],body:has(#coacht:target) a[href="#coacht"],body:has(#everything:target) a[href="#everything"],body:has(#contact:target) a[href="#contact"]{color:var(--ink)}
 @media(max-width:760px){
  body{height:auto;min-height:100vh;overflow:auto}
  nav{position:relative;right:auto;top:auto;transform:none;text-align:left;padding:28px 22px 8px;font-size:21px;display:flex;flex-wrap:wrap;gap:.1rem 1rem}
