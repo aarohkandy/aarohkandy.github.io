@@ -14,7 +14,7 @@
     return L(L(L(n(0,0,0), n(1,0,0), u), L(n(0,1,0), n(1,1,0), u), v), L(L(n(0,0,1), n(1,0,1), u), L(n(0,1,1), n(1,1,1), u), v), w); };
   const ripples = []; // {x, y, t} in device px and seconds
   let boxes = [];     // text areas in device px, re-measured on navigation and resize
-  const measure = () => { boxes = [...document.querySelectorAll('nav, section:target')]
+  const measure = () => { boxes = [...document.querySelectorAll('nav summary, nav .links, section:target, .name')]
     .map(e => [e.getBoundingClientRect(), 110]).filter(([r]) => r.width && r.height)
     .map(([r, soft]) => ({ l: r.left * dpr, r: r.right * dpr, t: r.top * dpr, b: r.bottom * dpr, soft: soft * dpr })); };
   const quiet = (x, y) => { let m = 1; const pad = 22 * dpr;
