@@ -14,7 +14,7 @@
     return L(L(L(n(0,0,0), n(1,0,0), u), L(n(0,1,0), n(1,1,0), u), v), L(L(n(0,0,1), n(1,0,1), u), L(n(0,1,1), n(1,1,1), u), v), w); };
   const ripples = []; // {x, y, t} in device px and seconds
   let boxes = [];     // text areas in device px, re-measured on navigation and resize
-  const measure = () => { boxes = [...document.querySelectorAll('nav, section:target')].map(e => e.getBoundingClientRect())
+  const measure = () => { boxes = [...document.querySelectorAll('nav, section:target, .card')].map(e => e.getBoundingClientRect())
     .filter(r => r.width && r.height).map(r => ({ l: r.left * dpr, r: r.right * dpr, t: r.top * dpr, b: r.bottom * dpr })); };
   const quiet = (x, y) => { let m = 1; const pad = 22 * dpr, soft = 110 * dpr;
     for (const b of boxes) { const dx = Math.max(b.l - pad - x, 0, x - b.r - pad), dy = Math.max(b.t - pad - y, 0, y - b.b - pad);
@@ -57,7 +57,7 @@
   addEventListener('resize', () => { size(); measure(); draw(still ? 4 : (performance.now() - t0) / 1000); }, { passive: true });
   const remask = () => { measure(); if (still) draw(4); };  // the still frame must redraw when the text moves
   addEventListener('hashchange', () => requestAnimationFrame(remask));
-  addEventListener('scroll', () => requestAnimationFrame(remask), { passive: true });
+  addEventListener('scroll', () => requestAnimationFrame(remask), { passive: true, capture: true }); // capture: also the card list's own scroll
   addEventListener('load', remask); setInterval(remask, 1000); // catches font swaps and the section fade-in
   size(); measure(); draw(4); if (!still) requestAnimationFrame(loop);
 })();
