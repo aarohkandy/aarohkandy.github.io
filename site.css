@@ -126,7 +126,7 @@ body:has(section:target) nav .me{color:var(--mute)}
 
 /* home: name + one paragraph in a single centred column (lanceyan.com model) */
 .v-sentence{justify-content:center!important;padding-bottom:6vh}
-.v-sentence .col{width:min(41rem,100%);margin:0 auto}
+.v-sentence .col{width:min(46rem,100%);margin:0 auto}
 .v-sentence .name{text-align:left;margin:0 0 clamp(20px,3.4vh,34px);font-size:clamp(46px,5.4vw,88px)}
 .v-sentence .lede{font-size:clamp(20px,1.62vw,26px);line-height:1.62;color:#a6a6a6;margin:0 0 1.62em;text-wrap:pretty}
 .v-sentence .now{font-size:clamp(17px,1.25vw,20px);line-height:1.62;color:#7d7d7d;margin:0}
@@ -136,3 +136,9 @@ body:has(section:target) nav .me{color:var(--mute)}
 .ic{height:.78em;width:auto;margin-right:.26em;vertical-align:baseline;opacity:.92}
 .crownic{height:.56em}
 @media(min-width:1024px) and (min-height:621px){.v-sentence{left:0!important;right:0!important}}
+/* home: three bullets */
+.bul{list-style:none;margin:0;padding:0}
+.bul li{position:relative;padding-left:1.15em;font-size:clamp(21px,1.75vw,28px);line-height:1.45;color:#b3b3b3;margin:0 0 .62em}
+.bul li:last-child{margin-bottom:0}
+.bul li::before{content:"";position:absolute;left:.1em;top:.66em;width:.3em;height:.3em;border-radius:50%;background:#6a6a6a}
+@media(min-width:1024px) and (max-width:1180px) and (min-height:621px){.v-sentence{left:4vw!important;right:calc(56px + 13.5rem)!important}}
