@@ -117,3 +117,9 @@ body:has(section:target) nav .me{color:var(--mute)}
 /* stack width by device */
 @media(max-width:1180px) and (min-width:1024px){.stack{width:min(100%,76vw)}}
 @media(max-width:1023px),(max-height:620px){.stack{width:100%}}
+
+/* always-visible contact line, top left */
+.reach{position:fixed;z-index:10;top:30px;left:32px;margin:0;display:flex;gap:18px;font-size:15px;line-height:1}
+.reach a{color:var(--mute);text-decoration:none;transition:color .2s}
+.reach a:hover,.reach a:focus-visible{color:var(--ink)}
+@media(max-width:1023px),(max-height:620px){.reach{top:28px;left:18px;gap:13px;font-size:14px}}
