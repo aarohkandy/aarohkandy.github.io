@@ -100,7 +100,7 @@ body:has(section:target) nav .me{color:var(--mute)}
 .menu > summary::-webkit-details-marker{display:none}
 @media(max-width:1023px),(max-height:620px){
  nav{position:fixed;z-index:10;top:14px;right:14px;left:auto;text-align:right;font-size:19px;line-height:1.3}
- .menu > summary{display:inline-flex;align-items:center;gap:8px;list-style:none;cursor:pointer;padding:10px 18px;min-height:44px;border:1px solid #2d2d2d;border-radius:999px;background:rgba(11,11,11,.88);-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px);color:var(--ink);font-size:17px;user-select:none}
+ .menu > summary{display:inline-flex;align-items:center;gap:7px;list-style:none;cursor:pointer;padding:0 2px;min-height:44px;color:var(--ink);font-size:15px;user-select:none}
  .menu > summary::after{content:"";width:7px;height:7px;border-right:1.5px solid currentColor;border-bottom:1.5px solid currentColor;transform:translateY(-2px) rotate(45deg);transition:transform .2s}
  .menu[open] > summary::after{transform:translateY(2px) rotate(-135deg)}
  .links{margin-top:8px;padding:8px 0;min-width:210px;max-height:calc(100dvh - 90px);overflow:auto;text-align:left;background:#0e0e0e;border:1px solid #292929;border-radius:14px;box-shadow:0 18px 40px rgba(0,0,0,.55)}
@@ -119,7 +119,20 @@ body:has(section:target) nav .me{color:var(--mute)}
 @media(max-width:1023px),(max-height:620px){.stack{width:100%}}
 
 /* always-visible contact line, top left */
-.reach{position:fixed;z-index:10;top:30px;left:32px;margin:0;display:flex;gap:18px;font-size:15px;line-height:1}
+.reach{position:fixed;z-index:10;top:32px;left:32px;margin:0;display:flex;gap:18px;font-size:15px;line-height:calc(clamp(24px,1.85vw,29px) * 1.7);align-items:baseline}
 .reach a{color:var(--mute);text-decoration:none;transition:color .2s}
 .reach a:hover,.reach a:focus-visible{color:var(--ink)}
-@media(max-width:1023px),(max-height:620px){.reach{top:28px;left:18px;gap:13px;font-size:14px}}
+@media(max-width:1023px),(max-height:620px){.reach{top:14px;left:18px;gap:13px;font-size:15px;line-height:44px}}
+
+/* home: name + one paragraph in a single centred column (lanceyan.com model) */
+.v-sentence{justify-content:center!important;padding-bottom:6vh}
+.v-sentence .col{width:min(41rem,100%);margin:0 auto}
+.v-sentence .name{text-align:left;margin:0 0 clamp(20px,3.4vh,34px);font-size:clamp(46px,5.4vw,88px)}
+.v-sentence .lede{font-size:clamp(20px,1.62vw,26px);line-height:1.62;color:#a6a6a6;margin:0 0 1.62em;text-wrap:pretty}
+.v-sentence .now{font-size:clamp(17px,1.25vw,20px);line-height:1.62;color:#7d7d7d;margin:0}
+.v-sentence a{color:var(--ink);text-decoration:underline 1px;text-decoration-color:rgb(235 235 235 / .32);text-underline-offset:.22em;transition:text-decoration-color .2s}
+.v-sentence a:hover,.v-sentence a:focus-visible{text-decoration-color:var(--ink)}
+.yc-i{display:inline-grid;place-items:center;width:1.4em;height:1.4em;margin-right:.46em;background:#d9601f;color:#f3efe9;font:600 .56em/1 ui-sans-serif,-apple-system,Arial,sans-serif;border-radius:2px;vertical-align:baseline;transform:translateY(.02em)}
+.ic{height:.78em;width:auto;margin-right:.26em;vertical-align:baseline;opacity:.92}
+.crownic{height:.56em}
+@media(min-width:1024px) and (min-height:621px){.v-sentence{left:0!important;right:0!important}}
