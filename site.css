@@ -152,11 +152,11 @@ body:has(section:target) nav .me{color:var(--mute)}
  body.scrub section,body.scrub .home{display:none}
  body.scrub section.peek{display:block;animation:none}
  body.scrub .home.peek{display:flex}
- .wheel{--r:max(74vw,264px);display:block;position:fixed;z-index:5;left:0;right:0;bottom:0;height:205px;overflow:clip;pointer-events:none;-webkit-mask-image:linear-gradient(90deg,transparent,#000 24%,#000 76%,transparent);mask-image:linear-gradient(90deg,transparent,#000 24%,#000 76%,transparent)}
+ .wheel{--r:max(74vw,264px);display:block;position:fixed;z-index:5;left:0;right:0;bottom:0;height:205px;overflow:clip;pointer-events:none;--fade:linear-gradient(90deg,transparent,rgb(0 0 0/.3) 4%,rgb(0 0 0/.7) 9%,rgb(0 0 0/.93) 14%,#000 18% 82%,rgb(0 0 0/.93) 86%,rgb(0 0 0/.7) 91%,rgb(0 0 0/.3) 96%,transparent);-webkit-mask-image:var(--fade);mask-image:var(--fade)}
  .disc{position:absolute;left:50%;top:40px;width:calc(2 * var(--r));height:calc(2 * var(--r));margin-left:calc(-1 * var(--r));border-radius:50%;overflow:clip;background:#0f0f0f;border:1px solid #2c2c2c;box-shadow:0 -14px 40px rgba(0,0,0,.7),inset 0 1px 0 rgba(255,255,255,.07);pointer-events:auto;touch-action:none;cursor:grab;user-select:none;-webkit-user-select:none;-webkit-touch-callout:none;-webkit-tap-highlight-color:transparent}
  .disc:active{cursor:grabbing}
  .disc::before{content:"";position:absolute;z-index:2;left:50%;top:6px;width:2px;height:18px;margin-left:-1px;border-radius:1px;background:var(--ink)}
- .disc::after{content:"";position:absolute;z-index:1;inset:0;pointer-events:none;background:conic-gradient(#0f0f0f00 0 18deg,#0f0f0f 62deg 298deg,#0f0f0f00 342deg)}
+ .disc::after{content:"";position:absolute;z-index:1;inset:0;pointer-events:none;background:conic-gradient(#0f0f0f00 0 30deg,#0f0f0f 70deg 290deg,#0f0f0f00 330deg)}
  .dial{position:absolute;inset:0;will-change:transform}
  .dial svg{position:absolute;inset:0;width:100%;height:100%;stroke:#5c5c5c;stroke-width:1.5}
  .dial line{vector-effect:non-scaling-stroke}
