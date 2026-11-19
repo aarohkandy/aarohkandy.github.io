@@ -9,17 +9,18 @@
 })();
 
 // Phones: the nav is a dial at the bottom of the screen. Drag it round: it keeps spinning, clicks into each
-// item (haptic tick where the phone allows) and opens whichever item stops under the marker at the top.
-// Tapping an item turns the dial to it. CSS shows it only on phones; without JS the dropdown above stays.
+// item (haptic tick where the phone allows), the page shows whichever item is under the marker as it passes,
+// and the URL follows once it stops. Tapping an item turns the dial to it. CSS shows it only on phones;
+// without JS the dropdown above stays.
 (() => {
   const src = [...document.querySelectorAll('nav .links a')], n = src.length, step = 360 / n;
   const w = document.createElement('div'), disc = document.createElement('div'), dial = document.createElement('div');
   w.className = 'wheel'; w.setAttribute('role', 'navigation'); w.setAttribute('aria-label', 'Site');
   disc.className = 'disc'; dial.className = 'dial';
   let ticks = '';
-  for (let k = 0; k < n * 5; k++) {
-    const t = k * step / 5 * Math.PI / 180, x = Math.sin(t), y = -Math.cos(t), r = k % 5 ? 93.5 : 91, f = q => q.toFixed(2);
-    ticks += `<line${k % 5 ? '' : ' class="maj"'} x1="${f(x * r)}" y1="${f(y * r)}" x2="${f(x * 96.5)}" y2="${f(y * 96.5)}"/>`;
+  for (let k = 0; k < n; k++) {
+    const t = k * step * Math.PI / 180, x = Math.sin(t), y = -Math.cos(t), f = q => q.toFixed(2);
+    ticks += `<line x1="${f(x * 91)}" y1="${f(y * 91)}" x2="${f(x * 96.5)}" y2="${f(y * 96.5)}"/>`;
   }
   dial.innerHTML = `<svg viewBox="-100 -100 200 200" aria-hidden="true">${ticks}</svg>`;
   const links = src.map((a, i) => {
@@ -33,10 +34,18 @@
   const idx = () => links.findIndex(l => l.getAttribute('href') === (location.hash || '#'));
   let rot = -Math.max(idx(), 0) * step, v = 0, target = null, raf = 0, tPrev = 0, last = -1, drag = null, moved = false, user = false, quiet = false;
   const at = () => ((Math.round(-rot / step) % n) + n) % n;
+  // While the dial is in hand the page shows the item under the marker (a class, not the URL: browsers
+  // throttle rapid hash changes, and each would replay the fade). A link elsewhere hands control back to :target.
+  const panes = links.map(l => document.querySelector(l.getAttribute('href') === '#' ? '.home' : l.getAttribute('href')));
+  let scrub = false;
+  const peek = i => { panes.forEach((p, k) => p?.classList.toggle('peek', k === i)); scrollTo(0, 0); };
+  const hold = () => { if (!scrub) { scrub = true; document.body.classList.add('scrub'); peek(at()); } };
+  const release = () => { scrub = false; document.body.classList.remove('scrub'); panes.forEach(p => p?.classList.remove('peek')); };
   const draw = () => {
     dial.style.transform = `rotate(${rot}deg)`;
     const i = at(); if (i === last) return;
     links[last]?.classList.remove('on'); links[i].classList.add('on');
+    if (scrub) peek(i);
     if (last >= 0 && !quiet) navigator.vibrate ? navigator.vibrate(10) : sw.click();
     last = i;
   };
@@ -66,7 +75,7 @@
   const ang = e => Math.atan2(e.clientX - drag.cx, drag.cy - e.clientY) * 180 / Math.PI;
   disc.addEventListener('pointerdown', e => {
     if (e.button) return;
-    cancelAnimationFrame(raf); raf = 0; target = null; v = 0; quiet = false; user = true; moved = false; // a touch stops it dead
+    cancelAnimationFrame(raf); raf = 0; target = null; v = 0; quiet = false; user = true; moved = false; hold(); // a touch stops it dead
     const b = disc.getBoundingClientRect();
     drag = { cx: b.left + b.width / 2, cy: b.top + b.height / 2, x: e.clientX, y: e.clientY };
     drag.a = ang(e); drag.s = [[e.timeStamp, rot]];
@@ -87,9 +96,9 @@
   dial.addEventListener('click', e => {
     const a = e.target.closest('a'); if (!a) return;
     e.preventDefault(); if (moved && e.detail) return;
-    user = true; turnTo(links.indexOf(a));
+    user = true; hold(); turnTo(links.indexOf(a));
   });
-  addEventListener('hashchange', () => { const i = idx(); if (i >= 0 && i !== at() && !drag) { user = false; quiet = true; turnTo(i); } });
+  addEventListener('hashchange', () => { const i = idx(); if (i >= 0 && i !== at() && !drag) { release(); user = false; quiet = true; turnTo(i); } });
 
   draw();
   // one small nudge on load, so it reads as something that turns
